@@ -5,6 +5,7 @@ import ChatInterface from './components/ChatInterface';
 import UserHistoryWidget from './components/UserHistoryWidget';
 
 import dataAgentDiagram from './assets/data_agent_diagram.png';
+import dataAgentContext from './data/data_agent_context_file.json';
 
 // --- COMPONENTS ---
 
@@ -352,6 +353,58 @@ function App() {
                                                 </p>
                                             </div>
                                         )}
+
+                                        {/* APPLIED TEMPLATES & FRAGMENTS */}
+                                        {(() => {
+                                            const explanation = systemDetails?.intent_explanation || nlAnswer || '';
+                                            if (!explanation) return null;
+
+                                            // Extract template and fragment numbers (1-based in text, 0-based for array access)
+                                            const templateMatches = [...explanation.matchAll(/Template\s+(\d+)/gi)];
+                                            const fragmentMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
+
+                                            // Templates seem to be 1-based in the LLM output
+                                            const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
+
+                                            const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
+                                            // Facets/Fragments seem to be 0-based in the LLM output
+                                            const matchedFragments = [...new Set(fragmentMatches.map(m => parseInt(m[1], 10)))].filter(idx => idx >= 0 && idx < facetsList.length);
+
+                                            if (matchedTemplates.length === 0 && matchedFragments.length === 0) return null;
+
+                                            return (
+                                                <div>
+                                                    <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Fragments</h4>
+                                                    <div className="space-y-3">
+                                                        {matchedTemplates.map(idx => {
+                                                            const template = dataAgentContext.templates[idx];
+                                                            return (
+                                                                <div key={`template-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-amber-900/30">
+                                                                    <div className="text-xs font-bold text-amber-300 mb-1">Template {idx + 1}: {template.intent}</div>
+                                                                    <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                                        {template.parameterized?.parameterized_sql || template.sql}
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                        {matchedFragments.map(idx => {
+                                                            const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
+                                                            const fragment = facetsList[idx];
+                                                            if (!fragment) return null;
+                                                            const snippet = fragment.parameterized?.parameterized_sql_snippet || fragment.parameterized?.parameterized_fragment || fragment.sql_snippet || fragment.fragment;
+                                                            return (
+                                                                <div key={`fragment-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
+                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx}: {fragment.intent}</div>
+                                                                    <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                                        {snippet}
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
 
                                         {/* GENERATED SQL */}
                                         <div>
