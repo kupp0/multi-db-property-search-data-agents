@@ -68,4 +68,7 @@ variable "cloudsql_mysql_instance_id" {
   default     = "search-mysql"
 }
 
-
+variable "developer_email" {
+  description = "The email address of the developer for IAM database authentication"
+  type        = string
+}

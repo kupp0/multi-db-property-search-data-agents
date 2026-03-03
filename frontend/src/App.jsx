@@ -278,49 +278,47 @@ function App() {
                             <Sparkles className="w-6 h-6 text-indigo-500" />
                         </div>
 
+                        {/* UTILITY CONTROLS */}
+                        <div className="flex items-center gap-3 mb-6">
+                            <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                <Workflow className="w-3 h-3" /> Architecture
+                            </button>
+                            <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                <History className="w-3 h-3" /> History
+                            </button>
+                            <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                                {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+                            </button>
+                        </div>
+
                         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
                             Swiss Property Search 🇨🇭
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed text-sm">
                             Powered by Gemini Data Agent connected to AlloyDB.
                         </p>
-
-                        {/* CONTROLS */}
-                        <div className="mt-6 flex flex-col items-center gap-4">
-                            {/* Database Toggle */}
-                            <div className="flex flex-wrap justify-center gap-1 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-                                {[
-                                    { id: 'alloydb', label: 'AlloyDB' },
-                                    { id: 'spanner', label: 'Spanner' },
-                                    { id: 'cloudsql_pg', label: 'Cloud SQL (PG)' },
-                                    { id: 'cloudsql_mysql', label: 'Cloud SQL (MySQL)' }
-                                ].map(db => (
-                                    <button
-                                        key={db.id}
-                                        onClick={() => setSelectedBackend(db.id)}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
-                                    >
-                                        {db.label}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                    <Workflow className="w-3 h-3" /> Architecture
-                                </button>
-                                <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                    <History className="w-3 h-3" /> History
-                                </button>
-                                <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                                    {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-                                </button>
-                            </div>
-                        </div>
                     </div>
 
                     {/* SEARCH BAR */}
                     <div className="max-w-2xl mx-auto relative z-10">
+                        {/* DATABASE TOGGLE */}
+                        <div className="flex flex-wrap items-center justify-center gap-1 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200 dark:border-slate-700 mb-4">
+                            {[
+                                { id: 'alloydb', label: 'AlloyDB' },
+                                { id: 'spanner', label: 'Cloud Spanner' },
+                                { id: 'cloudsql_pg', label: 'Cloud SQL (PostgreSQL)' },
+                                { id: 'cloudsql_mysql', label: 'Cloud SQL (MySQL)' }
+                            ].map(db => (
+                                <button
+                                    key={db.id}
+                                    onClick={() => setSelectedBackend(db.id)}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                                >
+                                    {db.label}
+                                </button>
+                            ))}
+                        </div>
+
                         <form onSubmit={handleSearch} className="relative group/search">
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur opacity-30 group-hover/search:opacity-60 transition duration-500"></div>
                             <div className="relative flex items-center bg-white dark:bg-slate-950 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden">

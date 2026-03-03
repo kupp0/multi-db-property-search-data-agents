@@ -44,3 +44,12 @@ CREATE TABLE property_listings (
 -- 4. DATA AGENT PREREQUISITES
 -- Grant permissions to the IAM user (or public for demo purposes)
 GRANT ALL ON SCHEMA public TO public;
+
+-- 5. MODEL ALIASING (Vertex AI Integration)
+CREATE EXTENSION IF NOT EXISTS google_ml_integration CASCADE;
+
+CALL google_ml.create_model(
+  model_id => 'property_text_embedding_model',
+  provider => 'google',
+  saved_model_path => 'gemini-embedding-001'
+);

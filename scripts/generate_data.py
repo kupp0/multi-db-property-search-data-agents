@@ -19,9 +19,11 @@ print(f"Initializing Vertex AI in {PROJECT_ID} ({LOCATION})...")
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Initialize models
-# Using the requested models
-text_model = TextEmbeddingModel.from_pretrained("gemini-embedding-001")
-mm_model = MultiModalEmbeddingModel.from_pretrained("multimodalembedding@001")
+TEXT_EMBEDDING_MODEL = os.getenv("TEXT_EMBEDDING_MODEL", "gemini-embedding-001")
+IMAGE_EMBEDDING_MODEL = os.getenv("IMAGE_EMBEDDING_MODEL", "multimodalembedding@001")
+
+text_model = TextEmbeddingModel.from_pretrained(TEXT_EMBEDDING_MODEL)
+mm_model = MultiModalEmbeddingModel.from_pretrained(IMAGE_EMBEDDING_MODEL)
 
 def parse_sql_values(sql_file_path):
     """Parses the DML SQL file to extract the values."""

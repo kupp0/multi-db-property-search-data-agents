@@ -46,7 +46,8 @@ resource "google_project_service" "services" {
     "secretmanager.googleapis.com",
     "geminidataanalytics.googleapis.com",
     "sqladmin.googleapis.com",
-    "spanner.googleapis.com"
+    "spanner.googleapis.com",
+    "storage.googleapis.com"
   ])
 
   project = google_project.project.project_id

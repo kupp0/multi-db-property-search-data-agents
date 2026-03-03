@@ -5,7 +5,7 @@ resource "google_sql_database_instance" "postgres" {
   project          = google_project.project.project_id
 
   settings {
-    tier    = "db-custom-2-8192"
+    tier    = "db-perf-optimized-N-2"
     edition = "ENTERPRISE_PLUS"
     ip_configuration {
       ipv4_enabled = false
@@ -18,7 +18,7 @@ resource "google_sql_database_instance" "postgres" {
       query_insights_enabled  = true
       query_string_length     = 1024
       record_application_tags = true
-      record_client_address   = true
+      record_client_address   = false
     }
     database_flags {
       name  = "cloudsql.iam_authentication"
@@ -49,4 +49,18 @@ resource "null_resource" "enable_data_api_pg" {
   provisioner "local-exec" {
     command = "gcloud beta sql instances patch ${google_sql_database_instance.postgres.name} --project=${google_project.project.project_id} --data-api-access=ALLOW_DATA_API"
   }
+}
+
+resource "google_sql_user" "iam_sa_user_pg" {
+  name     = trimsuffix(google_service_account.search_backend_sa.email, ".gserviceaccount.com")
+  instance = google_sql_database_instance.postgres.name
+  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+  project  = google_project.project.project_id
+}
+
+resource "google_sql_user" "iam_dev_user_pg" {
+  name     = var.developer_email
+  instance = google_sql_database_instance.postgres.name
+  type     = "CLOUD_IAM_USER"
+  project  = google_project.project.project_id
 }

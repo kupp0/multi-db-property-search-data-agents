@@ -8,7 +8,7 @@ sources:
   #   password: "Welcome01"
   gda-api-source:
     kind: cloud-gemini-data-analytics
-    projectId: "ai-powered-search-alloydb-1542"
+    projectId: "dev-multi-db-data-agents"
 
 tools:
   # search-properties:
@@ -25,13 +25,13 @@ tools:
       datasourceReferences:
         alloydb:
           databaseReference:
-            projectId: "ai-powered-search-alloydb-1542"
+            projectId: "dev-multi-db-data-agents"
             region: "europe-west1"
-            clusterId: "search-cluster"
-            instanceId: "search-primary"
-            databaseId: "search"
+            clusterId: ""
+            instanceId: ""
+            databaseId: "postgres"
           agentContextReference:
-            contextSetId: "projects/ai-powered-search-alloydb-1542/locations/us-east1/contextSets/property-agent"
+            contextSetId: ""
     generationOptions:
       generateQueryResult: true
       generateNaturalLanguageAnswer: true

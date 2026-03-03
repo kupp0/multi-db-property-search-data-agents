@@ -41,3 +41,12 @@ CREATE TABLE property_listings (
 -- 3. INDEX CREATION (ScaNN)
 -- Note: Run this AFTER data is loaded for best performance, but defined here for completeness.
 -- CREATE INDEX property_listings_desc_idx ON property_listings USING scann (description_embedding) WITH (num_leaves=10);
+
+-- 4. MODEL ALIASING (Vertex AI Integration)
+CREATE EXTENSION IF NOT EXISTS google_ml_integration CASCADE;
+
+CALL google_ml.create_model(
+  model_id => 'property_text_embedding_model',
+  provider => 'google',
+  saved_model_path => 'gemini-embedding-001'
+);

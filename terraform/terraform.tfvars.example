@@ -3,6 +3,7 @@ billing_account_id = "000000-000000-000000"
 region             = "europe-west1"
 zone               = "europe-west1-b"
 db_password        = "ChangeMe123!" # Must be complex
+developer_email    = "admin@kupczak.altostrat.com"
 
 # Optional Variables (Defaults shown)
 # alloydb_cluster_id = "search-cluster"

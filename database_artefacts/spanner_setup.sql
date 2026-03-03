@@ -36,3 +36,11 @@ CREATE TABLE property_listings (
 
 -- Note: Spanner vector search uses exact nearest neighbor or specific vector indexes.
 -- CREATE INDEX property_listings_desc_idx ON property_listings USING vector_index (description_embedding) OPTIONS (distance_type='COSINE');
+
+-- 2. MODEL ALIASING (Vertex AI Integration)
+CREATE MODEL property_text_embedding_model
+INPUT(content varchar)
+OUTPUT(embeddings vector)
+REMOTE OPTIONS (
+  endpoint = '//aiplatform.googleapis.com/projects/dev-multi-db-data-agents/locations/europe-west1/publishers/google/models/gemini-embedding-001'
+);

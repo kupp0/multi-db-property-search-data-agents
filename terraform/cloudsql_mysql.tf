@@ -5,7 +5,7 @@ resource "google_sql_database_instance" "mysql" {
   project          = google_project.project.project_id
 
   settings {
-    tier    = "db-custom-2-8192"
+    tier    = "db-perf-optimized-N-2"
     edition = "ENTERPRISE_PLUS"
     ip_configuration {
       ipv4_enabled = false
@@ -18,10 +18,10 @@ resource "google_sql_database_instance" "mysql" {
       query_insights_enabled  = true
       query_string_length     = 1024
       record_application_tags = true
-      record_client_address   = true
+      record_client_address   = false
     }
     database_flags {
-      name  = "cloudsql.iam_authentication"
+      name  = "cloudsql_iam_authentication"
       value = "on"
     }
   }
@@ -38,6 +38,20 @@ resource "google_sql_user" "mysql_user" {
   name     = "root"
   instance = google_sql_database_instance.mysql.name
   password = var.db_password
+  project  = google_project.project.project_id
+}
+
+resource "google_sql_user" "iam_sa_user_mysql" {
+  name     = split("@", google_service_account.search_backend_sa.email)[0]
+  instance = google_sql_database_instance.mysql.name
+  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+  project  = google_project.project.project_id
+}
+
+resource "google_sql_user" "iam_dev_user_mysql" {
+  name     = var.developer_email
+  instance = google_sql_database_instance.mysql.name
+  type     = "CLOUD_IAM_USER"
   project  = google_project.project.project_id
 }
 
