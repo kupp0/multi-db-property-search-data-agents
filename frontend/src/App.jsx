@@ -5,6 +5,7 @@ import ChatInterface from './components/ChatInterface';
 import UserHistoryWidget from './components/UserHistoryWidget';
 
 import dataAgentDiagram from './assets/data_agent_diagram.png';
+import dataAgentContextDiagram from './assets/data_agent_context_infographic.png';
 import dataAgentContext from './data/data_agent_context_file.json';
 
 // --- COMPONENTS ---
@@ -160,6 +161,16 @@ function App() {
                                 <img
                                     src={dataAgentDiagram}
                                     alt="Architecture Diagram"
+                                    className="w-full h-auto rounded-lg shadow-lg border border-slate-200 dark:border-slate-700"
+                                />
+                            </div>
+
+                            {/* Context Diagram */}
+                            <div className="w-full">
+                                <h3 className="text-lg font-semibold mb-3 text-slate-700 dark:text-slate-300">Data Agent Context</h3>
+                                <img
+                                    src={dataAgentContextDiagram}
+                                    alt="Data Agent Context Diagram"
                                     className="w-full h-auto rounded-lg shadow-lg border border-slate-200 dark:border-slate-700"
                                 />
                             </div>
