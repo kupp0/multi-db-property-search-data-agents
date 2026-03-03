@@ -367,8 +367,8 @@ function App() {
                                             const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
 
                                             const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
-                                            // Facets/Fragments seem to be 0-based in the LLM output
-                                            const matchedFragments = [...new Set(fragmentMatches.map(m => parseInt(m[1], 10)))].filter(idx => idx >= 0 && idx < facetsList.length);
+                                            // Facets/Fragments seem to be 1-based in the LLM output
+                                            const matchedFragments = [...new Set(fragmentMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
 
                                             if (matchedTemplates.length === 0 && matchedFragments.length === 0) return null;
 
@@ -394,7 +394,7 @@ function App() {
                                                             const snippet = fragment.parameterized?.parameterized_sql_snippet || fragment.parameterized?.parameterized_fragment || fragment.sql_snippet || fragment.fragment;
                                                             return (
                                                                 <div key={`fragment-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
-                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx}: {fragment.intent}</div>
+                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {fragment.intent}</div>
                                                                     <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
                                                                         {snippet}
                                                                     </div>
