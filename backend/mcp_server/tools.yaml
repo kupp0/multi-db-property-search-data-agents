@@ -29,7 +29,7 @@ tools:
             region: "${GCP_LOCATION}"
             clusterId: "${ALLOYDB_CLUSTER_ID}"
             instanceId: "${ALLOYDB_INSTANCE_ID}"
-            databaseId: "${ALLOYDB_DATABASE_ID}"
+            databaseId: "${DB_NAME}"
           agentContextReference:
             contextSetId: "${AGENT_CONTEXT_SET_ID}"
     generationOptions:

@@ -11,10 +11,11 @@ else
     exit 1
 fi
 
-if [ -z "$INSTANCE_CONNECTION_NAME" ]; then
-    echo "❌ INSTANCE_CONNECTION_NAME is not set in backend/.env"
-    exit 1
-fi
+PROJECT_ID=${GCP_PROJECT_ID:-$(gcloud config get-value project)}
+REGION=${GCP_LOCATION:-"europe-west1"}
+ALLOYDB_CLUSTER_ID=${ALLOYDB_CLUSTER_ID:-search-cluster}
+ALLOYDB_INSTANCE_ID=${ALLOYDB_INSTANCE_ID:-search-primary}
+INSTANCE_CONNECTION_NAME="projects/${PROJECT_ID}/locations/${REGION}/clusters/${ALLOYDB_CLUSTER_ID}/instances/${ALLOYDB_INSTANCE_ID}"
 
 echo "📦 Running AlloyDB Auth Proxy (Public IP)..."
 echo "   Instance: $INSTANCE_CONNECTION_NAME"

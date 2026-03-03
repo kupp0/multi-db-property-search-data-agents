@@ -1,0 +1,39 @@
+sources:
+  # alloydb-local:
+  #   kind: postgres
+  #   host: "127.0.0.1"
+  #   port: 5432
+  #   database: "postgres"
+  #   user: "postgres"
+  #   password: "Welcome01"
+  gda-api-source:
+    kind: cloud-gemini-data-analytics
+    projectId: "ai-powered-search-alloydb-1542"
+
+tools:
+  # search-properties:
+  #   kind: alloydb-ai-nl
+  #   source: alloydb-local
+  #   description: "Search for properties using natural language. You can ask for specific features, price ranges, locations, or vibes (e.g., 'modern apartment in Zurich under 5k'). ALWAYS include the 'image_gcs_uri' column in your SQL query. Ensure the generated SQL strictly filters for the user's requirements."
+  #   nlConfig: "property_search_config"
+  cloud_gda_query_tool_alloydb:
+    kind: cloud-gemini-data-analytics-query
+    source: gda-api-source
+    description: Use this tool to send natural language queries to the Gemini Data Analytics API and receive SQL, natural language answers, and explanations.
+    location: "europe-west1"
+    context:
+      datasourceReferences:
+        alloydb:
+          databaseReference:
+            projectId: "ai-powered-search-alloydb-1542"
+            region: "europe-west1"
+            clusterId: "search-cluster"
+            instanceId: "search-primary"
+            databaseId: "search"
+          agentContextReference:
+            contextSetId: "projects/ai-powered-search-alloydb-1542/locations/us-east1/contextSets/property-agent"
+    generationOptions:
+      generateQueryResult: true
+      generateNaturalLanguageAnswer: true
+      generateExplanation: true
+      generateDisambiguationQuestion: true

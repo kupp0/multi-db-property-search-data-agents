@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Database, Filter, RefreshCw, Loader2 } from 'lucide-react';
 
-const UserHistoryWidget = ({ isOpen, onClose }) => {
+const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [whereClause, setWhereClause] = useState('');
@@ -84,7 +84,7 @@ const UserHistoryWidget = ({ isOpen, onClose }) => {
             const response = await fetch('/api/history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filters: activeFilters }),
+                body: JSON.stringify({ filters: activeFilters, backend: selectedBackend }),
             });
             if (!response.ok) throw new Error('Failed to fetch history');
             const data = await response.json();
@@ -100,7 +100,7 @@ const UserHistoryWidget = ({ isOpen, onClose }) => {
         if (isOpen) {
             fetchHistory();
         }
-    }, [isOpen]);
+    }, [isOpen, selectedBackend]);
 
     if (!isOpen) return null;
 

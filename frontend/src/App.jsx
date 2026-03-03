@@ -89,6 +89,7 @@ function App() {
     const [showChat, setShowChat] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     const [isOutputExpanded, setIsOutputExpanded] = useState(false);
+    const [selectedBackend, setSelectedBackend] = useState('alloydb');
 
     // Toggle Dark Mode
     useEffect(() => {
@@ -116,7 +117,7 @@ function App() {
             const response = await fetch('/api/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query, backend: selectedBackend }),
             });
 
             if (!response.ok) {
@@ -204,7 +205,7 @@ function App() {
                 </div>
             )}
 
-            <UserHistoryWidget isOpen={showHistory} onClose={() => setShowHistory(false)} />
+            <UserHistoryWidget isOpen={showHistory} onClose={() => setShowHistory(false)} selectedBackend={selectedBackend} />
 
             {/* FLOATING CHAT BUTTON */}
             <button
@@ -285,16 +286,36 @@ function App() {
                         </p>
 
                         {/* CONTROLS */}
-                        <div className="mt-6 flex items-center gap-3">
-                            <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <Workflow className="w-3 h-3" /> Architecture
-                            </button>
-                            <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <History className="w-3 h-3" /> History
-                            </button>
-                            <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                                {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-                            </button>
+                        <div className="mt-6 flex flex-col items-center gap-4">
+                            {/* Database Toggle */}
+                            <div className="flex flex-wrap justify-center gap-1 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                                {[
+                                    { id: 'alloydb', label: 'AlloyDB' },
+                                    { id: 'spanner', label: 'Spanner' },
+                                    { id: 'cloudsql_pg', label: 'Cloud SQL (PG)' },
+                                    { id: 'cloudsql_mysql', label: 'Cloud SQL (MySQL)' }
+                                ].map(db => (
+                                    <button
+                                        key={db.id}
+                                        onClick={() => setSelectedBackend(db.id)}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                                    >
+                                        {db.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                    <Workflow className="w-3 h-3" /> Architecture
+                                </button>
+                                <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                    <History className="w-3 h-3" /> History
+                                </button>
+                                <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                                    {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+                                </button>
+                            </div>
                         </div>
                     </div>
 

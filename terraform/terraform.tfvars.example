@@ -7,4 +7,8 @@ db_password        = "ChangeMe123!" # Must be complex
 # Optional Variables (Defaults shown)
 # alloydb_cluster_id = "search-cluster"
 # alloydb_instance_id = "search-primary"
+# spanner_instance_id = "search-instance"
+# spanner_database_id = "search-db"
+# cloudsql_pg_instance_id = "search-pg"
+# cloudsql_mysql_instance_id = "search-mysql"
 # subnet_cidr        = "10.0.0.0/24"

@@ -45,7 +45,7 @@ fi
 read -r -d '' JSON_PAYLOAD << EOF
 {
   "parent": "projects/${PROJECT_ID}/locations/${GDA_LOCATION}",
-  "prompt": "${1:-Show me family apartments in Zurich with a nice view up to 16k}",
+  "prompt": "${1:-Show me cheap apartments in basel}",
   "context": {
     "datasourceReferences": {
       "alloydb": {

@@ -44,4 +44,28 @@ variable "subnet_cidr" {
   default     = "10.0.0.0/24"
 }
 
+variable "spanner_instance_id" {
+  description = "The ID of the Spanner instance"
+  type        = string
+  default     = "search-instance"
+}
+
+variable "spanner_database_id" {
+  description = "The ID of the Spanner database"
+  type        = string
+  default     = "search-db"
+}
+
+variable "cloudsql_pg_instance_id" {
+  description = "The ID of the Cloud SQL PostgreSQL instance"
+  type        = string
+  default     = "search-pg"
+}
+
+variable "cloudsql_mysql_instance_id" {
+  description = "The ID of the Cloud SQL MySQL instance"
+  type        = string
+  default     = "search-mysql"
+}
+
 

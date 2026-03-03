@@ -38,16 +38,14 @@ export GCP_LOCATION=${GCP_LOCATION:-europe-west1}
 export REGION=$GCP_LOCATION
 
 # AlloyDB Config
-export ALLOYDB_REGION=${ALLOYDB_REGION:-$REGION}
 export ALLOYDB_CLUSTER_ID=${ALLOYDB_CLUSTER_ID:-search-cluster}
 export ALLOYDB_INSTANCE_ID=${ALLOYDB_INSTANCE_ID:-search-primary}
-export ALLOYDB_DATABASE_ID=${ALLOYDB_DATABASE_ID:-search}
-export INSTANCE_CONNECTION_NAME="projects/${PROJECT_ID}/locations/${ALLOYDB_REGION}/clusters/${ALLOYDB_CLUSTER_ID}/instances/${ALLOYDB_INSTANCE_ID}"
+export INSTANCE_CONNECTION_NAME="projects/${PROJECT_ID}/locations/${REGION}/clusters/${ALLOYDB_CLUSTER_ID}/instances/${ALLOYDB_INSTANCE_ID}"
 
 # Database Credentials (Defaults match Terraform/setup)
 export DB_PASSWORD=${DB_PASSWORD:-Welcome01}
 export DB_USER=${DB_USER:-postgres}
-export DB_NAME=${DB_NAME:-${ALLOYDB_DATABASE_ID}}
+export DB_NAME=${DB_NAME:-search}
 # For Cloud Run with Sidecar, DB_HOST is always localhost
 export DB_HOST=127.0.0.1
 

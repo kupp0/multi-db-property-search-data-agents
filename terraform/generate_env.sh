@@ -26,6 +26,10 @@ extract_value() {
 PROJECT_ID=$(extract_value "project_id")
 CLUSTER_ID=$(extract_value "alloydb_cluster_id")
 INSTANCE_ID=$(extract_value "alloydb_instance_id")
+SPANNER_INSTANCE_ID=$(extract_value "spanner_instance_id")
+SPANNER_DATABASE_ID=$(extract_value "spanner_database_id")
+CLOUDSQL_PG_INSTANCE_ID=$(extract_value "cloudsql_pg_instance_id")
+CLOUDSQL_MYSQL_INSTANCE_ID=$(extract_value "cloudsql_mysql_instance_id")
 
 REGION=$(cd "$TERRAFORM_DIR" && grep 'region' terraform.tfvars | cut -d'=' -f2 | tr -d ' "')
 
@@ -62,6 +66,12 @@ INSTANCE_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME
 DB_NAME=postgres
 DB_USER=postgres
 DB_PASSWORD=$DB_PASSWORD
+SPANNER_INSTANCE_ID=${SPANNER_INSTANCE_ID:-search-instance}
+SPANNER_DATABASE_ID=${SPANNER_DATABASE_ID:-search-db}
+CLOUDSQL_PG_INSTANCE_ID=${CLOUDSQL_PG_INSTANCE_ID:-search-pg}
+CLOUDSQL_PG_DB_NAME=${CLOUDSQL_PG_DB_NAME:-search}
+CLOUDSQL_MYSQL_INSTANCE_ID=${CLOUDSQL_MYSQL_INSTANCE_ID:-search-mysql}
+CLOUDSQL_MYSQL_DB_NAME=${CLOUDSQL_MYSQL_DB_NAME:-search}
 EOF
 
 echo "🎉 Configuration saved to $ENV_FILE"

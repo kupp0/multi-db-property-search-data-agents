@@ -16,6 +16,8 @@ import sys
 import re
 from typing import List, Optional, Any
 from sqlalchemy import text, bindparam
+from google.cloud import spanner
+import aiomysql
 
 # ==============================================================================
 # LOGGING CONFIGURATION
@@ -76,31 +78,64 @@ DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME", "search")
 
-if not DB_PASSWORD:
-    logger.warning("DB_PASSWORD environment variable is not set. Database connection may fail if password is required.")
+# Cloud SQL PG Configuration
+CLOUDSQL_PG_HOST = os.getenv("CLOUDSQL_PG_HOST", "127.0.0.1")
+CLOUDSQL_PG_PORT = os.getenv("CLOUDSQL_PG_PORT", "5433")
+CLOUDSQL_PG_USER = os.getenv("CLOUDSQL_PG_USER", "postgres")
+CLOUDSQL_PG_PASSWORD = os.getenv("CLOUDSQL_PG_PASSWORD")
+CLOUDSQL_PG_DB_NAME = os.getenv("CLOUDSQL_PG_DB_NAME", "search")
 
-# Global DB Engine
-engine = None
+# Cloud SQL MySQL Configuration
+CLOUDSQL_MYSQL_HOST = os.getenv("CLOUDSQL_MYSQL_HOST", "127.0.0.1")
+CLOUDSQL_MYSQL_PORT = os.getenv("CLOUDSQL_MYSQL_PORT", "3306")
+CLOUDSQL_MYSQL_USER = os.getenv("CLOUDSQL_MYSQL_USER", "root")
+CLOUDSQL_MYSQL_PASSWORD = os.getenv("CLOUDSQL_MYSQL_PASSWORD")
+CLOUDSQL_MYSQL_DB_NAME = os.getenv("CLOUDSQL_MYSQL_DB_NAME", "search")
 
-async def get_engine():
-    global engine
-    if engine:
-        return engine
+# Spanner Configuration
+SPANNER_INSTANCE_ID = os.getenv("SPANNER_INSTANCE_ID", "search-instance")
+SPANNER_DATABASE_ID = os.getenv("SPANNER_DATABASE_ID", "search-db")
 
-    if not DB_HOST:
-        raise ValueError("DB_HOST environment variable is not set.")
+# Global DB Engines/Clients
+engines = {}
+spanner_client = None
 
-    logger.info(f"Connecting to AlloyDB via Auth Proxy at {DB_HOST}...")
-    db_url = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-    engine = create_async_engine(db_url)
-    return engine
+async def get_db_connection(backend: str):
+    global engines, spanner_client
+    
+    if backend == "alloydb":
+        if "alloydb" not in engines:
+            db_url = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}"
+            engines["alloydb"] = create_async_engine(db_url)
+        return engines["alloydb"], "sqlalchemy"
+        
+    elif backend == "cloudsql_pg":
+        if "cloudsql_pg" not in engines:
+            db_url = f"postgresql+asyncpg://{CLOUDSQL_PG_USER}:{CLOUDSQL_PG_PASSWORD}@{CLOUDSQL_PG_HOST}:{CLOUDSQL_PG_PORT}/{CLOUDSQL_PG_DB_NAME}"
+            engines["cloudsql_pg"] = create_async_engine(db_url)
+        return engines["cloudsql_pg"], "sqlalchemy"
+        
+    elif backend == "cloudsql_mysql":
+        if "cloudsql_mysql" not in engines:
+            db_url = f"mysql+aiomysql://{CLOUDSQL_MYSQL_USER}:{CLOUDSQL_MYSQL_PASSWORD}@{CLOUDSQL_MYSQL_HOST}:{CLOUDSQL_MYSQL_PORT}/{CLOUDSQL_MYSQL_DB_NAME}"
+            engines["cloudsql_mysql"] = create_async_engine(db_url)
+        return engines["cloudsql_mysql"], "sqlalchemy"
+        
+    elif backend == "spanner":
+        if not spanner_client:
+            spanner_client = spanner.Client(project=PROJECT_ID)
+        instance = spanner_client.instance(SPANNER_INSTANCE_ID)
+        database = instance.database(SPANNER_DATABASE_ID)
+        return database, "spanner"
+        
+    else:
+        raise ValueError(f"Unknown backend: {backend}")
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    global engine
-    if engine:
+    for engine in engines.values():
         await engine.dispose()
-        logger.info("Database engine disposed.")
+    logger.info("Database engines disposed.")
 
 # ==============================================================================
 # DATA MODELS
@@ -108,6 +143,7 @@ async def shutdown_event():
 
 class SearchRequest(BaseModel):
     query: str
+    backend: str = "alloydb"
 
 class FilterCondition(BaseModel):
     column: str
@@ -116,8 +152,7 @@ class FilterCondition(BaseModel):
     logic: str = "AND"
 
 class HistoryRequest(BaseModel):
-    # Deprecated: where_clause (unsafe), prefer filters
-    where_clause: Optional[str] = None
+    backend: str = "alloydb"
     filters: List[FilterCondition] = []
 
 # ==============================================================================
@@ -143,12 +178,9 @@ def get_gda_credentials():
 
     return _gda_credentials
 
-def query_gda(prompt: str) -> dict:
+def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     """
     Queries the Gemini Data Agent (GDA) API to get property listings and natural language answers.
-    
-    This function sends the user's prompt to the GDA API, which translates it into a SQL query,
-    executes it against the AlloyDB database, and returns the results along with a natural language summary.
     """
     if not AGENT_CONTEXT_SET_ID:
         raise HTTPException(500, "AGENT_CONTEXT_SET_ID is not configured.")
@@ -165,25 +197,59 @@ def query_gda(prompt: str) -> dict:
         "Content-Type": "application/json"
     }
     
+    # Construct datasourceReferences based on backend
+    datasource_references = {}
+    if backend == "alloydb":
+        datasource_references["alloydb"] = {
+            "databaseReference": {
+                "project_id": PROJECT_ID,
+                "region": os.getenv("GCP_LOCATION", gda_location),
+                "cluster_id": os.getenv("ALLOYDB_CLUSTER_ID", "search-cluster"),
+                "instance_id": os.getenv("ALLOYDB_INSTANCE_ID", "search-primary"),
+                "database_id": DB_NAME
+            },
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+        }
+    elif backend == "spanner":
+        datasource_references["spanner"] = {
+            "databaseReference": {
+                "project_id": PROJECT_ID,
+                "instance_id": SPANNER_INSTANCE_ID,
+                "database_id": SPANNER_DATABASE_ID
+            },
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+        }
+    elif backend == "cloudsql_pg":
+        datasource_references["cloudSqlReference"] = {
+            "databaseReference": {
+                "engine": "POSTGRESQL",
+                "project_id": PROJECT_ID,
+                "region": os.getenv("GCP_LOCATION", gda_location),
+                "instance_id": os.getenv("CLOUDSQL_PG_INSTANCE_ID", "search-pg"),
+                "database_id": CLOUDSQL_PG_DB_NAME
+            },
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+        }
+    elif backend == "cloudsql_mysql":
+        datasource_references["cloudSqlReference"] = {
+            "databaseReference": {
+                "engine": "MYSQL",
+                "project_id": PROJECT_ID,
+                "region": os.getenv("GCP_LOCATION", gda_location),
+                "instance_id": os.getenv("CLOUDSQL_MYSQL_INSTANCE_ID", "search-mysql"),
+                "database_id": CLOUDSQL_MYSQL_DB_NAME
+            },
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+        }
+    else:
+        raise ValueError(f"Unknown backend: {backend}")
+
     # Construct the GDA API payload
     payload = {
         "parent": f"projects/{PROJECT_ID}/locations/{gda_location}",
         "prompt": prompt,
         "context": {
-            "datasourceReferences": {
-                "alloydb": {
-                    "databaseReference": {
-                        "project_id": PROJECT_ID,
-                        "region": os.getenv("ALLOYDB_REGION", gda_location),
-                        "cluster_id": os.getenv("ALLOYDB_CLUSTER_ID", "search-cluster"),
-                        "instance_id": os.getenv("ALLOYDB_INSTANCE_ID", "search-primary"),
-                        "database_id": os.getenv("ALLOYDB_DATABASE_ID", "search")
-                    },
-                    "agentContextReference": {
-                        "context_set_id": AGENT_CONTEXT_SET_ID
-                    }
-                }
-            }
+            "datasourceReferences": datasource_references
         },
         "generation_options": {
             "generate_query_result": True,
@@ -277,7 +343,7 @@ async def search_properties(request: SearchRequest):
     
     try:
         # Query the Gemini Data Agent
-        gda_resp = query_gda(request.query)
+        gda_resp = query_gda(request.query, request.backend)
         
         # Extract components from the response
         nl_answer = gda_resp.get("naturalLanguageAnswer", "")
@@ -325,36 +391,59 @@ async def search_properties(request: SearchRequest):
         
         # Log to Database
         try:
-            db_engine = await get_engine()
-            async with db_engine.begin() as conn:
-                # Determine template usage
-                query_template_used = False
-                query_template_id = None
-                
-                if explanation:
-                    # Look for "Template X" pattern in the explanation
-                    match = re.search(r"Template\s+(\d+)", explanation, re.IGNORECASE)
-                    if match:
-                        query_template_used = True
-                        query_template_id = int(match.group(1))
-                
-                await conn.execute(
-                    text("""
-                    INSERT INTO user_prompt_history 
-                    (user_prompt, query_template_used, query_template_id, query_explanation)
-                    VALUES (:prompt, :used, :id, :explanation)
-                    """),
-                    {
-                        "prompt": request.query, 
-                        "used": query_template_used, 
-                        "id": query_template_id,
-                        "explanation": explanation
-                    }
-                )
+            conn_obj, conn_type = await get_db_connection(request.backend)
+            
+            # Determine template usage
+            query_template_used = False
+            query_template_id = None
+            
+            if explanation:
+                match = re.search(r"Template\s+(\d+)", explanation, re.IGNORECASE)
+                if match:
+                    query_template_used = True
+                    query_template_id = int(match.group(1))
+            
+            if conn_type == "sqlalchemy":
+                async with conn_obj.begin() as conn:
+                    await conn.execute(
+                        text("""
+                        INSERT INTO user_prompt_history 
+                        (user_prompt, query_template_used, query_template_id, query_explanation)
+                        VALUES (:prompt, :used, :id, :explanation)
+                        """),
+                        {
+                            "prompt": request.query, 
+                            "used": query_template_used, 
+                            "id": query_template_id,
+                            "explanation": explanation
+                        }
+                    )
+            elif conn_type == "spanner":
+                def insert_history(transaction):
+                    transaction.execute_update(
+                        """
+                        INSERT INTO user_prompt_history 
+                        (user_prompt, query_template_used, query_template_id, query_explanation)
+                        VALUES (@prompt, @used, @id, @explanation)
+                        """,
+                        params={
+                            "prompt": request.query, 
+                            "used": query_template_used, 
+                            "id": query_template_id,
+                            "explanation": explanation
+                        },
+                        param_types={
+                            "prompt": spanner.param_types.STRING,
+                            "used": spanner.param_types.BOOL,
+                            "id": spanner.param_types.INT64,
+                            "explanation": spanner.param_types.STRING
+                        }
+                    )
+                conn_obj.run_in_transaction(insert_history)
 
-            logger.info("User prompt history saved (Search).")
+            logger.info(f"User prompt history saved to {request.backend}.")
         except Exception as db_err:
-            logger.error(f"Failed to save user prompt history (Search): {db_err}")
+            logger.error(f"Failed to save user prompt history to {request.backend}: {db_err}")
 
         return {
             "listings": results, 
@@ -383,65 +472,78 @@ async def get_history(request: HistoryRequest):
     Supports structured filtering to prevent SQL injection.
     """
     try:
-        db_engine = await get_engine()
-        async with db_engine.connect() as conn:
-            base_query = """
-                SELECT user_prompt, query_template_used, query_template_id, query_explanation 
-                FROM "public"."user_prompt_history"
-            """
-            
-            conditions = []
-            params = {}
-            
-            # Handle legacy where_clause (only if simple/safe or warn)
-            if request.where_clause:
-                logger.warning("Usage of unsafe 'where_clause' in history API. This field is deprecated.")
-                # For now, we DO NOT append it blindly to avoid SQLi, unless we are sure.
-                # Or we can just ignore it and rely on filters.
-                # Let's try to be backward compatible ONLY if it's empty or simple?
-                # Actually, for security audit, we MUST disable raw injection.
-                # We will ignore it or throw error if it contains dangerous keywords?
-                # Safest: Ignore it and log warning, or return error.
-                # Let's return error to force frontend update if it's being used.
-                pass 
+        conn_obj, conn_type = await get_db_connection(request.backend)
+        
+        base_query = """
+            SELECT user_prompt, query_template_used, query_template_id, query_explanation 
+            FROM user_prompt_history
+        """
+        
+        conditions = []
+        params = {}
+        spanner_param_types = {}
+        
+        ALLOWED_COLUMNS = {"user_prompt", "query_template_used", "query_template_id", "query_explanation"}
+        ALLOWED_OPERATORS = {"=", "!=", "LIKE", "ILIKE", ">", "<", ">=", "<="}
+        
+        query_str = base_query
+        first_condition = True
 
-            # Handle structured filters
-            ALLOWED_COLUMNS = {"user_prompt", "query_template_used", "query_template_id", "query_explanation"}
-            ALLOWED_OPERATORS = {"=", "!=", "LIKE", "ILIKE", ">", "<", ">=", "<="}
-            
-            query_str = base_query
-            first_condition = True
-
-            if request.filters:
-                for idx, f in enumerate(request.filters):
-                    if f.column not in ALLOWED_COLUMNS:
-                        continue # Skip invalid columns
-                    if f.operator not in ALLOWED_OPERATORS:
-                        continue # Skip invalid operators
-                    
-                    param_name = f"p{idx}"
-                    
-                    # Handle type casting for integer/boolean columns when using string operators
-                    column_expr = f.column
+        if request.filters:
+            for idx, f in enumerate(request.filters):
+                if f.column not in ALLOWED_COLUMNS:
+                    continue
+                if f.operator not in ALLOWED_OPERATORS:
+                    continue
+                
+                param_name = f"p{idx}"
+                column_expr = f.column
+                
+                if conn_type == "sqlalchemy":
                     if f.column in ("query_template_id", "query_template_used") and f.operator.upper() in ("LIKE", "ILIKE"):
                         column_expr = f"CAST({f.column} AS TEXT)"
-                        
                     clause = f"{column_expr} {f.operator} :{param_name}"
                     params[param_name] = f.value
-                    
-                    if first_condition:
-                        query_str += f" WHERE {clause}"
-                        first_condition = False
+                else: # Spanner
+                    clause = f"{column_expr} {f.operator} @{param_name}"
+                    params[param_name] = f.value
+                    # Basic type mapping for Spanner
+                    if isinstance(f.value, bool):
+                        spanner_param_types[param_name] = spanner.param_types.BOOL
+                    elif isinstance(f.value, int):
+                        spanner_param_types[param_name] = spanner.param_types.INT64
                     else:
-                        logic_op = f.logic.upper()
-                        if logic_op not in ("AND", "OR"):
-                            logic_op = "AND"
-                        query_str += f" {logic_op} {clause}"
+                        spanner_param_types[param_name] = spanner.param_types.STRING
+                
+                if first_condition:
+                    query_str += f" WHERE {clause}"
+                    first_condition = False
+                else:
+                    logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
+                    query_str += f" {logic_op} {clause}"
 
-            query_str += " LIMIT 1000"
-            
-            result = await conn.execute(text(query_str), params)
-            rows = [dict(row) for row in result.mappings()]
+        query_str += " LIMIT 1000"
+        
+        rows = []
+        if conn_type == "sqlalchemy":
+            async with conn_obj.connect() as conn:
+                result = await conn.execute(text(query_str), params)
+                rows = [dict(row) for row in result.mappings()]
+        elif conn_type == "spanner":
+            with conn_obj.snapshot() as snapshot:
+                results = snapshot.execute_sql(
+                    query_str,
+                    params=params,
+                    param_types=spanner_param_types
+                )
+                # Spanner returns a list of lists, we need to map to dicts
+                for row in results:
+                    rows.append({
+                        "user_prompt": row[0],
+                        "query_template_used": row[1],
+                        "query_template_id": row[2],
+                        "query_explanation": row[3]
+                    })
             
         return {"rows": rows}
         

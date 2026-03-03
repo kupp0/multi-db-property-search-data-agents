@@ -44,7 +44,9 @@ resource "google_project_service" "services" {
     "monitoring.googleapis.com",
     "cloudtrace.googleapis.com",
     "secretmanager.googleapis.com",
-    "geminidataanalytics.googleapis.com"
+    "geminidataanalytics.googleapis.com",
+    "sqladmin.googleapis.com",
+    "spanner.googleapis.com"
   ])
 
   project = google_project.project.project_id

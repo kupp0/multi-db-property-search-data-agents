@@ -25,8 +25,17 @@ fi
 
 PROJECT_ID=${GCP_PROJECT_ID:-$(gcloud config get-value project)}
 REGION=${GCP_LOCATION:-"europe-west1"}
-# In setup_env.sh, INSTANCE_CONNECTION_NAME is the full URI
+ALLOYDB_CLUSTER_ID=${ALLOYDB_CLUSTER_ID:-search-cluster}
+ALLOYDB_INSTANCE_ID=${ALLOYDB_INSTANCE_ID:-search-primary}
+INSTANCE_CONNECTION_NAME="projects/${PROJECT_ID}/locations/${REGION}/clusters/${ALLOYDB_CLUSTER_ID}/instances/${ALLOYDB_INSTANCE_ID}"
 INSTANCE_URI="${INSTANCE_CONNECTION_NAME}"
+
+SPANNER_INSTANCE_ID=${SPANNER_INSTANCE_ID:-search-instance}
+SPANNER_DATABASE_ID=${SPANNER_DATABASE_ID:-search-db}
+CLOUDSQL_PG_INSTANCE_ID=${CLOUDSQL_PG_INSTANCE_ID:-search-pg}
+CLOUDSQL_PG_DB_NAME=${CLOUDSQL_PG_DB_NAME:-search}
+CLOUDSQL_MYSQL_INSTANCE_ID=${CLOUDSQL_MYSQL_INSTANCE_ID:-search-mysql}
+CLOUDSQL_MYSQL_DB_NAME=${CLOUDSQL_MYSQL_DB_NAME:-search}
 
 # 1. Prepare Configuration
 echo "🔧 Preparing configuration..."
@@ -39,13 +48,13 @@ cd ../..
 # Cleanup function
 cleanup() {
     echo "🧹 Stopping containers..."
-    docker stop search-backend search-frontend agent-service toolbox-service alloydb-auth-proxy || true
+    docker stop search-backend search-frontend agent-service toolbox-service alloydb-auth-proxy cloudsql-pg-auth-proxy cloudsql-mysql-auth-proxy || true
 }
 trap cleanup EXIT
 
 # --- PRE-CLEANUP ---
 echo "🧹 Cleaning up existing containers..."
-docker rm -f search-backend search-frontend agent-service toolbox-service alloydb-auth-proxy 2>/dev/null || true
+docker rm -f search-backend search-frontend agent-service toolbox-service alloydb-auth-proxy cloudsql-pg-auth-proxy cloudsql-mysql-auth-proxy 2>/dev/null || true
 
 # --- BUILD LOCALLY ---
 echo "🔨 Building images locally..."
@@ -79,6 +88,30 @@ echo "   ⏳ Waiting for Auth Proxy to be ready on port 5432..."
 timeout 30s bash -c 'until echo > /dev/tcp/localhost/5432; do sleep 1; done' || { echo "❌ Auth Proxy failed to start!"; docker logs alloydb-auth-proxy; exit 1; }
 echo "   ✅ Auth Proxy running on localhost:5432"
 
+# 2b. Run Cloud SQL PG Auth Proxy
+echo "📦 Running Cloud SQL PG Auth Proxy Container..."
+docker run -d --rm \
+    --name cloudsql-pg-auth-proxy \
+    --network host \
+    -v /tmp/adc.json:/tmp/keys.json:ro \
+    -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys.json \
+    gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.0 \
+    "projects/${PROJECT_ID}/locations/${REGION}/${CLOUDSQL_PG_INSTANCE_ID}" \
+    --address 0.0.0.0 \
+    --port 5433
+
+# 2c. Run Cloud SQL MySQL Auth Proxy
+echo "📦 Running Cloud SQL MySQL Auth Proxy Container..."
+docker run -d --rm \
+    --name cloudsql-mysql-auth-proxy \
+    --network host \
+    -v /tmp/adc.json:/tmp/keys.json:ro \
+    -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys.json \
+    gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.0 \
+    "projects/${PROJECT_ID}/locations/${REGION}/${CLOUDSQL_MYSQL_INSTANCE_ID}" \
+    --address 0.0.0.0 \
+    --port 3306
+
 # 3. Run Backend Container
 echo "📦 Running Backend Container..."
 docker run -d --rm \
@@ -92,6 +125,18 @@ docker run -d --rm \
     -e DB_NAME=${DB_NAME:-search} \
     -e DB_USER=${DB_USER:-postgres} \
     -e DB_PASS=${DB_PASSWORD:-${DB_PASS}} \
+    -e SPANNER_INSTANCE_ID=$SPANNER_INSTANCE_ID \
+    -e SPANNER_DATABASE_ID=$SPANNER_DATABASE_ID \
+    -e CLOUDSQL_PG_HOST=127.0.0.1 \
+    -e CLOUDSQL_PG_PORT=5433 \
+    -e CLOUDSQL_PG_USER=${DB_USER:-postgres} \
+    -e CLOUDSQL_PG_PASSWORD=${DB_PASSWORD:-${DB_PASS}} \
+    -e CLOUDSQL_PG_DB_NAME=$CLOUDSQL_PG_DB_NAME \
+    -e CLOUDSQL_MYSQL_HOST=127.0.0.1 \
+    -e CLOUDSQL_MYSQL_PORT=3306 \
+    -e CLOUDSQL_MYSQL_USER=root \
+    -e CLOUDSQL_MYSQL_PASSWORD=${DB_PASSWORD:-${DB_PASS}} \
+    -e CLOUDSQL_MYSQL_DB_NAME=$CLOUDSQL_MYSQL_DB_NAME \
     -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys.json \
     -v $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys.json:ro \
     local-search-backend

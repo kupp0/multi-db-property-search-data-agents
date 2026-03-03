@@ -26,7 +26,12 @@ resource "google_project_iam_member" "sa_roles" {
     "roles/cloudaicompanion.user",
     "roles/geminidataanalytics.dataAgentUser",
     "roles/geminidataanalytics.queryDataUser",
-    "roles/alloydb.databaseUser"
+    "roles/alloydb.databaseUser",
+    "roles/spanner.databaseReader",
+    "roles/spanner.databaseUser",
+    "roles/cloudsql.client",
+    "roles/cloudsql.instanceUser",
+    "roles/cloudsql.studioUser"
   ])
 
   project = google_project.project.project_id
@@ -38,17 +43,17 @@ resource "google_project_iam_member" "sa_roles" {
 
 # We must explicitly wait for the Cloud Build service identity to be created.
 resource "google_project_service_identity" "cloudbuild_sa" {
-  provider = google-beta
-  project  = google_project.project.project_id
-  service  = "cloudbuild.googleapis.com"
+  provider   = google-beta
+  project    = google_project.project.project_id
+  service    = "cloudbuild.googleapis.com"
   depends_on = [google_project_service.services]
 }
 
 # We must explicitly wait for the AlloyDB service identity to be created.
 resource "google_project_service_identity" "alloydb_sa" {
-  provider = google-beta
-  project  = google_project.project.project_id
-  service  = "alloydb.googleapis.com"
+  provider   = google-beta
+  project    = google_project.project.project_id
+  service    = "alloydb.googleapis.com"
   depends_on = [google_project_service.services]
 }
 
