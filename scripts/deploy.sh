@@ -184,7 +184,7 @@ PIDS="$PIDS $!"
 # --- FRONTEND ---
 (
     echo "📦 [Frontend] Building..."
-    gcloud builds submit ./frontend --tag "${FRONTEND_IMAGE}:${TAG}" --quiet > /dev/null 2>&1 || handle_build_error "Frontend"
+    gcloud builds submit . --config=frontend/cloudbuild.yaml --substitutions=_IMAGE_NAME="${FRONTEND_IMAGE}:${TAG}" --quiet > /dev/null 2>&1 || handle_build_error "Frontend"
     echo "✅ [Frontend] Built"
 ) &
 PIDS="$PIDS $!"

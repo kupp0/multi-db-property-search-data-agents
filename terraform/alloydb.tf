@@ -36,6 +36,7 @@ resource "google_alloydb_instance" "primary" {
     "google_db_advisor.enable_auto_advisor"        = "on"
     "google_db_advisor.auto_advisor_schedule"      = "EVERY 24 HOURS"
     "parameterized_views.enabled"                  = "on"
+    "alloydb.iam_authentication"                   = "on"
   }
 
   observability_config {
@@ -52,7 +53,7 @@ resource "google_alloydb_user" "iam_sa_user" {
   cluster       = google_alloydb_cluster.default.name
   user_id       = trimsuffix(google_service_account.search_backend_sa.email, ".gserviceaccount.com")
   user_type     = "ALLOYDB_IAM_USER"
-  database_roles = ["alloydbsuperuser"]
+  database_roles = ["alloydbiamuser", "alloydbsuperuser"]
   depends_on    = [google_alloydb_instance.primary]
 }
 
@@ -60,6 +61,6 @@ resource "google_alloydb_user" "iam_dev_user" {
   cluster       = google_alloydb_cluster.default.name
   user_id       = var.developer_email
   user_type     = "ALLOYDB_IAM_USER"
-  database_roles = ["alloydbsuperuser"]
+  database_roles = ["alloydbiamuser", "alloydbsuperuser"]
   depends_on    = [google_alloydb_instance.primary]
 }

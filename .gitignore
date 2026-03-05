@@ -40,3 +40,4 @@ recovered_source/
 # Agent Development Kit
 backend/agent/.adk/
 iam_policy.json
+\n# Ignore generated enriched data\ndatabase_artefacts/enriched_property_data.json

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, Sparkles, X } from 'lucide-react';
 
 
-const ChatInterface = ({ onClose, onResultsFound }) => {
+const ChatInterface = ({ selectedBackend, onClose, onResultsFound }) => {
     const [messages, setMessages] = useState([
         { role: 'model', text: "Hello! I'm your AI real estate assistant. I can help you find properties using natural language. Try asking 'Find me a modern apartment in Zurich' or 'Show me 3 bedroom houses near the lake'." }
     ]);
@@ -36,7 +36,7 @@ const ChatInterface = ({ onClose, onResultsFound }) => {
             const response = await fetch('/agent/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage.text, session_id: sessionId }),
+                body: JSON.stringify({ message: userMessage.text, session_id: sessionId, backend: selectedBackend }),
             });
 
             if (!response.ok) {

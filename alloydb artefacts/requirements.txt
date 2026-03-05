@@ -1,5 +1,0 @@
-psycopg2-binary
-google-cloud-aiplatform
-google-cloud-storage
-Pillow
-python-dotenv

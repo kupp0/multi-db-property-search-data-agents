@@ -1,0 +1,11 @@
+.git
+.gitignore
+.venv
+node_modules
+frontend/node_modules
+backend/.venv
+terraform/.terraform
+terraform/terraform.tfstate*
+*.pyc
+__pycache__
+.DS_Store

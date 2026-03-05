@@ -11,5 +11,6 @@ resource "google_spanner_database" "database" {
   instance         = google_spanner_instance.main.name
   name             = var.spanner_database_id
   project          = google_project.project.project_id
-  database_dialect = "POSTGRESQL"
+  database_dialect    = "GOOGLE_STANDARD_SQL"
+  deletion_protection = false
 }

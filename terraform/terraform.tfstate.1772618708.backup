@@ -1,0 +1,2247 @@
+{
+  "version": 4,
+  "terraform_version": "1.9.5",
+  "serial": 261,
+  "lineage": "347d262a-aed5-ecbf-1f5f-72b04bddedc4",
+  "outputs": {
+    "alloydb_cluster_id": {
+      "value": "search-cluster",
+      "type": "string"
+    },
+    "alloydb_cluster_ip": {
+      "value": "10.162.0.0",
+      "type": "string"
+    },
+    "alloydb_instance_id": {
+      "value": "search-primary",
+      "type": "string"
+    },
+    "alloydb_sa_email": {
+      "value": "service-954285592145@gcp-sa-alloydb.iam.gserviceaccount.com",
+      "type": "string"
+    },
+    "cloudsql_pg_instance_id": {
+      "value": "search-pg",
+      "type": "string"
+    },
+    "db_host": {
+      "value": "10.162.0.2",
+      "type": "string"
+    },
+    "db_pass": {
+      "value": "Welcome01",
+      "type": "string",
+      "sensitive": true
+    },
+    "instance_connection_name": {
+      "value": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/instances/search-primary",
+      "type": "string"
+    },
+    "project_id": {
+      "value": "dev-multi-db-data-agents",
+      "type": "string"
+    },
+    "region": {
+      "value": "europe-west1",
+      "type": "string"
+    },
+    "spanner_database_id": {
+      "value": "search-db",
+      "type": "string"
+    },
+    "spanner_instance_id": {
+      "value": "search-instance",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "google_project",
+      "name": "project",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "auto_create_network": null,
+            "billing_account": "016E73-5005A8-0C74EC",
+            "deletion_policy": "PREVENT",
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "folder_id": "",
+            "id": "projects/dev-multi-db-data-agents",
+            "labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "name": "dev-multi-db-data-agents",
+            "number": "954285592145",
+            "org_id": "26801056340",
+            "project_id": "dev-multi-db-data-agents",
+            "tags": null,
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            }
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_alloydb_cluster",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "annotations": {},
+            "automated_backup_policy": [
+              {
+                "backup_window": "3600s",
+                "enabled": false,
+                "encryption_config": [],
+                "labels": {},
+                "location": "europe-west1",
+                "quantity_based_retention": [],
+                "time_based_retention": [
+                  {
+                    "retention_period": "1209600s"
+                  }
+                ],
+                "weekly_schedule": [
+                  {
+                    "days_of_week": [
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY",
+                      "SUNDAY"
+                    ],
+                    "start_times": [
+                      {
+                        "hours": 23,
+                        "minutes": 0,
+                        "nanos": 0,
+                        "seconds": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "backup_source": [],
+            "backupdr_backup_source": [],
+            "cluster_id": "search-cluster",
+            "cluster_type": "PRIMARY",
+            "continuous_backup_config": [
+              {
+                "enabled": true,
+                "encryption_config": [],
+                "recovery_window_days": 14
+              }
+            ],
+            "continuous_backup_info": [
+              {
+                "earliest_restorable_time": "",
+                "enabled_time": "2026-03-03T21:28:33.608624758Z",
+                "encryption_info": [
+                  {
+                    "encryption_type": "GOOGLE_DEFAULT_ENCRYPTION",
+                    "kms_key_versions": []
+                  }
+                ],
+                "schedule": [
+                  "MONDAY",
+                  "TUESDAY",
+                  "WEDNESDAY",
+                  "THURSDAY",
+                  "FRIDAY",
+                  "SATURDAY",
+                  "SUNDAY"
+                ]
+              }
+            ],
+            "database_version": "POSTGRES_17",
+            "deletion_policy": "DEFAULT",
+            "deletion_protection": false,
+            "display_name": "",
+            "effective_annotations": {},
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "encryption_config": [],
+            "encryption_info": [
+              {
+                "encryption_type": "GOOGLE_DEFAULT_ENCRYPTION",
+                "kms_key_versions": []
+              }
+            ],
+            "etag": "",
+            "id": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster",
+            "initial_user": [
+              {
+                "password": "Welcome01",
+                "password_wo": null,
+                "password_wo_version": "",
+                "user": "postgres"
+              }
+            ],
+            "labels": {},
+            "location": "europe-west1",
+            "maintenance_update_policy": [],
+            "migration_source": [],
+            "name": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster",
+            "network_config": [
+              {
+                "allocated_ip_range": "",
+                "network": "projects/954285592145/global/networks/search-demo-vpc"
+              }
+            ],
+            "project": "dev-multi-db-data-agents",
+            "psc_config": [],
+            "reconciling": false,
+            "restore_backup_source": [],
+            "restore_backupdr_backup_source": [],
+            "restore_backupdr_pitr_source": [],
+            "restore_continuous_backup_source": [],
+            "secondary_config": [],
+            "skip_await_major_version_upgrade": true,
+            "state": "READY",
+            "subscription_type": "STANDARD",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null,
+            "trial_metadata": [],
+            "uid": "ba1f1c19-63c3-4784-8a98-851f6ed931a2"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "initial_user"
+              },
+              {
+                "type": "index",
+                "value": {
+                  "value": 0,
+                  "type": "number"
+                }
+              },
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo3MjAwMDAwMDAwMDAwLCJkZWxldGUiOjcyMDAwMDAwMDAwMDAsInVwZGF0ZSI6NzIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_compute_global_address.private_ip_address",
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_networking_connection.private_vpc_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_alloydb_instance",
+      "name": "primary",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google-beta\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "activation_policy": "ALWAYS",
+            "annotations": {},
+            "availability_type": "ZONAL",
+            "client_connection_config": [
+              {
+                "require_connectors": false,
+                "ssl_config": [
+                  {
+                    "ssl_mode": "ENCRYPTED_ONLY"
+                  }
+                ]
+              }
+            ],
+            "cluster": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster",
+            "connection_pool_config": [],
+            "create_time": "2026-03-03T21:28:45.121905250Z",
+            "database_flags": {
+              "alloydb.iam_authentication": "on",
+              "alloydb_ai_nl.enabled": "on",
+              "google_db_advisor.auto_advisor_schedule": "EVERY 24 HOURS",
+              "google_db_advisor.enable_auto_advisor": "on",
+              "google_ml_integration.enable_ai_query_engine": "on",
+              "parameterized_views.enabled": "on",
+              "password.enforce_complexity": "on",
+              "scann.enable_zero_knob_index_creation": "on"
+            },
+            "display_name": null,
+            "effective_annotations": {},
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "gce_zone": "",
+            "id": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/instances/search-primary",
+            "instance_id": "search-primary",
+            "instance_type": "PRIMARY",
+            "ip_address": "10.162.0.2",
+            "labels": {},
+            "machine_config": [
+              {
+                "cpu_count": 2,
+                "machine_type": ""
+              }
+            ],
+            "name": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/instances/search-primary",
+            "network_config": [],
+            "observability_config": [
+              {
+                "assistive_experiences_enabled": false,
+                "enabled": true,
+                "max_query_string_length": 10240,
+                "preserve_comments": false,
+                "query_plans_per_minute": 20,
+                "record_application_tags": false,
+                "track_active_queries": false,
+                "track_wait_event_types": true,
+                "track_wait_events": true
+              }
+            ],
+            "outbound_public_ip_addresses": [],
+            "psc_instance_config": [],
+            "public_ip_address": "",
+            "query_insights_config": [],
+            "read_pool_config": [],
+            "reconciling": false,
+            "state": "READY",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null,
+            "uid": "4fb1bfb5-4f67-4797-b121-3f9a778927cd",
+            "update_time": "2026-03-04T10:00:44.382060184Z"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo3MjAwMDAwMDAwMDAwLCJkZWxldGUiOjcyMDAwMDAwMDAwMDAsInVwZGF0ZSI6NzIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_alloydb_cluster.default",
+            "google_compute_global_address.private_ip_address",
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_networking_connection.private_vpc_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_alloydb_user",
+      "name": "iam_dev_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cluster": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster",
+            "database_roles": [
+              "alloydbsuperuser"
+            ],
+            "id": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/users/admin@kupczak.altostrat.com",
+            "name": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/users/admin@kupczak.altostrat.com",
+            "password": null,
+            "password_wo": null,
+            "password_wo_version": "",
+            "timeouts": null,
+            "user_id": "admin@kupczak.altostrat.com",
+            "user_type": "ALLOYDB_IAM_USER"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_alloydb_cluster.default",
+            "google_alloydb_instance.primary",
+            "google_compute_global_address.private_ip_address",
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_networking_connection.private_vpc_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_alloydb_user",
+      "name": "iam_sa_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cluster": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster",
+            "database_roles": [
+              "alloydbiamuser",
+              "alloydbsuperuser"
+            ],
+            "id": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/users/search-backend-sa@dev-multi-db-data-agents.iam",
+            "name": "projects/dev-multi-db-data-agents/locations/europe-west1/clusters/search-cluster/users/search-backend-sa@dev-multi-db-data-agents.iam",
+            "password": null,
+            "password_wo": null,
+            "password_wo_version": "",
+            "timeouts": null,
+            "user_id": "search-backend-sa@dev-multi-db-data-agents.iam",
+            "user_type": "ALLOYDB_IAM_USER"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_alloydb_cluster.default",
+            "google_alloydb_instance.primary",
+            "google_compute_global_address.private_ip_address",
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa",
+            "google_service_networking_connection.private_vpc_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_artifact_registry_repository",
+      "name": "repo",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cleanup_policies": [],
+            "cleanup_policy_dry_run": false,
+            "create_time": "2026-03-03T21:27:17.166665Z",
+            "description": "Docker repository for Search App",
+            "docker_config": [],
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "format": "DOCKER",
+            "id": "projects/dev-multi-db-data-agents/locations/europe-west1/repositories/search-app-repo",
+            "kms_key_name": "",
+            "labels": {},
+            "location": "europe-west1",
+            "maven_config": [],
+            "mode": "STANDARD_REPOSITORY",
+            "name": "search-app-repo",
+            "project": "dev-multi-db-data-agents",
+            "registry_uri": "europe-west1-docker.pkg.dev/dev-multi-db-data-agents/search-app-repo",
+            "remote_repository_config": [],
+            "repository_id": "search-app-repo",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null,
+            "update_time": "2026-03-03T21:27:17.166665Z",
+            "virtual_repository_config": [],
+            "vulnerability_scanning_config": [
+              {
+                "enablement_config": "",
+                "enablement_state": "SCANNING_DISABLED",
+                "enablement_state_reason": "API containerscanning.googleapis.com is not enabled."
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_compute_global_address",
+      "name": "private_ip_address",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address": "10.162.0.0",
+            "address_type": "INTERNAL",
+            "creation_timestamp": "2026-03-03T13:27:37.813-08:00",
+            "description": "",
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "id": "projects/dev-multi-db-data-agents/global/addresses/alloydb-private-ip",
+            "ip_version": "",
+            "label_fingerprint": "vezUS-42LLM=",
+            "labels": {},
+            "name": "alloydb-private-ip",
+            "network": "https://www.googleapis.com/compute/v1/projects/dev-multi-db-data-agents/global/networks/search-demo-vpc",
+            "prefix_length": 16,
+            "project": "dev-multi-db-data-agents",
+            "purpose": "VPC_PEERING",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/dev-multi-db-data-agents/global/addresses/alloydb-private-ip",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_compute_network",
+      "name": "vpc_network",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "auto_create_subnetworks": false,
+            "bgp_always_compare_med": false,
+            "bgp_best_path_selection_mode": "LEGACY",
+            "bgp_inter_region_cost": "",
+            "delete_bgp_always_compare_med": false,
+            "delete_default_routes_on_create": false,
+            "description": "",
+            "enable_ula_internal_ipv6": false,
+            "gateway_ipv4": "",
+            "id": "projects/dev-multi-db-data-agents/global/networks/search-demo-vpc",
+            "internal_ipv6_range": "",
+            "mtu": 0,
+            "name": "search-demo-vpc",
+            "network_firewall_policy_enforcement_order": "AFTER_CLASSIC_FIREWALL",
+            "network_id": "2255896536951745734",
+            "network_profile": "",
+            "numeric_id": "2255896536951745734",
+            "params": [],
+            "project": "dev-multi-db-data-agents",
+            "routing_mode": "REGIONAL",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/dev-multi-db-data-agents/global/networks/search-demo-vpc",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_compute_subnetwork",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allow_subnet_cidr_routes_overlap": false,
+            "creation_timestamp": "2026-03-03T13:27:40.714-08:00",
+            "description": "",
+            "external_ipv6_prefix": "",
+            "fingerprint": null,
+            "gateway_address": "10.0.0.1",
+            "id": "projects/dev-multi-db-data-agents/regions/europe-west1/subnetworks/search-demo-vpc",
+            "internal_ipv6_prefix": "",
+            "ip_cidr_range": "10.0.0.0/24",
+            "ip_collection": null,
+            "ipv6_access_type": "",
+            "ipv6_cidr_range": "",
+            "ipv6_gce_endpoint": "",
+            "log_config": [],
+            "name": "search-demo-vpc",
+            "network": "https://www.googleapis.com/compute/v1/projects/dev-multi-db-data-agents/global/networks/search-demo-vpc",
+            "params": [],
+            "private_ip_google_access": true,
+            "private_ipv6_google_access": "DISABLE_GOOGLE_ACCESS",
+            "project": "dev-multi-db-data-agents",
+            "purpose": "PRIVATE",
+            "region": "europe-west1",
+            "reserved_internal_range": "",
+            "role": "",
+            "secondary_ip_range": [],
+            "self_link": "https://www.googleapis.com/compute/v1/projects/dev-multi-db-data-agents/regions/europe-west1/subnetworks/search-demo-vpc",
+            "send_secondary_ip_range_if_empty": null,
+            "stack_type": "IPV4_ONLY",
+            "state": "",
+            "subnetwork_id": 5596674364961123491,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project",
+      "name": "project",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "auto_create_network": true,
+            "billing_account": "016E73-5005A8-0C74EC",
+            "deletion_policy": "PREVENT",
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "folder_id": "",
+            "id": "projects/dev-multi-db-data-agents",
+            "labels": {},
+            "name": "dev-multi-db-data-agents",
+            "number": "954285592145",
+            "org_id": "26801056340",
+            "project_id": "dev-multi-db-data-agents",
+            "tags": null,
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJyZWFkIjo2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "alloydb_sa_vertex_ai",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/aiplatform.user/serviceAccount:service-954285592145@gcp-sa-alloydb.iam.gserviceaccount.com",
+            "member": "serviceAccount:service-954285592145@gcp-sa-alloydb.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/aiplatform.user"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_project_service_identity.alloydb_sa"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "cloudbuild_sa_ar_writer",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/artifactregistry.repoAdmin/serviceAccount:954285592145@cloudbuild.gserviceaccount.com",
+            "member": "serviceAccount:954285592145@cloudbuild.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/artifactregistry.repoAdmin"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_project_service_identity.cloudbuild_sa"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "default_compute_sa_roles",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "index_key": "roles/artifactregistry.repoAdmin",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML+/3u4M=",
+            "id": "dev-multi-db-data-agents/roles/artifactregistry.repoAdmin/serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "member": "serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/artifactregistry.repoAdmin"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.google_project.project",
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "roles/geminidataanalytics.dataAgentUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML+/3u4M=",
+            "id": "dev-multi-db-data-agents/roles/geminidataanalytics.dataAgentUser/serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "member": "serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/geminidataanalytics.dataAgentUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.google_project.project",
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "roles/logging.logWriter",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML+/3u4M=",
+            "id": "dev-multi-db-data-agents/roles/logging.logWriter/serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "member": "serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/logging.logWriter"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.google_project.project",
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "roles/storage.objectViewer",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML+/3u4M=",
+            "id": "dev-multi-db-data-agents/roles/storage.objectViewer/serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "member": "serviceAccount:954285592145-compute@developer.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/storage.objectViewer"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.google_project.project",
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "sa_roles",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "index_key": "roles/aiplatform.user",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/aiplatform.user/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/aiplatform.user"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/alloydb.client",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/alloydb.client/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/alloydb.client"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/alloydb.databaseUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/alloydb.databaseUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/alloydb.databaseUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/artifactregistry.repoAdmin",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/artifactregistry.repoAdmin/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/artifactregistry.repoAdmin"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/cloudaicompanion.user",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/cloudaicompanion.user/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/cloudaicompanion.user"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/cloudsql.client",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/cloudsql.client/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/cloudsql.client"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/cloudsql.instanceUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/cloudsql.instanceUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/cloudsql.instanceUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/cloudsql.studioUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/cloudsql.studioUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/cloudsql.studioUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/geminidataanalytics.dataAgentUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/geminidataanalytics.dataAgentUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/geminidataanalytics.dataAgentUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/geminidataanalytics.queryDataUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/geminidataanalytics.queryDataUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/geminidataanalytics.queryDataUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/logging.logWriter",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/logging.logWriter/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/logging.logWriter"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/secretmanager.secretAccessor",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/secretmanager.secretAccessor/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/secretmanager.secretAccessor"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/serviceusage.serviceUsageConsumer",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/serviceusage.serviceUsageConsumer/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/serviceusage.serviceUsageConsumer"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/spanner.databaseReader",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/spanner.databaseReader/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/spanner.databaseReader"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/spanner.databaseUser",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/spanner.databaseUser/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/spanner.databaseUser"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        },
+        {
+          "index_key": "roles/storage.objectAdmin",
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZML94sZBw=",
+            "id": "dev-multi-db-data-agents/roles/storage.objectAdmin/serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "role": "roles/storage.objectAdmin"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_service_account.search_backend_sa"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_organization_policy",
+      "name": "compute_vm_external_ip_access",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "boolean_policy": [],
+            "constraint": "constraints/compute.vmExternalIpAccess",
+            "etag": "COajnc0GEJjzxf8B",
+            "id": "dev-multi-db-data-agents:constraints/compute.vmExternalIpAccess",
+            "list_policy": [
+              {
+                "allow": [
+                  {
+                    "all": true,
+                    "values": []
+                  }
+                ],
+                "deny": [],
+                "inherit_from_parent": false,
+                "suggested_value": ""
+              }
+            ],
+            "project": "dev-multi-db-data-agents",
+            "restore_policy": [],
+            "timeouts": null,
+            "update_time": "2026-03-03T21:25:58.535919Z",
+            "version": 0
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoyNDAwMDAwMDAwMDAsImRlbGV0ZSI6MjQwMDAwMDAwMDAwLCJyZWFkIjoyNDAwMDAwMDAwMDAsInVwZGF0ZSI6MjQwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_organization_policy",
+      "name": "iam_allowed_policy_member_domains",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "boolean_policy": [],
+            "constraint": "constraints/iam.allowedPolicyMemberDomains",
+            "etag": "COajnc0GEICrtv8B",
+            "id": "dev-multi-db-data-agents:constraints/iam.allowedPolicyMemberDomains",
+            "list_policy": [
+              {
+                "allow": [
+                  {
+                    "all": true,
+                    "values": []
+                  }
+                ],
+                "deny": [],
+                "inherit_from_parent": false,
+                "suggested_value": ""
+              }
+            ],
+            "project": "dev-multi-db-data-agents",
+            "restore_policy": [],
+            "timeouts": null,
+            "update_time": "2026-03-03T21:25:58.535664Z",
+            "version": 0
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoyNDAwMDAwMDAwMDAsImRlbGV0ZSI6MjQwMDAwMDAwMDAwLCJyZWFkIjoyNDAwMDAwMDAwMDAsInVwZGF0ZSI6MjQwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_service",
+      "name": "services",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "index_key": "aiplatform.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/aiplatform.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "aiplatform.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "alloydb.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/alloydb.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "alloydb.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "artifactregistry.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/artifactregistry.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "artifactregistry.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "cloudaicompanion.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/cloudaicompanion.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "cloudaicompanion.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "cloudbuild.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/cloudbuild.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "cloudbuild.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "cloudresourcemanager.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/cloudresourcemanager.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "cloudresourcemanager.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "cloudtrace.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/cloudtrace.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "cloudtrace.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "compute.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/compute.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "compute.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "geminidataanalytics.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/geminidataanalytics.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "geminidataanalytics.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "iam.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/iam.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "iam.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "monitoring.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/monitoring.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "monitoring.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "orgpolicy.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/orgpolicy.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "orgpolicy.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "run.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/run.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "run.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "secretmanager.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/secretmanager.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "secretmanager.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "servicenetworking.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/servicenetworking.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "servicenetworking.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "spanner.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/spanner.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "spanner.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "sqladmin.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/sqladmin.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "sqladmin.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        },
+        {
+          "index_key": "storage.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "dev-multi-db-data-agents/storage.googleapis.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "storage.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_service_identity",
+      "name": "alloydb_sa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google-beta\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "email": "service-954285592145@gcp-sa-alloydb.iam.gserviceaccount.com",
+            "id": "projects/dev-multi-db-data-agents/services/alloydb.googleapis.com",
+            "member": "serviceAccount:service-954285592145@gcp-sa-alloydb.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "alloydb.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_service_identity",
+      "name": "cloudbuild_sa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google-beta\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "email": "954285592145@cloudbuild.gserviceaccount.com",
+            "id": "projects/dev-multi-db-data-agents/services/cloudbuild.googleapis.com",
+            "member": "serviceAccount:954285592145@cloudbuild.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "service": "cloudbuild.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_secret_manager_secret",
+      "name": "toolbox_config",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "annotations": {},
+            "create_time": "2026-03-03T21:27:05.557297Z",
+            "deletion_protection": false,
+            "effective_annotations": {},
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "expire_time": "",
+            "id": "projects/dev-multi-db-data-agents/secrets/tools",
+            "labels": {},
+            "name": "projects/954285592145/secrets/tools",
+            "project": "dev-multi-db-data-agents",
+            "replication": [
+              {
+                "auto": [
+                  {
+                    "customer_managed_encryption": []
+                  }
+                ],
+                "user_managed": []
+              }
+            ],
+            "rotation": [],
+            "secret_id": "tools",
+            "tags": null,
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null,
+            "topics": [],
+            "ttl": null,
+            "version_aliases": {},
+            "version_destroy_ttl": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_secret_manager_secret_version",
+      "name": "toolbox_config_version",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "create_time": "2026-03-03T21:27:24.855177Z",
+            "deletion_policy": "DELETE",
+            "destroy_time": "",
+            "enabled": true,
+            "id": "projects/954285592145/secrets/tools/versions/1",
+            "is_secret_data_base64": false,
+            "name": "projects/954285592145/secrets/tools/versions/1",
+            "project": null,
+            "secret": "projects/dev-multi-db-data-agents/secrets/tools",
+            "secret_data": "sources:\n  # alloydb-local:\n  #   kind: postgres\n  #   host: \"127.0.0.1\"\n  #   port: 5432\n  #   database: \"postgres\"\n  #   user: \"postgres\"\n  #   password: \"${DB_PASSWORD}\"\n  gda-api-source:\n    kind: cloud-gemini-data-analytics\n    projectId: \"${PROJECT_ID}\"\n\ntools:\n  # search-properties:\n  #   kind: alloydb-ai-nl\n  #   source: alloydb-local\n  #   description: \"Search for properties using natural language. You can ask for specific features, price ranges, locations, or vibes (e.g., 'modern apartment in Zurich under 5k'). ALWAYS include the 'image_gcs_uri' column in your SQL query. Ensure the generated SQL strictly filters for the user's requirements.\"\n  #   nlConfig: \"property_search_config\"\n  cloud_gda_query_tool_alloydb:\n    kind: cloud-gemini-data-analytics-query\n    source: gda-api-source\n    description: Use this tool to send natural language queries to the Gemini Data Analytics API and receive SQL, natural language answers, and explanations.\n    location: \"${GCP_LOCATION}\"\n    context:\n      datasourceReferences:\n        alloydb:\n          databaseReference:\n            projectId: \"${PROJECT_ID}\"\n            region: \"${GCP_LOCATION}\"\n            clusterId: \"${ALLOYDB_CLUSTER_ID}\"\n            instanceId: \"${ALLOYDB_INSTANCE_ID}\"\n            databaseId: \"${DB_NAME}\"\n          agentContextReference:\n            contextSetId: \"${AGENT_CONTEXT_SET_ID}\"\n    generationOptions:\n      generateQueryResult: true\n      generateNaturalLanguageAnswer: true\n      generateExplanation: true\n      generateDisambiguationQuestion: true\n",
+            "secret_data_wo": null,
+            "secret_data_wo_version": 0,
+            "timeouts": null,
+            "version": "1"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "secret_data"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_secret_manager_secret.toolbox_config"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_service_account",
+      "name": "search_backend_sa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "account_id": "search-backend-sa",
+            "create_ignore_already_exists": null,
+            "description": "",
+            "disabled": false,
+            "display_name": "Search Backend Service Account",
+            "email": "search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "id": "projects/dev-multi-db-data-agents/serviceAccounts/search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "member": "serviceAccount:search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "name": "projects/dev-multi-db-data-agents/serviceAccounts/search-backend-sa@dev-multi-db-data-agents.iam.gserviceaccount.com",
+            "project": "dev-multi-db-data-agents",
+            "timeouts": null,
+            "unique_id": "100218520410841589692"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_service_networking_connection",
+      "name": "private_vpc_connection",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "deletion_policy": null,
+            "id": "projects%2Fdev-multi-db-data-agents%2Fglobal%2Fnetworks%2Fsearch-demo-vpc:servicenetworking.googleapis.com",
+            "network": "projects/dev-multi-db-data-agents/global/networks/search-demo-vpc",
+            "peering": "servicenetworking-googleapis-com",
+            "reserved_peering_ranges": [
+              "alloydb-private-ip"
+            ],
+            "service": "servicenetworking.googleapis.com",
+            "timeouts": null,
+            "update_on_creation_fail": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_compute_global_address.private_ip_address",
+            "google_compute_network.vpc_network",
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_spanner_database",
+      "name": "database",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "database_dialect": "GOOGLE_STANDARD_SQL",
+            "ddl": null,
+            "default_time_zone": null,
+            "deletion_protection": false,
+            "enable_drop_protection": false,
+            "encryption_config": [],
+            "id": "search-instance/search-db",
+            "instance": "search-instance",
+            "name": "search-db",
+            "project": "dev-multi-db-data-agents",
+            "state": "READY",
+            "timeouts": null,
+            "version_retention_period": "1h"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "google_spanner_instance.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_spanner_instance",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "autoscaling_config": [],
+            "config": "projects/dev-multi-db-data-agents/instanceConfigs/regional-europe-west1",
+            "default_backup_schedule_type": "AUTOMATIC",
+            "display_name": "Property Search Spanner",
+            "edition": "STANDARD",
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "force_destroy": false,
+            "id": "dev-multi-db-data-agents/search-instance",
+            "instance_type": "PROVISIONED",
+            "labels": {},
+            "name": "search-instance",
+            "num_nodes": 0,
+            "processing_units": 100,
+            "project": "dev-multi-db-data-agents",
+            "state": "READY",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_database",
+      "name": "postgres_db",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "charset": "UTF8",
+            "collation": "en_US.UTF8",
+            "deletion_policy": "DELETE",
+            "id": "projects/dev-multi-db-data-agents/instances/search-pg/databases/search",
+            "instance": "search-pg",
+            "name": "search",
+            "project": "dev-multi-db-data-agents",
+            "self_link": "https://sqladmin.googleapis.com/sql/v1beta4/projects/dev-multi-db-data-agents/instances/search-pg/databases/search",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project",
+            "google_sql_database_instance.postgres"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_database_instance",
+      "name": "postgres",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "available_maintenance_versions": [],
+            "backupdr_backup": null,
+            "clone": [],
+            "connection_name": "dev-multi-db-data-agents:europe-west1:search-pg",
+            "database_version": "POSTGRES_15",
+            "deletion_protection": false,
+            "dns_name": "7447536c16da.1lhvovkxkmxe8.europe-west1.sql.goog.",
+            "dns_names": [
+              {
+                "connection_type": "PRIVATE_SERVICE_CONNECT",
+                "dns_scope": "INSTANCE",
+                "name": "7447536c16da.1lhvovkxkmxe8.europe-west1.sql.goog."
+              }
+            ],
+            "encryption_key_name": null,
+            "final_backup_description": null,
+            "first_ip_address": null,
+            "id": "search-pg",
+            "instance_type": "CLOUD_SQL_INSTANCE",
+            "ip_address": [],
+            "maintenance_version": "POSTGRES_15_16.R20260108.01_14",
+            "master_instance_name": "",
+            "name": "search-pg",
+            "node_count": 0,
+            "point_in_time_restore_context": [],
+            "private_ip_address": "",
+            "project": "dev-multi-db-data-agents",
+            "psc_service_attachment_link": "projects/ad8f8f9494fe5e3aap-tp/regions/europe-west1/serviceAttachments/a-7447536c16da-psc-service-attachment-3b08fea67dfbf748",
+            "public_ip_address": "",
+            "region": "europe-west1",
+            "replica_configuration": [],
+            "replica_names": [],
+            "replication_cluster": [
+              {
+                "dr_replica": false,
+                "failover_dr_replica_name": "",
+                "psa_write_endpoint": ""
+              }
+            ],
+            "restore_backup_context": [],
+            "root_password": null,
+            "root_password_wo": null,
+            "root_password_wo_version": null,
+            "self_link": "https://sqladmin.googleapis.com/sql/v1beta4/projects/dev-multi-db-data-agents/instances/search-pg",
+            "server_ca_cert": [
+              {
+                "cert": "-----BEGIN CERTIFICATE-----\nMIIDfzCCAmegAwIBAgIBADANBgkqhkiG9w0BAQsFADB3MS0wKwYDVQQuEyQ0Zjc4\nYzVkOC0zNjY4LTRmZDQtYjY0Mi01YmY4MmM3MzhjYzcxIzAhBgNVBAMTGkdvb2ds\nZSBDbG91ZCBTUUwgU2VydmVyIENBMRQwEgYDVQQKEwtHb29nbGUsIEluYzELMAkG\nA1UEBhMCVVMwHhcNMjYwMzAzMjE0OTU4WhcNMzYwMjI5MjE1MDU4WjB3MS0wKwYD\nVQQuEyQ0Zjc4YzVkOC0zNjY4LTRmZDQtYjY0Mi01YmY4MmM3MzhjYzcxIzAhBgNV\nBAMTGkdvb2dsZSBDbG91ZCBTUUwgU2VydmVyIENBMRQwEgYDVQQKEwtHb29nbGUs\nIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\nAQC2+ztD8/y2UaW0R5Dk11gZdSEzZN8pL/L4E1dwxIkhghdWNyxk/LL9dWdg97HV\nGzRVievWXdsFywm/9EbX/Zpjo78/GbSww8Swo57TXvpLrlOLdtqLscpH6ivwpXNC\n1xQGMKSiN20oo6vv0vCCNVqqrqn/2PWZpaZuUOMV6Le1OQJB7xxpMC3z722rxWjh\nFN4xBPRHmbaD6PK6XKB/9qzrfGcww4Typn2epZcdEp8Tz6+8c0caXhOe41PqTEj/\nRk8OzfW/u9vlYw+Te/Y1Jxc7cd77toA31KH79B45UE4xCNm92/X2D6jjYj4CKJDv\nvN4YUT+fF515jPC1VRG0Ntu3AgMBAAGjFjAUMBIGA1UdEwEB/wQIMAYBAf8CAQAw\nDQYJKoZIhvcNAQELBQADggEBAI253DMlMnekLP/TS4FkoDvJYb/4nUQs0WSgNSdY\ng6iF6yq15k3rHLdOiUuqsPNzTbF0zMitCJJT4aZ5KNH0TrkEyJzbfzopyqI/dj+J\ntFxyhjFUfPgI3kU//7UVZ4PMmJk93g5aBU5dDoiogU81IGXOVYOTL3kf7u07ju2E\n87T7yKXD7TxqRmfqC1vx/u07RRoM5s51R9pqicXEc4mAt7PD5lAfakf77ncnQCEd\nEYSbzhPPrqoLxw6hZYuDY6z199+XWWiXW28j8u4cMl4/IoR2+sUKfO44mT3OfCfl\nEjJLdHkajmTJfI+j4CyljIP3A1exioU4QBThOf+ATq+agD8=\n-----END CERTIFICATE-----",
+                "common_name": "C=US,O=Google\\, Inc,CN=Google Cloud SQL Server CA,dnQualifier=4f78c5d8-3668-4fd4-b642-5bf82c738cc7",
+                "create_time": "2026-03-03T21:49:58.371Z",
+                "expiration_time": "2036-02-29T21:50:58.371Z",
+                "sha1_fingerprint": "7e9fa74763894a01396c432de64017175fbcbca6"
+              }
+            ],
+            "service_account_email_address": "p954285592145-v9fow1@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+            "settings": [
+              {
+                "activation_policy": "ALWAYS",
+                "active_directory_config": [],
+                "advanced_machine_features": [],
+                "auto_upgrade_enabled": false,
+                "availability_type": "ZONAL",
+                "backup_configuration": [
+                  {
+                    "backup_retention_settings": [
+                      {
+                        "retained_backups": 15,
+                        "retention_unit": "COUNT"
+                      }
+                    ],
+                    "backup_tier": "STANDARD",
+                    "binary_log_enabled": false,
+                    "enabled": true,
+                    "location": "",
+                    "point_in_time_recovery_enabled": true,
+                    "start_time": "17:00",
+                    "transaction_log_retention_days": 14
+                  }
+                ],
+                "collation": "",
+                "connection_pool_config": [],
+                "connector_enforcement": "NOT_REQUIRED",
+                "data_api_access": "ALLOW_DATA_API",
+                "data_cache_config": [
+                  {
+                    "data_cache_enabled": true
+                  }
+                ],
+                "database_flags": [
+                  {
+                    "name": "cloudsql.iam_authentication",
+                    "value": "on"
+                  }
+                ],
+                "deletion_protection_enabled": false,
+                "deny_maintenance_period": [],
+                "disk_autoresize": true,
+                "disk_autoresize_limit": 0,
+                "disk_size": 10,
+                "disk_type": "PD_SSD",
+                "edition": "ENTERPRISE_PLUS",
+                "effective_availability_type": "ZONAL",
+                "enable_dataplex_integration": false,
+                "enable_google_ml_integration": false,
+                "final_backup_config": [],
+                "insights_config": [
+                  {
+                    "enhanced_query_insights_enabled": false,
+                    "query_insights_enabled": true,
+                    "query_plans_per_minute": 5,
+                    "query_string_length": 1024,
+                    "record_application_tags": true,
+                    "record_client_address": false
+                  }
+                ],
+                "ip_configuration": [
+                  {
+                    "allocated_ip_range": "",
+                    "authorized_networks": [],
+                    "custom_subject_alternative_names": [],
+                    "enable_private_path_for_google_cloud_services": false,
+                    "ipv4_enabled": false,
+                    "private_network": "",
+                    "psc_config": [
+                      {
+                        "allowed_consumer_projects": [
+                          "dev-multi-db-data-agents"
+                        ],
+                        "network_attachment_uri": "",
+                        "psc_auto_connections": [],
+                        "psc_enabled": true
+                      }
+                    ],
+                    "server_ca_mode": "GOOGLE_MANAGED_INTERNAL_CA",
+                    "server_ca_pool": "",
+                    "ssl_mode": "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
+                  }
+                ],
+                "location_preference": [
+                  {
+                    "follow_gae_application": "",
+                    "secondary_zone": "",
+                    "zone": "europe-west1-b"
+                  }
+                ],
+                "maintenance_window": [],
+                "password_validation_policy": [],
+                "pricing_plan": "PER_USE",
+                "read_pool_auto_scale_config": [
+                  {
+                    "disable_scale_in": false,
+                    "enabled": false,
+                    "max_node_count": 0,
+                    "min_node_count": 0,
+                    "scale_in_cooldown_seconds": 0,
+                    "scale_out_cooldown_seconds": 0,
+                    "target_metrics": []
+                  }
+                ],
+                "retain_backups_on_delete": false,
+                "sql_server_audit_config": [],
+                "tier": "db-perf-optimized-N-2",
+                "time_zone": "",
+                "user_labels": {},
+                "version": 5
+              }
+            ],
+            "timeouts": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "root_password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "server_ca_cert"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInVwZGF0ZSI6NTQwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project.project"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_user",
+      "name": "iam_dev_user_pg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "database_roles": null,
+            "deletion_policy": null,
+            "host": "",
+            "iam_email": "",
+            "id": "admin@kupczak.altostrat.com//search-pg",
+            "instance": "search-pg",
+            "name": "admin@kupczak.altostrat.com",
+            "password": null,
+            "password_policy": [],
+            "password_wo": null,
+            "password_wo_version": null,
+            "project": "dev-multi-db-data-agents",
+            "sql_server_user_details": [],
+            "timeouts": null,
+            "type": "CLOUD_IAM_USER"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "google_project.project",
+            "google_sql_database_instance.postgres"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_user",
+      "name": "iam_sa_user_pg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "database_roles": null,
+            "deletion_policy": null,
+            "host": "",
+            "iam_email": "",
+            "id": "search-backend-sa@dev-multi-db-data-agents.iam//search-pg",
+            "instance": "search-pg",
+            "name": "search-backend-sa@dev-multi-db-data-agents.iam",
+            "password": null,
+            "password_policy": [],
+            "password_wo": null,
+            "password_wo_version": null,
+            "project": "dev-multi-db-data-agents",
+            "sql_server_user_details": [],
+            "timeouts": null,
+            "type": "CLOUD_IAM_SERVICE_ACCOUNT"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "google_project.project",
+            "google_service_account.search_backend_sa",
+            "google_sql_database_instance.postgres"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_user",
+      "name": "postgres_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "database_roles": null,
+            "deletion_policy": null,
+            "host": "",
+            "iam_email": "",
+            "id": "postgres//search-pg",
+            "instance": "search-pg",
+            "name": "postgres",
+            "password": "Welcome01",
+            "password_policy": [],
+            "password_wo": null,
+            "password_wo_version": null,
+            "project": "dev-multi-db-data-agents",
+            "sql_server_user_details": [],
+            "timeouts": null,
+            "type": ""
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "google_project.project",
+            "google_sql_database_instance.postgres"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_storage_bucket",
+      "name": "images_bucket",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 4,
+          "attributes": {
+            "autoclass": [],
+            "cors": [
+              {
+                "max_age_seconds": 3600,
+                "method": [
+                  "GET",
+                  "HEAD",
+                  "PUT",
+                  "POST",
+                  "DELETE"
+                ],
+                "origin": [
+                  "*"
+                ],
+                "response_header": [
+                  "*"
+                ]
+              }
+            ],
+            "custom_placement_config": [],
+            "default_event_based_hold": false,
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "enable_object_retention": false,
+            "encryption": [],
+            "force_destroy": true,
+            "hierarchical_namespace": [
+              {
+                "enabled": false
+              }
+            ],
+            "id": "property-images-data-agent-dev-multi-db-data-agents",
+            "ip_filter": [],
+            "labels": {},
+            "lifecycle_rule": [],
+            "location": "EUROPE-WEST1",
+            "logging": [],
+            "name": "property-images-data-agent-dev-multi-db-data-agents",
+            "project": "dev-multi-db-data-agents",
+            "project_number": 954285592145,
+            "public_access_prevention": "inherited",
+            "requester_pays": false,
+            "retention_policy": [],
+            "rpo": null,
+            "self_link": "https://www.googleapis.com/storage/v1/b/property-images-data-agent-dev-multi-db-data-agents",
+            "soft_delete_policy": [
+              {
+                "effective_time": "2026-03-03T21:42:48.796Z",
+                "retention_duration_seconds": 604800
+              }
+            ],
+            "storage_class": "STANDARD",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "time_created": "2026-03-03T21:42:48.796Z",
+            "timeouts": null,
+            "uniform_bucket_level_access": true,
+            "updated": "2026-03-03T21:42:48.796Z",
+            "url": "gs://property-images-data-agent-dev-multi-db-data-agents",
+            "versioning": [],
+            "website": []
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsInJlYWQiOjI0MDAwMDAwMDAwMCwidXBkYXRlIjoyNDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjQifQ==",
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services",
+            "time_sleep.wait_for_iam"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "enable_data_api_pg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "1480125068652162942",
+            "triggers": {
+              "instance_id": "search-pg"
+            }
+          },
+          "sensitive_attributes": [],
+          "dependencies": [
+            "google_project.project",
+            "google_sql_database_instance.postgres"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "time_sleep",
+      "name": "wait_for_iam",
+      "provider": "provider[\"registry.terraform.io/hashicorp/time\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "create_duration": "30s",
+            "destroy_duration": null,
+            "id": "2026-03-03T21:42:47Z",
+            "triggers": null
+          },
+          "sensitive_attributes": [],
+          "dependencies": [
+            "google_project.project",
+            "google_project_service.services"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

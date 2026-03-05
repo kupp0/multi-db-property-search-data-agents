@@ -50,7 +50,3 @@ output "spanner_database_id" {
 output "cloudsql_pg_instance_id" {
   value = var.cloudsql_pg_instance_id
 }
-
-output "cloudsql_mysql_instance_id" {
-  value = var.cloudsql_mysql_instance_id
-}

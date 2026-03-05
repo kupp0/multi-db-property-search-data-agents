@@ -61,17 +61,23 @@ Please refer to the **[Database & AI Setup](../README.md#1-alloydb-setup)** sect
 
 ## What gets created?
 
--   **Project**: A new Google Cloud Project with enabled APIs.
--   **Network**: A VPC network (`search-demo-vpc`) with Private Service Access for AlloyDB.
+-   **Project**: A new Google Cloud Project with enabled APIs (including Spanner and Cloud SQL).
+-   **Network**: A VPC network (`search-demo-vpc`) with Private Service Access for AlloyDB and Cloud SQL.
 -   **Subnet**: A subnet in your region with **Private Google Access** enabled.
--   **Firewall**: `allow-internal` rule to permit internal traffic (required for Bastion -> AlloyDB).
+-   **Firewall**: `allow-internal` rule to permit internal traffic (required for Bastion -> Databases) and IAP SSH ingress.
 -   **AlloyDB**:
     -   Cluster: `search-cluster`
     -   Instance: `search-primary` (2 vCPU, Private IP only)
     -   Flags: AI & ML integration enabled.
--   **Bastion Host**: `search-demo-bastion` (e2-micro) for SSH tunneling.
+-   **Cloud Spanner**:
+    -   Instance: `search-instance` (100 Processing Units)
+    -   Database: `search-db` (Google Standard SQL dialect)
+-   **Cloud SQL for PostgreSQL**:
+    -   Instance: `search-pg` (Enterprise Plus, Private IP only)
+    -   Flags: `cloudsql.enable_pgvector`, `google_ml_integration.enable_model_support`
+-   **Bastion Host**: `search-demo-bastion` (e2-micro) for SSH tunneling to private databases.
 -   **Artifact Registry**: Repository `search-app-repo`.
--   **IAM**: Creates a dedicated Service Account `search-backend-sa` and grants necessary roles.
+-   **IAM**: Creates a dedicated Service Account `search-backend-sa` and grants necessary roles for all three databases.
 
 
 ## 5. Deploy Application (Optional)
@@ -96,6 +102,8 @@ After a successful apply, Terraform will output:
 -   `project_id`
 -   `alloydb_cluster_id`
 -   `alloydb_instance_id`
+-   `spanner_instance_id`
+-   `cloudsql_pg_instance_id`
 -   `backend_service_account`
 -   `bastion_instance_name`
 -   `bastion_zone`

@@ -6,7 +6,15 @@ import UserHistoryWidget from './components/UserHistoryWidget';
 
 import dataAgentDiagram from './assets/data_agent_diagram.png';
 import dataAgentContextDiagram from './assets/data_agent_context_infographic.png';
-import dataAgentContext from './data/data_agent_context_file.json';
+import alloydbContext from '../../database_artefacts/alloydb_context.json';
+import cloudsqlPgContext from '../../database_artefacts/cloudsql_pg_context.json';
+import spannerContext from '../../database_artefacts/spanner_context.json';
+
+const contexts = {
+    alloydb: alloydbContext,
+    cloudsql_pg: cloudsqlPgContext,
+    spanner: spannerContext
+};
 
 // --- COMPONENTS ---
 
@@ -220,6 +228,7 @@ function App() {
             <div className={`fixed bottom-24 right-6 z-40 w-[90vw] sm:w-[400px] h-[600px] max-h-[calc(100vh-120px)] transition-all duration-300 transform origin-bottom-right ${showChat ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-10 pointer-events-none'}`}>
                 <div className="w-full h-full bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col">
                     <ChatInterface
+                        selectedBackend={selectedBackend}
                         onClose={() => setShowChat(false)}
                         onResultsFound={(listings, usedPrompt, toolDetails) => {
                             setResults(listings);
@@ -306,8 +315,7 @@ function App() {
                             {[
                                 { id: 'alloydb', label: 'AlloyDB' },
                                 { id: 'spanner', label: 'Cloud Spanner' },
-                                { id: 'cloudsql_pg', label: 'Cloud SQL (PostgreSQL)' },
-                                { id: 'cloudsql_mysql', label: 'Cloud SQL (MySQL)' }
+                                { id: 'cloudsql_pg', label: 'Cloud SQL (PostgreSQL)' }
                             ].map(db => (
                                 <button
                                     key={db.id}
@@ -394,8 +402,8 @@ function App() {
                                             const fragmentMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
 
                                             // Templates seem to be 1-based in the LLM output
+                                            const dataAgentContext = contexts[selectedBackend];
                                             const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
-
                                             const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
                                             // Facets/Fragments seem to be 1-based in the LLM output
                                             const matchedFragments = [...new Set(fragmentMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
@@ -407,6 +415,7 @@ function App() {
                                                     <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Fragments</h4>
                                                     <div className="space-y-3">
                                                         {matchedTemplates.map(idx => {
+                                                            const dataAgentContext = contexts[selectedBackend];
                                                             const template = dataAgentContext.templates[idx];
                                                             return (
                                                                 <div key={`template-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-amber-900/30">
@@ -418,6 +427,7 @@ function App() {
                                                             );
                                                         })}
                                                         {matchedFragments.map(idx => {
+                                                            const dataAgentContext = contexts[selectedBackend];
                                                             const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
                                                             const fragment = facetsList[idx];
                                                             if (!fragment) return null;

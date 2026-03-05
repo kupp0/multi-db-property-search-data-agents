@@ -4,6 +4,12 @@ ALLOYDB AI: DATABASE & SCHEMA BOOTSTRAP
 ===================================================================================
 */
 
+-- 0. DATABASE CREATION
+SELECT 'CREATE DATABASE search'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'search')\gexec
+
+\c search
+
 -- 1. EXTENSION MANAGEMENT
 CREATE EXTENSION IF NOT EXISTS vector CASCADE;
 CREATE EXTENSION IF NOT EXISTS alloydb_scann CASCADE;
@@ -15,7 +21,7 @@ CREATE TABLE public.user_prompt_history (
     id SERIAL PRIMARY KEY,
     "timestamp" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     user_prompt text,
-    prompt_embedded public.vector(3072),
+    prompt_embedded public.vector(768),
     query_template_used boolean,
     query_template_id integer,
     query_explanation text
@@ -34,7 +40,7 @@ CREATE TABLE property_listings (
     country VARCHAR(100) DEFAULT 'Switzerland',
     canton VARCHAR(100),
     -- Embeddings are generated externally and inserted directly
-    description_embedding VECTOR(3072),
+    description_embedding VECTOR(768),
     image_embedding VECTOR(1408) 
 );
 
@@ -45,8 +51,9 @@ CREATE TABLE property_listings (
 -- 4. MODEL ALIASING (Vertex AI Integration)
 CREATE EXTENSION IF NOT EXISTS google_ml_integration CASCADE;
 
-CALL google_ml.create_model(
-  model_id => 'property_text_embedding_model',
-  provider => 'google',
-  saved_model_path => 'gemini-embedding-001'
-);
+-- 5. IAM GRANTS
+-- Grant access to all current and future tables/sequences in the public schema to all users (including IAM users)
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO PUBLIC;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO PUBLIC;

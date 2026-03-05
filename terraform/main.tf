@@ -47,7 +47,8 @@ resource "google_project_service" "services" {
     "geminidataanalytics.googleapis.com",
     "sqladmin.googleapis.com",
     "spanner.googleapis.com",
-    "storage.googleapis.com"
+    "storage.googleapis.com",
+    "iap.googleapis.com"
   ])
 
   project = google_project.project.project_id
@@ -73,6 +74,20 @@ resource "google_compute_subnetwork" "default" {
   project       = google_project.project.project_id
 
   private_ip_google_access = true
+}
+
+# IAP SSH Firewall Rule
+resource "google_compute_firewall" "allow_iap_ssh" {
+  name    = "allow-iap-ssh"
+  network = google_compute_network.vpc_network.id
+  project = google_project.project.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["35.235.240.0/20"]
 }
 
 # Private Service Access for AlloyDB

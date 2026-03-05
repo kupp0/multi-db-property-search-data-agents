@@ -56,7 +56,9 @@ app.add_middleware(
 # Initialize Google Cloud Clients
 storage_client = None
 PROJECT_ID = os.getenv("GCP_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
-AGENT_CONTEXT_SET_ID = os.getenv("AGENT_CONTEXT_SET_ID")
+AGENT_CONTEXT_SET_ID_ALLOYDB = os.getenv("AGENT_CONTEXT_SET_ID_ALLOYDB")
+AGENT_CONTEXT_SET_ID_CLOUDSQL_PG = os.getenv("AGENT_CONTEXT_SET_ID_CLOUDSQL_PG")
+AGENT_CONTEXT_SET_ID_SPANNER = os.getenv("AGENT_CONTEXT_SET_ID_SPANNER")
 
 try:
     # Initialize credentials with Cloud Platform scope
@@ -85,12 +87,6 @@ CLOUDSQL_PG_USER = os.getenv("CLOUDSQL_PG_USER", "postgres")
 CLOUDSQL_PG_PASSWORD = os.getenv("CLOUDSQL_PG_PASSWORD")
 CLOUDSQL_PG_DB_NAME = os.getenv("CLOUDSQL_PG_DB_NAME", "search")
 
-# Cloud SQL MySQL Configuration
-CLOUDSQL_MYSQL_HOST = os.getenv("CLOUDSQL_MYSQL_HOST", "127.0.0.1")
-CLOUDSQL_MYSQL_PORT = os.getenv("CLOUDSQL_MYSQL_PORT", "3306")
-CLOUDSQL_MYSQL_USER = os.getenv("CLOUDSQL_MYSQL_USER", "root")
-CLOUDSQL_MYSQL_PASSWORD = os.getenv("CLOUDSQL_MYSQL_PASSWORD")
-CLOUDSQL_MYSQL_DB_NAME = os.getenv("CLOUDSQL_MYSQL_DB_NAME", "search")
 
 # Spanner Configuration
 SPANNER_INSTANCE_ID = os.getenv("SPANNER_INSTANCE_ID", "search-instance")
@@ -115,12 +111,7 @@ async def get_db_connection(backend: str):
             engines["cloudsql_pg"] = create_async_engine(db_url)
         return engines["cloudsql_pg"], "sqlalchemy"
         
-    elif backend == "cloudsql_mysql":
-        if "cloudsql_mysql" not in engines:
-            db_url = f"mysql+aiomysql://{CLOUDSQL_MYSQL_USER}:{CLOUDSQL_MYSQL_PASSWORD}@{CLOUDSQL_MYSQL_HOST}:{CLOUDSQL_MYSQL_PORT}/{CLOUDSQL_MYSQL_DB_NAME}"
-            engines["cloudsql_mysql"] = create_async_engine(db_url)
-        return engines["cloudsql_mysql"], "sqlalchemy"
-        
+
     elif backend == "spanner":
         if not spanner_client:
             spanner_client = spanner.Client(project=PROJECT_ID)
@@ -182,9 +173,6 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     """
     Queries the Gemini Data Agent (GDA) API to get property listings and natural language answers.
     """
-    if not AGENT_CONTEXT_SET_ID:
-        raise HTTPException(500, "AGENT_CONTEXT_SET_ID is not configured.")
-    
     # GDA API Endpoint
     gda_location = os.getenv("GCP_LOCATION", "europe-west1")
     url = f"https://geminidataanalytics.googleapis.com/v1beta/projects/{PROJECT_ID}/locations/{gda_location}:queryData"
@@ -200,6 +188,8 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     # Construct datasourceReferences based on backend
     datasource_references = {}
     if backend == "alloydb":
+        if not AGENT_CONTEXT_SET_ID_ALLOYDB:
+            raise HTTPException(500, "AGENT_CONTEXT_SET_ID_ALLOYDB is not configured.")
         datasource_references["alloydb"] = {
             "databaseReference": {
                 "project_id": PROJECT_ID,
@@ -208,18 +198,22 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
                 "instance_id": os.getenv("ALLOYDB_INSTANCE_ID", "search-primary"),
                 "database_id": DB_NAME
             },
-            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID_ALLOYDB}
         }
     elif backend == "spanner":
+        if not AGENT_CONTEXT_SET_ID_SPANNER:
+            raise HTTPException(500, "AGENT_CONTEXT_SET_ID_SPANNER is not configured.")
         datasource_references["spanner"] = {
             "databaseReference": {
                 "project_id": PROJECT_ID,
                 "instance_id": SPANNER_INSTANCE_ID,
                 "database_id": SPANNER_DATABASE_ID
             },
-            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID_SPANNER}
         }
     elif backend == "cloudsql_pg":
+        if not AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:
+            raise HTTPException(500, "AGENT_CONTEXT_SET_ID_CLOUDSQL_PG is not configured.")
         datasource_references["cloudSqlReference"] = {
             "databaseReference": {
                 "engine": "POSTGRESQL",
@@ -228,18 +222,7 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
                 "instance_id": os.getenv("CLOUDSQL_PG_INSTANCE_ID", "search-pg"),
                 "database_id": CLOUDSQL_PG_DB_NAME
             },
-            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
-        }
-    elif backend == "cloudsql_mysql":
-        datasource_references["cloudSqlReference"] = {
-            "databaseReference": {
-                "engine": "MYSQL",
-                "project_id": PROJECT_ID,
-                "region": os.getenv("GCP_LOCATION", gda_location),
-                "instance_id": os.getenv("CLOUDSQL_MYSQL_INSTANCE_ID", "search-mysql"),
-                "database_id": CLOUDSQL_MYSQL_DB_NAME
-            },
-            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID}
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}
         }
     else:
         raise ValueError(f"Unknown backend: {backend}")

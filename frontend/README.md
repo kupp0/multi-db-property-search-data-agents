@@ -1,16 +1,25 @@
-# React + Vite
+# Unified Data Cloud Property Search Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React frontend for the Unified Data Cloud Property Search Demo. It provides a modern, responsive UI for users to interact with the Gemini Data Agent across three different database backends: AlloyDB, Cloud Spanner, and Cloud SQL for PostgreSQL.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **3-Way Database Toggle**: Seamlessly switch between the active database backend to compare performance and SQL dialects.
+*   **Natural Language Search**: A search bar for entering natural language queries.
+*   **System Output View**: Displays the generated SQL, natural language answer, intent explanation, and a preview of the raw query results.
+*   **Property Listings Grid**: Displays the property results with images served securely from Google Cloud Storage.
+*   **ADK Chat Interface**: A floating chat window to interact with the dynamic ADK Chat Agent for follow-up questions.
+*   **User History Widget**: A slide-out panel to view past prompts and the templates used.
+*   **Architecture Modal**: Visual diagrams explaining the system architecture and data agent context.
+*   **Dark Mode**: Built-in support for dark and light themes.
 
-## React Compiler
+## Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The frontend is built with React, Vite, and Tailwind CSS.
 
-## Expanding the ESLint configuration
+To run locally (usually handled by `scripts/debug_local.sh` from the project root):
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```

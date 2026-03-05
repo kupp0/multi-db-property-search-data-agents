@@ -7,7 +7,7 @@ from toolbox_core import ToolboxSyncClient
 if not os.getenv("GOOGLE_CLOUD_PROJECT") and os.getenv("GCP_PROJECT_ID"):
     os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GCP_PROJECT_ID")
 if not os.getenv("GOOGLE_CLOUD_LOCATION"):
-    os.environ["GOOGLE_CLOUD_LOCATION"] = "global"
+    os.environ["GOOGLE_CLOUD_LOCATION"] = os.getenv("GCP_LOCATION", "us-central1")
 if not os.getenv("GOOGLE_GENAI_USE_VERTEXAI"):
     os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "true"
 
@@ -15,15 +15,19 @@ if not os.getenv("GOOGLE_GENAI_USE_VERTEXAI"):
 TOOLBOX_URL = os.getenv("TOOLBOX_URL", "http://127.0.0.1:5000")
 toolbox = ToolboxSyncClient(TOOLBOX_URL)
 
-# Load tools from Toolbox
-# We load the 'search-properties' tool we defined in tools.yaml
-try:
- #   tool = toolbox.load_tool("search-properties")
-    tool = toolbox.load_tool("cloud_gda_query_tool_alloydb")
-    tools = [tool]
-except Exception as e:
-    print(f"Warning: Could not load tools from {TOOLBOX_URL}: {e}")
-    tools = []
+def get_agent(backend: str = "alloydb") -> Agent:
+    """
+    Creates and returns an ADK Agent dynamically configured with the 
+    specific MCP tool for the requested database backend.
+    """
+    try:
+        tool_name = f"cloud_gda_query_tool_{backend}"
+        tool = toolbox.load_tool(tool_name)
+        tools = [tool]
+        print(f"Successfully loaded tool: {tool_name}")
+    except Exception as e:
+        print(f"Warning: Could not load tool 'cloud_gda_query_tool_{backend}' from {TOOLBOX_URL}: {e}")
+        tools = []
 
 # Define the professional system instruction
 
@@ -101,12 +105,11 @@ system_instruction = dedent("""
     ```
 """).strip()
 
-# Define the Agent
-root_agent = Agent(
-    name="property_agent",
-    model="gemini-3.1-flash-preview",
-    description="Agent to answer questions about properties using natural language search.",
-
-    instruction=system_instruction,
-    tools=tools,
-)
+    # Define the Agent
+    return Agent(
+        name=f"property_agent_{backend}",
+        model="gemini-3-flash-preview",
+        description=f"Agent to answer questions about properties using natural language search on {backend}.",
+        instruction=system_instruction,
+        tools=tools,
+    )
