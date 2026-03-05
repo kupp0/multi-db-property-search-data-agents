@@ -72,6 +72,20 @@ resource "google_project_iam_member" "alloydb_sa_vertex_ai" {
   member  = "serviceAccount:${google_project_service_identity.alloydb_sa.email}"
 }
 
+# We must explicitly wait for the Spanner service identity to be created.
+resource "google_project_service_identity" "spanner_sa" {
+  provider   = google-beta
+  project    = google_project.project.project_id
+  service    = "spanner.googleapis.com"
+  depends_on = [google_project_service.services]
+}
+
+resource "google_project_iam_member" "spanner_sa_vertex_ai" {
+  project = google_project.project.project_id
+  role    = "roles/aiplatform.user"
+  member  = "serviceAccount:${google_project_service_identity.spanner_sa.email}"
+}
+
 # Default Compute Engine Service Account Permissions
 # This service account is used by Cloud Build for:
 # 1. Staging source code to Cloud Storage (roles/storage.objectViewer)

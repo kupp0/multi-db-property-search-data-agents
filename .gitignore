@@ -19,7 +19,7 @@ alloydb-auth-proxy
 # Terraform
 .terraform/
 *.tfstate
-*.tfstate.backup
+*.tfstate*
 *.tfvars
 .terraform.lock.hcl
 
@@ -41,3 +41,8 @@ recovered_source/
 backend/agent/.adk/
 iam_policy.json
 \n# Ignore generated enriched data\ndatabase_artefacts/enriched_property_data.json
+
+# Generated files
+backend/agent/service_resolved.yaml
+database_artefacts/_archive/
+terraform-existing/

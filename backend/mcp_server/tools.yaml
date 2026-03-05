@@ -67,8 +67,9 @@ tools:
     location: "${GCP_LOCATION}"
     context:
       datasourceReferences:
-        spanner:
+        spannerReference:
           databaseReference:
+            engine: GOOGLE_SQL
             projectId: "${PROJECT_ID}"
             instanceId: "${SPANNER_INSTANCE_ID}"
             databaseId: "${SPANNER_DATABASE_ID}"

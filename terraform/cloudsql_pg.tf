@@ -49,8 +49,19 @@ resource "null_resource" "enable_data_api_pg" {
   }
 
   provisioner "local-exec" {
-    command = "gcloud beta sql instances patch ${google_sql_database_instance.postgres.name} --project=${google_project.project.project_id} --data-api-access=ALLOW_DATA_API --enable-google-ml-integration"
+    command = "gcloud beta sql instances patch ${google_sql_database_instance.postgres.name} --project=${google_project.project.project_id} --data-api-access=ALLOW_DATA_API"
   }
+}
+
+resource "null_resource" "enable_ml_integration_pg" {
+  triggers = {
+    instance_id = google_sql_database_instance.postgres.name
+  }
+
+  provisioner "local-exec" {
+    command = "gcloud beta sql instances patch ${google_sql_database_instance.postgres.name} --project=${google_project.project.project_id} --enable-google-ml-integration"
+  }
+  depends_on = [null_resource.enable_data_api_pg]
 }
 
 resource "google_sql_user" "iam_sa_user_pg" {

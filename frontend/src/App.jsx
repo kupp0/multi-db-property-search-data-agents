@@ -22,8 +22,8 @@ const SearchExamples = ({ onSelectQuery }) => {
     const examples = [
         "Show me 2-bedroom apartments in Zurich under 3000 CHF",
         "Show me family apartments in Zurich with a nice view up to 16k",
-        "Cheapest studios in Geneva",
-        "show me Lovely Mountain Cabins under 15k"
+        "Show me cheap studios in Geneva",
+        "Show me Lovely Mountain Cabins under 15k"
     ];
 
     return (
@@ -272,78 +272,75 @@ function App() {
                 </div>
             </div>
 
+            {/* TOP HEADER BAR */}
+            <header className="w-full px-6 py-4 flex justify-between items-center relative z-20">
+                <div className="flex items-center gap-2">
+                    {/* Placeholder for logo if needed later, currently empty based on feedback */}
+                </div>
+                <div className="flex items-center gap-3">
+                    <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                        <Workflow className="w-4 h-4" /> Architecture
+                    </button>
+                    <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                        <History className="w-4 h-4" /> History
+                    </button>
+                    <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+                        {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                </div>
+            </header>
+
             <main className="container mx-auto px-4 py-12 max-w-5xl relative z-10">
 
                 {/* SEARCH PANEL CARD */}
-                <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 rounded-3xl p-8 shadow-2xl mb-12 relative overflow-hidden group">
-
-                    {/* Glow Effect */}
-                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl group-hover:bg-indigo-500/40 transition-all duration-1000"></div>
-                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl group-hover:bg-purple-500/40 transition-all duration-1000"></div>
+                <div className="mb-12 relative overflow-hidden group">
 
                     {/* HEADER */}
                     <div className="flex flex-col items-center mb-8 text-center relative z-10">
-                        <div className="absolute top-8 left-8 p-2 bg-indigo-500/10 rounded-xl ring-1 ring-indigo-500/20">
-                            <Sparkles className="w-6 h-6 text-indigo-500" />
-                        </div>
-
-                        {/* UTILITY CONTROLS */}
-                        <div className="flex items-center gap-3 mb-6">
-                            <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <Workflow className="w-3 h-3" /> Architecture
-                            </button>
-                            <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <History className="w-3 h-3" /> History
-                            </button>
-                            <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                                {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-                            </button>
-                        </div>
-
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
                             Swiss Property Search 🇨🇭
                         </h1>
-                        <p className="text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed text-sm">
-                            Powered by Gemini Data Agent connected to AlloyDB.
+                        <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
+                            Powered by Conversational Data Agents API connected to AlloyDB, Spanner, and Cloud SQL.
                         </p>
                     </div>
 
                     {/* SEARCH BAR */}
-                    <div className="max-w-2xl mx-auto relative z-10">
+                    <div className="max-w-3xl mx-auto relative z-10">
                         {/* DATABASE TOGGLE */}
-                        <div className="flex flex-wrap items-center justify-center gap-1 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200 dark:border-slate-700 mb-4">
+                        <div className="flex flex-wrap items-center justify-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50 mb-6 backdrop-blur-sm mx-auto w-fit">
                             {[
                                 { id: 'alloydb', label: 'AlloyDB' },
-                                { id: 'spanner', label: 'Cloud Spanner' },
-                                { id: 'cloudsql_pg', label: 'Cloud SQL (PostgreSQL)' }
+                                { id: 'spanner', label: 'Spanner' },
+                                { id: 'cloudsql_pg', label: 'Cloud SQL' }
                             ].map(db => (
                                 <button
                                     key={db.id}
                                     onClick={() => setSelectedBackend(db.id)}
-                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
                                 >
                                     {db.label}
                                 </button>
                             ))}
                         </div>
 
-                        <form onSubmit={handleSearch} className="relative group/search">
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur opacity-30 group-hover/search:opacity-60 transition duration-500"></div>
-                            <div className="relative flex items-center bg-white dark:bg-slate-950 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
-                                <div className="pl-4 text-slate-400">
+                        <form onSubmit={handleSearch} className="relative group/search mb-8">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur-lg opacity-50 group-hover/search:opacity-100 transition duration-500"></div>
+                            <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden p-1">
+                                <div className="pl-5 text-slate-400">
                                     <Search className="w-5 h-5" />
                                 </div>
                                 <input
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    placeholder="Describe your dream home..."
+                                    placeholder='Describe your dream home, for example: "3-bedroom apartment in Zurich"...'
                                     className="w-full px-4 py-4 bg-transparent border-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-base"
                                 />
                                 <button
                                     type="submit"
                                     disabled={loading || !query.trim()}
-                                    className="m-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="m-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="hidden sm:inline">Search</span>}
                                     {!loading && <ArrowRight className="w-4 h-4" />}
@@ -452,7 +449,7 @@ function App() {
                                             <div className="font-mono text-sm overflow-x-auto bg-slate-950/50 p-3 rounded-lg border border-slate-800 max-h-64 overflow-y-auto custom-scrollbar">
                                                 <ReactMarkdown
                                                     components={{
-                                                        code({ node, inline, className, children, ...props }) {
+                                                        code({ className, children, ...props }) {
                                                             return (
                                                                 <code className={`${className} text-emerald-300 bg-transparent`} {...props}>
                                                                     {children}

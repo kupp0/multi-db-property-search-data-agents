@@ -1,4 +1,6 @@
 -- 0. CLEANUP
+DROP INDEX IF EXISTS property_listings_desc_idx;
+DROP INDEX IF EXISTS property_listings_img_idx;
 DROP TABLE IF EXISTS user_prompt_history;
 DROP TABLE IF EXISTS property_listings;
 DROP SEQUENCE IF EXISTS global_id_sequence;
@@ -13,7 +15,7 @@ CREATE TABLE user_prompt_history (
   timestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true),
   user_prompt STRING(MAX),
   -- Arrays are defined as ARRAY<TYPE>
-  prompt_embedded ARRAY<FLOAT64>(vector_length=>768),
+  prompt_embedded ARRAY<FLOAT64>(vector_length=>3072),
   query_template_used BOOL,
   query_template_id INT64,
   query_explanation STRING(MAX)
@@ -29,7 +31,7 @@ CREATE TABLE property_listings (
   image_gcs_uri STRING(MAX),
   country STRING(100) DEFAULT ('Switzerland'),
   canton STRING(100),
-  description_embedding ARRAY<FLOAT64>(vector_length=>768),
+  description_embedding ARRAY<FLOAT64>(vector_length=>3072),
   image_embedding ARRAY<FLOAT64>(vector_length=>1408)
 ) PRIMARY KEY (id);
 
@@ -41,5 +43,5 @@ CREATE OR REPLACE MODEL property_text_embedding_model
     embeddings STRUCT<values ARRAY<FLOAT64>>
   )
   REMOTE OPTIONS (
-    endpoint = '//aiplatform.googleapis.com/projects/dev-multi-db-data-agents/locations/europe-west1/publishers/google/models/gemini-embedding-001'
+    endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/gemini-embedding-001'
   );

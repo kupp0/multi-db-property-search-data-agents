@@ -72,9 +72,9 @@ echo "   Region: ${REGION}"
 echo "   Tag: ${TAG}"
 
 # Validation
-if [ -z "${AGENT_CONTEXT_SET_ID:-}" ]; then
-    echo "⚠️  AGENT_CONTEXT_SET_ID is not set!"
-    echo "   Please set it in backend/.env or export it before running this script."
+if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ]; then
+    echo "⚠️  AGENT_CONTEXT_SET_ID variables are not fully set!"
+    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, and AGENT_CONTEXT_SET_ID_SPANNER in backend/.env or export them before running this script."
     exit 1
 fi
 

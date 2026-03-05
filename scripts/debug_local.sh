@@ -35,6 +35,13 @@ SPANNER_DATABASE_ID=${SPANNER_DATABASE_ID:-search-db}
 CLOUDSQL_PG_INSTANCE_ID=${CLOUDSQL_PG_INSTANCE_ID:-search-pg}
 CLOUDSQL_PG_DB_NAME=${CLOUDSQL_PG_DB_NAME:-search}
 
+# Validation
+if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ]; then
+    echo "⚠️  AGENT_CONTEXT_SET_ID variables are not fully set!"
+    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, and AGENT_CONTEXT_SET_ID_SPANNER in backend/.env or export them before running this script."
+    exit 1
+fi
+
 # 1. Prepare Configuration
 echo "🔧 Preparing configuration..."
 

@@ -1,39 +1,79 @@
 #!/bin/bash
 
-# Configuration
-# <<< REPLACE with your actual Project ID >>>
-PROJECT_ID="${PROJECT_ID:-ai-powered-search-alloydb-1542}"
+# Resolve project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+cd "$PROJECT_ROOT"
 
-#Impersonated Service account user
-IMPERSONATE_SA="search-backend-sa@ai-powered-search-alloydb-1542.iam.gserviceaccount.com"
+if [ -f "backend/.env" ]; then
+    set -a
+    source backend/.env
+    set +a
+else
+    echo "❌ backend/.env not found."
+    exit 1
+fi
 
-# API Details
-GDA_LOCATION="europe-west1"
+PROJECT_ID=${GCP_PROJECT_ID:-$(gcloud config get-value project)}
+GDA_LOCATION=${GCP_LOCATION:-"europe-west1"}
 API_ENDPOINT="https://geminidataanalytics.googleapis.com/v1beta/projects/${PROJECT_ID}/locations/${GDA_LOCATION}:queryData"
 
-# AlloyDB connection details 
-DB_PROJECT_ID="${PROJECT_ID}"
-DB_REGION="europe-west1"
-DB_CLUSTER_ID="search-cluster"
-DB_INSTANCE_ID="search-primary"
-DB_DATABASE_ID="search"
-AGENT_CONTEXT_SET_ID=projects/ai-powered-search-alloydb-1542/locations/us-east1/contextSets/property-agent
+BACKEND=${1:-alloydb}
+PROMPT=${2:-Show me cheap apartments in basel}
 
-# Generation Options
-GEN_QUERY_RESULT="true"
-GEN_NL_ANSWER="true"
-GEN_EXPLANATION="true"
-GEN_DISAMBIGUATION="true"
+echo "Testing backend: $BACKEND"
 
-# Get OAuth access token from gcloud if not already set
-# Get OAuth access token
-if [ -n "$IMPERSONATE_SA" ]; then
-  echo "🕵️ Impersonating Service Account: $IMPERSONATE_SA"
-  TOKEN=$(gcloud auth print-access-token --impersonate-service-account "$IMPERSONATE_SA")
+if [ "$BACKEND" == "alloydb" ]; then
+  read -r -d '' DATASOURCE_REF << EOF
+      "alloydb": {
+        "databaseReference": {
+          "project_id": "${PROJECT_ID}",
+          "region": "${GDA_LOCATION}",
+          "cluster_id": "${ALLOYDB_CLUSTER_ID:-search-cluster}",
+          "instance_id": "${ALLOYDB_INSTANCE_ID:-search-primary}",
+          "database_id": "${DB_NAME:-search}"
+        },
+        "agentContextReference": {
+          "context_set_id": "${AGENT_CONTEXT_SET_ID_ALLOYDB}"
+        }
+      }
+EOF
+elif [ "$BACKEND" == "cloudsql_pg" ]; then
+  read -r -d '' DATASOURCE_REF << EOF
+      "cloudSqlReference": {
+        "databaseReference": {
+          "engine": "POSTGRESQL",
+          "project_id": "${PROJECT_ID}",
+          "region": "${GDA_LOCATION}",
+          "instance_id": "${CLOUDSQL_PG_INSTANCE_ID:-search-pg}",
+          "database_id": "${CLOUDSQL_PG_DB_NAME:-search}"
+        },
+        "agentContextReference": {
+          "context_set_id": "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}"
+        }
+      }
+EOF
+elif [ "$BACKEND" == "spanner" ]; then
+  read -r -d '' DATASOURCE_REF << EOF
+      "spannerReference": {
+        "databaseReference": {
+          "engine": "GOOGLE_SQL",
+          "project_id": "${PROJECT_ID}",
+          "instance_id": "${SPANNER_INSTANCE_ID:-search-instance}",
+          "database_id": "${SPANNER_DATABASE_ID:-search-db}"
+        },
+        "agentContextReference": {
+          "context_set_id": "${AGENT_CONTEXT_SET_ID_SPANNER}"
+        }
+      }
+EOF
 else
-# TOKEN="${TOKEN:-$(gcloud auth print-access-token)}"
-echo "No impersonation service account specified. Using default gcloud auth token."
+  echo "Unknown backend: $BACKEND"
+  exit 1
 fi
+
+# Get OAuth access token
+TOKEN=$(gcloud auth print-access-token)
 
 # Check if token retrieval was successful
 if [ -z "$TOKEN" ]; then
@@ -45,28 +85,17 @@ fi
 read -r -d '' JSON_PAYLOAD << EOF
 {
   "parent": "projects/${PROJECT_ID}/locations/${GDA_LOCATION}",
-  "prompt": "${1:-Show me cheap apartments in basel}",
+  "prompt": "${PROMPT}",
   "context": {
     "datasourceReferences": {
-      "alloydb": {
-        "databaseReference": {
-          "project_id": "${DB_PROJECT_ID}",
-          "region": "${DB_REGION}",
-          "cluster_id": "${DB_CLUSTER_ID}",
-          "instance_id": "${DB_INSTANCE_ID}",
-          "database_id": "${DB_DATABASE_ID}"
-        },
-        "agentContextReference": {
-          "context_set_id": "${AGENT_CONTEXT_SET_ID}"
-        }
-      }
+${DATASOURCE_REF}
     }
   },
   "generation_options": {
-    "generate_query_result": ${GEN_QUERY_RESULT},
-    "generate_natural_language_answer": ${GEN_NL_ANSWER},
-    "generate_explanation": ${GEN_EXPLANATION},
-    "generate_disambiguation_question": ${GEN_DISAMBIGUATION}
+    "generate_query_result": true,
+    "generate_natural_language_answer": true,
+    "generate_explanation": true,
+    "generate_disambiguation_question": true
   }
 }
 EOF
@@ -83,4 +112,4 @@ curl -X POST \
   -d "${JSON_PAYLOAD}" \
   "${API_ENDPOINT}"
 
-echo # Add a newline for cleaner output
+echo

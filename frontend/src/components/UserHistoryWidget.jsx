@@ -4,7 +4,6 @@ import { X, Database, Filter, RefreshCw, Loader2 } from 'lucide-react';
 const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [whereClause, setWhereClause] = useState('');
     const [error, setError] = useState(null);
     const [expandedRows, setExpandedRows] = useState(new Set());
 
@@ -48,32 +47,11 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         setFilters(newFilters);
     };
 
-    const generateWhereClause = () => {
-        return filters
-            .filter(f => f.value.trim() !== '')
-            .map((f, i) => {
-                const prefix = i > 0 ? ` ${f.logic} ` : '';
-                let value = f.value;
-                if (f.operator === 'ILIKE') {
-                    value = `'%${value}%'`;
-                } else {
-                    value = `'${value}'`;
-                }
-                // Handle boolean for template_used if needed, but text input is generic for now.
-                // Ideally we'd have type-specific inputs, but string matching works for most text fields.
-                return `${prefix}${f.column} ${f.operator} ${value}`;
-            })
-            .join('');
-    };
-
     const handleRunQuery = () => {
-        const clause = generateWhereClause();
-        setWhereClause(clause); // Update state for consistency, though we could pass directly
-        fetchHistory(clause);
+        fetchHistory();
     };
 
-    // Update fetchHistory to accept an optional clause argument
-    const fetchHistory = async (clauseOverride) => {
+    const fetchHistory = async () => {
         setLoading(true);
         setError(null);
         try {
@@ -100,6 +78,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         if (isOpen) {
             fetchHistory();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, selectedBackend]);
 
     if (!isOpen) return null;
@@ -202,7 +181,11 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
 
                 {/* Table Content */}
                 <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 relative">
-                    {/* ... (error handling) */}
+                    {error && (
+                        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm text-center border-b border-red-200 dark:border-red-800">
+                            {error}
+                        </div>
+                    )}
 
                     <table className="w-full text-left text-sm border-collapse">
                         <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0 z-10 shadow-sm">

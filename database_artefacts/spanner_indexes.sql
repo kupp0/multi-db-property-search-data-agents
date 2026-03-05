@@ -1,0 +1,2 @@
+CREATE VECTOR INDEX property_listings_desc_idx ON property_listings(description_embedding) WHERE description_embedding IS NOT NULL OPTIONS (distance_type='COSINE', tree_depth = 2, num_leaves = 1000);
+CREATE VECTOR INDEX property_listings_img_idx ON property_listings(image_embedding) WHERE image_embedding IS NOT NULL OPTIONS (distance_type='COSINE', tree_depth = 2, num_leaves = 1000);

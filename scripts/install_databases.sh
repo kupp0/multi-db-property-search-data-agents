@@ -91,14 +91,15 @@ fi
 if [ "$deploy_schemas" = true ]; then
     echo "🛠️ Deploying Schemas..."
     echo "➡️ Deploying AlloyDB Schema..."
-    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5432 -U $DB_USER -d postgres -f database_artefacts/alloydb_setup.sql
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5432 -U $DB_USER -d postgres -P pager=off -f database_artefacts/alloydb_setup.sql
 
     echo "➡️ Deploying Cloud SQL PG Schema..."
-    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d postgres -f database_artefacts/cloudsql_pg_setup.sql
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d postgres -P pager=off -f database_artefacts/cloudsql_pg_setup.sql
 
     echo "➡️ Deploying Spanner Schema..."
     # Remove comments from SQL file before passing to gcloud to avoid parsing errors
-    grep -v '^--' database_artefacts/spanner_setup.sql | grep -v '^/\*' | grep -v '^\*' > /tmp/spanner_clean.sql
+    # Also replace placeholders for the Spanner model endpoint
+    sed -e "s/{PROJECT_ID}/$PROJECT_ID/g" -e "s/{REGION}/$REGION/g" database_artefacts/spanner_setup.sql | grep -v '^--' | grep -v '^/\*' | grep -v '^\*' > /tmp/spanner_clean.sql
     gcloud spanner databases ddl update $SPANNER_DATABASE_ID \
         --instance=$SPANNER_INSTANCE_ID \
         --project=$PROJECT_ID \
@@ -111,13 +112,21 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -q -r backend/requirements.txt
 
-if [ ! -f "database_artefacts/enriched_property_data.json" ]; then
+read -p "🧠 Do you want to (re)generate base enriched data (Text Embeddings)? (This overwrites enriched_property_data.json) [y/N]: " regen_data
+if [[ "$regen_data" =~ ^[Yy]$ ]]; then
     echo "🧠 Generating base enriched data (Text Embeddings)..."
     python3 database_artefacts/generate_data.py
+else
+    if [ ! -f "database_artefacts/enriched_property_data.json" ]; then
+        echo "❌ Error: database_artefacts/enriched_property_data.json not found! You must generate data first."
+        exit 1
+    else
+        echo "⏭️ Keeping existing enriched_property_data.json."
+    fi
 fi
 
 # --- 5. IMAGE BOOTSTRAP ---
-echo "� Checking for existing images..."
+echo "🖼️ Checking for existing images..."
 BUCKET_NAME="property-images-data-agent-${PROJECT_ID}"
 images_exist="0"
 if gcloud storage ls "gs://${BUCKET_NAME}/listings/" &> /dev/null; then
@@ -131,8 +140,12 @@ if [ "$images_exist" == "1" ]; then
         echo "🗑️ Deleting existing images from GCS..."
         gcloud storage rm -r "gs://${BUCKET_NAME}/listings" || true
         
-        echo "🧠 Re-generating base enriched data to clear old URIs..."
-        python3 database_artefacts/generate_data.py
+        # If they want to regenerate images, they MUST have a fresh JSON file without URIs.
+        # If they didn't regenerate data in step 4, we should do it now to clear the URIs.
+        if [[ ! "$regen_data" =~ ^[Yy]$ ]]; then
+            echo "🧠 Re-generating base enriched data to clear old URIs..."
+            python3 database_artefacts/generate_data.py
+        fi
         
         run_image_bootstrap=true
     else
@@ -164,6 +177,22 @@ else
     else
         echo "⏭️ Skipping data loading."
     fi
+fi
+
+# --- 7. INDEX CREATION ---
+if [ "$deploy_schemas" = true ] || [ "$run_image_bootstrap" = true ] || [[ "$reload_data" =~ ^[Yy]$ ]]; then
+    echo "🏗️ Creating Vector Indexes..."
+    echo "➡️ Creating AlloyDB Indexes..."
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5432 -U $DB_USER -d search -P pager=off -f database_artefacts/alloydb_indexes.sql
+
+    echo "➡️ Creating Cloud SQL PG Indexes..."
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d search -P pager=off -f database_artefacts/cloudsql_pg_indexes.sql
+
+    echo "➡️ Creating Spanner Indexes..."
+    gcloud spanner databases ddl update $SPANNER_DATABASE_ID \
+        --instance=$SPANNER_INSTANCE_ID \
+        --project=$PROJECT_ID \
+        --ddl-file=database_artefacts/spanner_indexes.sql
 fi
 
 # Deactivate virtual environment

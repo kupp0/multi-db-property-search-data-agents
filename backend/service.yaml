@@ -29,8 +29,12 @@ spec:
           value: "${PROJECT_ID}"
         - name: GCP_LOCATION
           value: "${REGION}"
-        - name: AGENT_CONTEXT_SET_ID
-          value: "${AGENT_CONTEXT_SET_ID}"
+        - name: AGENT_CONTEXT_SET_ID_ALLOYDB
+          value: "${AGENT_CONTEXT_SET_ID_ALLOYDB}"
+        - name: AGENT_CONTEXT_SET_ID_CLOUDSQL_PG
+          value: "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}"
+        - name: AGENT_CONTEXT_SET_ID_SPANNER
+          value: "${AGENT_CONTEXT_SET_ID_SPANNER}"
         - name: DB_HOST
           value: "${DB_HOST}"
         - name: DB_NAME

@@ -28,6 +28,10 @@ def load_postgres(host, port, dbname, user, password, name):
         conn = psycopg2.connect(host=host, port=port, dbname=dbname, user=user, password=password)
         cursor = conn.cursor()
         
+        # Drop existing ScaNN indexes if they exist (to avoid empty table index creation error)
+        cursor.execute("DROP INDEX IF EXISTS property_listings_desc_idx;")
+        cursor.execute("DROP INDEX IF EXISTS property_listings_img_idx;")
+        
         # Clear existing data
         cursor.execute("TRUNCATE TABLE property_listings RESTART IDENTITY CASCADE;")
         

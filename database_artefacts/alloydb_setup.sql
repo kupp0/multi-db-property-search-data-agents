@@ -21,7 +21,7 @@ CREATE TABLE public.user_prompt_history (
     id SERIAL PRIMARY KEY,
     "timestamp" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     user_prompt text,
-    prompt_embedded public.vector(768),
+    prompt_embedded vector(3072),
     query_template_used boolean,
     query_template_id integer,
     query_explanation text
@@ -40,7 +40,7 @@ CREATE TABLE property_listings (
     country VARCHAR(100) DEFAULT 'Switzerland',
     canton VARCHAR(100),
     -- Embeddings are generated externally and inserted directly
-    description_embedding VECTOR(768),
+    description_embedding VECTOR(3072) ,
     image_embedding VECTOR(1408) 
 );
 
@@ -50,6 +50,14 @@ CREATE TABLE property_listings (
 
 -- 4. MODEL ALIASING (Vertex AI Integration)
 CREATE EXTENSION IF NOT EXISTS google_ml_integration CASCADE;
+
+
+-- 4.1 Test Text Embeddings in Database Vertex AI integration
+SELECT google_ml.embedding(
+    model_id => 'gemini-embedding-001',
+    content => 'This is the text to embed.'
+);
+
 
 -- 5. IAM GRANTS
 -- Grant access to all current and future tables/sequences in the public schema to all users (including IAM users)

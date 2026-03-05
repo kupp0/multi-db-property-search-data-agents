@@ -21,7 +21,7 @@ CREATE TABLE public.user_prompt_history (
     id SERIAL PRIMARY KEY,
     "timestamp" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     user_prompt text,
-    prompt_embedded public.vector(768),
+    prompt_embedded public.vector(3072),
     query_template_used boolean,
     query_template_id integer,
     query_explanation text
@@ -38,15 +38,12 @@ CREATE TABLE property_listings (
     image_gcs_uri TEXT,
     country VARCHAR(100) DEFAULT 'Switzerland',
     canton VARCHAR(100),
-    description_embedding vector(768),
+    description_embedding vector(3072),
     image_embedding vector(1408) 
 );
 
--- 3. Test Text Embeddings in Database Vertex AI integration
-SELECT google_ml.embedding(
-    model_id => 'gemini-embedding-001',
-    content => 'This is the text to embed.'
-);
+-- 3. INDEX CREATION 
+-- follow seperate index.sql file or automatically as part of the install_databases.sh script
 
 -- 4. IAM GRANTS
 -- Grant access to all current and future tables/sequences in the public schema to all users (including IAM users)
@@ -54,3 +51,9 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO PUBLIC;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO PUBLIC;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO PUBLIC;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO PUBLIC;
+
+-- 3. Test Text Embeddings in Database Vertex AI integration
+SELECT google_ml.embedding(
+    model_id => 'gemini-embedding-001',
+    content => 'This is the text to embed.'
+);

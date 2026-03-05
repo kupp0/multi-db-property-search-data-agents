@@ -17,8 +17,6 @@ import re
 from typing import List, Optional, Any
 from sqlalchemy import text, bindparam
 from google.cloud import spanner
-import aiomysql
-
 # ==============================================================================
 # LOGGING CONFIGURATION
 # ==============================================================================
@@ -203,8 +201,9 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     elif backend == "spanner":
         if not AGENT_CONTEXT_SET_ID_SPANNER:
             raise HTTPException(500, "AGENT_CONTEXT_SET_ID_SPANNER is not configured.")
-        datasource_references["spanner"] = {
+        datasource_references["spannerReference"] = {
             "databaseReference": {
+                "engine": "GOOGLE_SQL",
                 "project_id": PROJECT_ID,
                 "instance_id": SPANNER_INSTANCE_ID,
                 "database_id": SPANNER_DATABASE_ID
@@ -352,8 +351,10 @@ async def search_properties(request: SearchRequest):
                 
                 # Update image URIs to use the local proxy endpoint
                 # This prevents mixed content warnings and handles auth
-                if item.get("image_gcs_uri"):
+                if item.get("image_gcs_uri") and item["image_gcs_uri"] != "NULL":
                     item["image_gcs_uri"] = f"/api/image?gcs_uri={item['image_gcs_uri']}"
+                else:
+                    item["image_gcs_uri"] = None
                 
                 results.append(item)
         

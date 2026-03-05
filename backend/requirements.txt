@@ -11,3 +11,4 @@ greenlet>=3.0.3
 google-cloud-spanner>=3.40.0
 psycopg2-binary>=2.9.9
 google-cloud-aiplatform>=1.40.0
+Pillow>=10.2.0

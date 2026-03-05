@@ -32,6 +32,7 @@ resource "google_compute_instance" "bastion" {
   name         = "db-bastion"
   machine_type = "e2-micro"
   zone         = "${var.region}-b"
+  tags         = ["bastion"]
   project      = google_project.project.project_id
 
   boot_disk {
