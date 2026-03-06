@@ -19,7 +19,9 @@ GDA_LOCATION=${GCP_LOCATION:-"europe-west1"}
 API_ENDPOINT="https://geminidataanalytics.googleapis.com/v1beta/projects/${PROJECT_ID}/locations/${GDA_LOCATION}:queryData"
 
 BACKEND=${1:-alloydb}
-PROMPT=${2:-Show me cheap apartments in basel}
+#PROMPT=${2:-Show me cheap apartments in basel}
+
+PROMPT="Show me all tables in your schema and how many rows are in each table"
 
 echo "Testing backend: $BACKEND"
 

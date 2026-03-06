@@ -45,3 +45,8 @@ CREATE OR REPLACE MODEL property_text_embedding_model
   REMOTE OPTIONS (
     endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/gemini-embedding-001'
   );
+
+-- 4. IAM GRANTS
+CREATE ROLE search_backend_role;
+GRANT SELECT ON TABLE property_listings TO ROLE search_backend_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_prompt_history TO ROLE search_backend_role;

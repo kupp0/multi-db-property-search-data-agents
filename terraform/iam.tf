@@ -103,3 +103,15 @@ resource "google_project_iam_member" "default_compute_sa_roles" {
   role    = each.key
   member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
+
+resource "google_spanner_database_iam_member" "sa_spanner_role" {
+  instance = google_spanner_instance.main.name
+  database = google_spanner_database.database.name
+  role     = "roles/spanner.databaseRoleUser"
+  member   = "serviceAccount:${google_service_account.search_backend_sa.email}"
+  condition {
+    title       = "search_backend_role"
+    description = "Grant access to search_backend_role"
+    expression  = "resource.name.endsWith('/databaseRoles/search_backend_role')"
+  }
+}

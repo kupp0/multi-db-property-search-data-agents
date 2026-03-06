@@ -60,8 +60,14 @@ SELECT google_ml.embedding(
 
 
 -- 5. IAM GRANTS
--- Grant access to all current and future tables/sequences in the public schema to all users (including IAM users)
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO PUBLIC;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO PUBLIC;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO PUBLIC;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO PUBLIC;
+-- Revoke default public access
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM PUBLIC;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM PUBLIC;
+
+-- Grant access to the service account user
+GRANT USAGE ON SCHEMA public TO "search-backend-sa";
+GRANT SELECT ON TABLE property_listings TO "search-backend-sa";
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_prompt_history TO "search-backend-sa";
+GRANT USAGE, SELECT ON SEQUENCE user_prompt_history_id_seq TO "search-backend-sa";
