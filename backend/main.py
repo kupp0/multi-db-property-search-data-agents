@@ -19,7 +19,7 @@ import logging
 import sys
 import re
 from typing import List, Optional, Any
-from sqlalchemy import text, bindparam
+from sqlalchemy import text, bindparam, table, column, select, cast, String, or_, and_
 from google.cloud import spanner
 # ==============================================================================
 # LOGGING CONFIGURATION
@@ -462,39 +462,99 @@ async def get_history(request: HistoryRequest):
     try:
         conn_obj, conn_type = await get_db_connection(request.backend)
         
-        base_query = """
-            SELECT user_prompt, query_template_used, query_template_id, query_explanation 
-            FROM user_prompt_history
-        """
-        
-        conditions = []
-        params = {}
-        spanner_param_types = {}
-        
         ALLOWED_COLUMNS = {"user_prompt", "query_template_used", "query_template_id", "query_explanation"}
         ALLOWED_OPERATORS = {"=", "!=", "LIKE", "ILIKE", ">", "<", ">=", "<="}
         
-        query_str = base_query
-        first_condition = True
+        rows = []
 
-        if request.filters:
-            for idx, f in enumerate(request.filters):
-                if f.column not in ALLOWED_COLUMNS:
-                    continue
-                if f.operator not in ALLOWED_OPERATORS:
-                    continue
-                
-                param_name = f"p{idx}"
-                column_expr = f.column
-                
-                if conn_type == "sqlalchemy":
+        if conn_type == "sqlalchemy":
+            t = table("user_prompt_history",
+                column("user_prompt"),
+                column("query_template_used"),
+                column("query_template_id"),
+                column("query_explanation")
+            )
+            stmt = select(
+                t.c.user_prompt,
+                t.c.query_template_used,
+                t.c.query_template_id,
+                t.c.query_explanation
+            )
+
+            combined_expr = None
+
+            if request.filters:
+                for idx, f in enumerate(request.filters):
+                    if f.column not in ALLOWED_COLUMNS:
+                        continue
+                    if f.operator not in ALLOWED_OPERATORS:
+                        continue
+
+                    col = t.c[f.column]
                     if f.column in ("query_template_id", "query_template_used") and f.operator.upper() in ("LIKE", "ILIKE"):
-                        column_expr = f"CAST({f.column} AS TEXT)"
-                    clause = f"{column_expr} {f.operator} :{param_name}"
+                        col = cast(col, String)
+
+                    op = f.operator.upper()
+                    if op == "=":
+                        expr = col == f.value
+                    elif op == "!=":
+                        expr = col != f.value
+                    elif op == ">":
+                        expr = col > f.value
+                    elif op == "<":
+                        expr = col < f.value
+                    elif op == ">=":
+                        expr = col >= f.value
+                    elif op == "<=":
+                        expr = col <= f.value
+                    elif op == "LIKE":
+                        expr = col.like(f.value)
+                    elif op == "ILIKE":
+                        expr = col.ilike(f.value)
+
+                    if combined_expr is None:
+                        combined_expr = expr
+                    else:
+                        logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
+                        if logic_op == "OR":
+                            combined_expr = or_(combined_expr, expr)
+                        else:
+                            combined_expr = and_(combined_expr, expr)
+
+            if combined_expr is not None:
+                stmt = stmt.where(combined_expr)
+            stmt = stmt.limit(1000)
+
+            async with conn_obj.connect() as conn:
+                result = await conn.execute(stmt)
+                rows = [dict(row) for row in result.mappings()]
+
+        elif conn_type == "spanner":
+            base_query = """
+                SELECT user_prompt, query_template_used, query_template_id, query_explanation
+                FROM user_prompt_history
+            """
+            params = {}
+            spanner_param_types = {}
+            query_str = base_query
+            first_condition = True
+
+            if request.filters:
+                for idx, f in enumerate(request.filters):
+                    if f.column not in ALLOWED_COLUMNS:
+                        continue
+                    if f.operator not in ALLOWED_OPERATORS:
+                        continue
+
+                    param_name = f"p{idx}"
+
+                    # Ensure strict usage of allowed string values instead of formatting from user input
+                    safe_column = next(col for col in ALLOWED_COLUMNS if col == f.column)
+                    safe_operator = next(op for op in ALLOWED_OPERATORS if op == f.operator)
+
+                    clause = f"{safe_column} {safe_operator} @{param_name}"
                     params[param_name] = f.value
-                else: # Spanner
-                    clause = f"{column_expr} {f.operator} @{param_name}"
-                    params[param_name] = f.value
+
                     # Basic type mapping for Spanner
                     if isinstance(f.value, bool):
                         spanner_param_types[param_name] = spanner.param_types.BOOL
@@ -502,22 +562,16 @@ async def get_history(request: HistoryRequest):
                         spanner_param_types[param_name] = spanner.param_types.INT64
                     else:
                         spanner_param_types[param_name] = spanner.param_types.STRING
-                
-                if first_condition:
-                    query_str += f" WHERE {clause}"
-                    first_condition = False
-                else:
-                    logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
-                    query_str += f" {logic_op} {clause}"
 
-        query_str += " LIMIT 1000"
-        
-        rows = []
-        if conn_type == "sqlalchemy":
-            async with conn_obj.connect() as conn:
-                result = await conn.execute(text(query_str), params)
-                rows = [dict(row) for row in result.mappings()]
-        elif conn_type == "spanner":
+                    if first_condition:
+                        query_str += f" WHERE {clause}"
+                        first_condition = False
+                    else:
+                        logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
+                        query_str += f" {logic_op} {clause}"
+
+            query_str += " LIMIT 1000"
+
             with conn_obj.snapshot() as snapshot:
                 results = snapshot.execute_sql(
                     query_str,
