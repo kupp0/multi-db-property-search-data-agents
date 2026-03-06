@@ -5,21 +5,19 @@ os.environ["SPANNER_ENABLE_METRICS"] = "false"
 
 import json
 import requests
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import google.auth
 from google.cloud import storage
-import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import text
 import logging
 import sys
 import re
-from typing import List, Optional, Any
-from sqlalchemy import text, bindparam
+from typing import List, Any
 from google.cloud import spanner
 # ==============================================================================
 # LOGGING CONFIGURATION
@@ -467,7 +465,6 @@ async def get_history(request: HistoryRequest):
             FROM user_prompt_history
         """
         
-        conditions = []
         params = {}
         spanner_param_types = {}
         
