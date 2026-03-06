@@ -184,30 +184,7 @@ function App() {
                                 />
                             </div>
 
-                            {/* AlloyDB AI Diagram (Clickable) */}
-                            <div className="w-full">
-                                <h3 className="text-lg font-semibold mb-3 text-slate-700 dark:text-slate-300">AlloyDB AI Integration</h3>
-                                <a
-                                    href="https://cloud.google.com/blog/products/databases/optimizing-alloydb-ai-text-to-sql-accuracy"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block group relative rounded-lg overflow-hidden shadow-lg border border-slate-200 dark:border-slate-700 hover:ring-2 hover:ring-indigo-500 transition-all"
-                                >
-                                    <img
-                                        src="/alloydb_ai_diagram.png"
-                                        alt="AlloyDB AI Diagram"
-                                        className="w-full h-auto group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400">
-                                            Read Blog Post <ArrowRight className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                </a>
-                                <p className="text-center mt-2 text-xs text-slate-500 dark:text-slate-400">
-                                    Click the image to read about <strong>Optimizing AlloyDB AI Text-to-SQL Accuracy</strong>
-                                </p>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -246,7 +223,7 @@ function App() {
                                 const nlAnswer = toolDetails.naturalLanguageAnswer || '';
 
                                 // Construct display SQL similar to backend
-                                let displaySql = `// GEMINI DATA AGENT CALL\n// Generated SQL: ${generatedSql}\n// Answer: ${nlAnswer}`;
+                                let displaySql = `// GEMINI DATA AGENT CALL\n// Tool Prompt: ${usedPrompt}\n// Generated SQL: ${generatedSql}\n// Answer: ${nlAnswer}`;
                                 if (explanation) {
                                     displaySql += `\n// Explanation: ${explanation}`;
                                 }
@@ -263,6 +240,11 @@ function App() {
                                         rows: rows.slice(0, 3) // Preview first 3 rows
                                     }
                                 });
+                            } else {
+                                // Flush system output if no tool was used
+                                setGeneratedSql('');
+                                setNlAnswer('');
+                                setSystemDetails({});
                             }
 
                             // Keep chat open for smooth interaction, or close if preferred.
