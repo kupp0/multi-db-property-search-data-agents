@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing ARIA Labels on Icon-Only Buttons
+**Learning:** Found several icon-only buttons across components (e.g., toggle dark mode in `App.jsx`, close/remove filters in `UserHistoryWidget.jsx`) lacking descriptive text or `aria-label`s. This makes them difficult to use for screen reader users, who rely on proper semantic labeling to understand the function of an interactive element.
+**Action:** When implementing new UI features, especially small components relying on icons (`lucide-react` is used heavily), make sure to proactively provide an `aria-label` explaining the intended action of the button.
