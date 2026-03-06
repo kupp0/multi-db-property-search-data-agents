@@ -7,7 +7,7 @@ const EXAMPLES = [
     "Show me Lovely Mountain Cabins under 1.5K"
 ];
 
-const SearchExamples = ({ onSelectQuery }) => {
+const SearchExamples = React.memo(({ onSelectQuery }) => {
     return (
         <div className="w-full mt-4 flex flex-col items-start gap-3">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
@@ -26,6 +26,6 @@ const SearchExamples = ({ onSelectQuery }) => {
             </div>
         </div>
     );
-};
+});
 
 export default SearchExamples;
