@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 import asyncpg
 from dotenv import load_dotenv
@@ -10,7 +11,7 @@ load_dotenv(dotenv_path=dotenv_path)
 
 DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_USER = os.environ.get("DB_USER", "postgres")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "Welcome01")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME", "search")
 
 async def apply_sql_file(conn, filepath):
@@ -81,7 +82,7 @@ async def create_database_if_not_exists():
 async def main():
     if not DB_PASSWORD:
         print("Error: DB_PASSWORD not found in environment.")
-        return
+        sys.exit(1)
 
     # Ensure target database exists
     await create_database_if_not_exists()
