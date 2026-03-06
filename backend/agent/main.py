@@ -1,4 +1,8 @@
 import os
+
+# Disable Spanner metrics export to prevent Cloud Run errors
+os.environ["SPANNER_ENABLE_METRICS"] = "false"
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from agent import get_agent

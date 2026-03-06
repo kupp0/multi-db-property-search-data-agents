@@ -1,4 +1,8 @@
 import os
+
+# Disable Spanner metrics export to prevent Cloud Run errors
+os.environ["SPANNER_ENABLE_METRICS"] = "false"
+
 import json
 import requests
 from fastapi import FastAPI, HTTPException, Request
