@@ -45,9 +45,10 @@ PROJECT_ID = os.getenv("GCP_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT
 # Global DB Engines/Clients
 engines = {}
 spanner_client = None
+spanner_database = None
 
 async def get_db_connection(backend: str):
-    global engines, spanner_client
+    global engines, spanner_client, spanner_database
     
     if backend == "alloydb":
         if "alloydb" not in engines:
@@ -62,11 +63,12 @@ async def get_db_connection(backend: str):
         return engines["cloudsql_pg"], "sqlalchemy"
 
     elif backend == "spanner":
-        if not spanner_client:
-            spanner_client = spanner.Client(project=PROJECT_ID)
-        instance = spanner_client.instance(SPANNER_INSTANCE_ID)
-        database = instance.database(SPANNER_DATABASE_ID)
-        return database, "spanner"
+        if not spanner_database:
+            if not spanner_client:
+                spanner_client = spanner.Client(project=PROJECT_ID)
+            instance = spanner_client.instance(SPANNER_INSTANCE_ID)
+            spanner_database = instance.database(SPANNER_DATABASE_ID)
+        return spanner_database, "spanner"
         
     else:
         raise ValueError(f"Unknown backend: {backend}")
