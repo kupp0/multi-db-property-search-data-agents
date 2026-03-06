@@ -20,7 +20,7 @@ const ListingCard = ({ listing }) => {
         <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl shadow-sm border border-white/40 dark:border-slate-700/50 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
             <div className="h-48 bg-slate-100 relative overflow-hidden group">
                 {imageUrl ? (
-                    <img src={imageUrl} alt="Property" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                    <img src={imageUrl} alt={listing.title || "Property"} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900/50">
                         <span className="text-4xl mb-2">🏠</span>

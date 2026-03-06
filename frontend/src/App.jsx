@@ -260,13 +260,13 @@ function App() {
                     {/* Placeholder for logo if needed later, currently empty based on feedback */}
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         <Workflow className="w-4 h-4" /> Architecture
                     </button>
-                    <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         <History className="w-4 h-4" /> History
                     </button>
-                    <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+                    <button onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark mode" className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                 </div>
@@ -317,6 +317,7 @@ function App() {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder='Describe your dream home, for example: "3-bedroom apartment in Zurich"...'
+                                    aria-label="Search properties"
                                     className="w-full px-4 py-4 bg-transparent border-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-base"
                                 />
                                 <button

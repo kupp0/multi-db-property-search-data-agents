@@ -97,7 +97,8 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                             e.stopPropagation();
                             onClose();
                         }}
-                        className="relative z-50 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400"
+                        aria-label="Close history"
+                        className="relative z-50 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -151,7 +152,8 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
 
                                 <button
                                     onClick={() => removeFilter(index)}
-                                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 rounded transition-colors"
+                                    aria-label="Remove filter"
+                                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 rounded transition-colors focus-visible:ring-2 focus-visible:ring-red-500 outline-none"
                                     title="Remove filter"
                                 >
                                     <X className="w-4 h-4" />
