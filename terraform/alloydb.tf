@@ -32,9 +32,7 @@ resource "google_alloydb_instance" "primary" {
     "alloydb_ai_nl.enabled"                        = "on"
     "google_ml_integration.enable_ai_query_engine" = "on"
     "scann.enable_zero_knob_index_creation"        = "on"
-    "password.enforce_complexity"                  = "on"
     "google_db_advisor.enable_auto_advisor"        = "on"
-    "google_db_advisor.auto_advisor_schedule"      = "EVERY 24 HOURS"
     "parameterized_views.enabled"                  = "on"
     "alloydb.iam_authentication"                   = "on"
   }

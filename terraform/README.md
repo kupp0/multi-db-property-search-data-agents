@@ -55,9 +55,12 @@ terraform apply
 ```
 *Type `yes` when prompted to confirm.*
     
-### 5. Manual Database Setup
-**IMPORTANT:** After applying Terraform, you must manually initialize the database schema and extensions.
-Please refer to the **[Database & AI Setup](../README.md#1-alloydb-setup)** section in the root `README.md` for detailed instructions on running the SQL scripts.
+### 5. Database Setup
+After applying Terraform, you must initialize the database schema and extensions.
+Run the following script from the root of the repository:
+```bash
+./scripts/install_databases.sh
+```
 
 ## What gets created?
 
@@ -109,3 +112,14 @@ After a successful apply, Terraform will output:
 -   `bastion_zone`
 
 You can use these values to configure your `backend/.env` file.
+
+## Known Issues
+
+### Cloud SQL ML Integration
+For Cloud SQL, the enablement of Google ML Integration sometimes does not get automatically activated with the terraform `local-exec` command. Users will see the following error message in Cloud SQL for PostgreSQL:
+`Execution failed. All statements are aborted. Details: pq: Unavailable error while processing the prediction call.`
+
+**Solution:** Manually execute the following command:
+```bash
+gcloud beta sql instances patch <instance_name> --project=<project_id> --enable-google-ml-integration
+```

@@ -4,7 +4,7 @@ resource "time_sleep" "wait_for_iam" {
 }
 
 resource "google_storage_bucket" "images_bucket" {
-  name          = "property-images-data-agent-${var.project_id}"
+  name          = "property-images-data-agent-${var.project_id}-v2"
   project       = google_project.project.project_id
   location      = var.region
   force_destroy = true

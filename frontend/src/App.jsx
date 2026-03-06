@@ -389,27 +389,27 @@ function App() {
                                             </div>
                                         )}
 
-                                        {/* APPLIED TEMPLATES & FRAGMENTS */}
+                                        {/* APPLIED TEMPLATES & FACETS */}
                                         {(() => {
                                             const explanation = systemDetails?.intent_explanation || nlAnswer || '';
                                             if (!explanation) return null;
 
-                                            // Extract template and fragment numbers (1-based in text, 0-based for array access)
+                                            // Extract template and facet numbers (1-based in text, 0-based for array access)
                                             const templateMatches = [...explanation.matchAll(/Template\s+(\d+)/gi)];
-                                            const fragmentMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
+                                            const facetMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
 
                                             // Templates seem to be 1-based in the LLM output
                                             const dataAgentContext = contexts[selectedBackend];
                                             const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
-                                            const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
-                                            // Facets/Fragments seem to be 1-based in the LLM output
-                                            const matchedFragments = [...new Set(fragmentMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
+                                            const facetsList = dataAgentContext.facets || [];
+                                            // Facets seem to be 1-based in the LLM output
+                                            const matchedFacets = [...new Set(facetMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
 
-                                            if (matchedTemplates.length === 0 && matchedFragments.length === 0) return null;
+                                            if (matchedTemplates.length === 0 && matchedFacets.length === 0) return null;
 
                                             return (
                                                 <div>
-                                                    <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Fragments</h4>
+                                                    <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Facets</h4>
                                                     <div className="space-y-3">
                                                         {matchedTemplates.map(idx => {
                                                             const dataAgentContext = contexts[selectedBackend];
@@ -423,15 +423,15 @@ function App() {
                                                                 </div>
                                                             );
                                                         })}
-                                                        {matchedFragments.map(idx => {
+                                                        {matchedFacets.map(idx => {
                                                             const dataAgentContext = contexts[selectedBackend];
-                                                            const facetsList = dataAgentContext.facets || dataAgentContext.fragments || [];
-                                                            const fragment = facetsList[idx];
-                                                            if (!fragment) return null;
-                                                            const snippet = fragment.parameterized?.parameterized_sql_snippet || fragment.parameterized?.parameterized_fragment || fragment.sql_snippet || fragment.fragment;
+                                                            const facetsList = dataAgentContext.facets || [];
+                                                            const facet = facetsList[idx];
+                                                            if (!facet) return null;
+                                                            const snippet = facet.parameterized?.parameterized_sql_snippet || facet.parameterized?.parameterized_facet || facet.sql_snippet || facet.facet;
                                                             return (
-                                                                <div key={`fragment-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
-                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {fragment.intent}</div>
+                                                                <div key={`facet-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
+                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {facet.intent}</div>
                                                                     <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
                                                                         {snippet}
                                                                     </div>
