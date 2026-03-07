@@ -34,7 +34,7 @@ const SearchExamples = ({ onSelectQuery }) => {
                     <button
                         key={i}
                         onClick={() => onSelectQuery(ex)}
-                        className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs text-slate-600 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all shadow-sm"
+                        className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs text-slate-600 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                     >
                         {ex}
                     </button>
@@ -156,7 +156,7 @@ function App() {
             {showArchitecture && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowArchitecture(false)}>
                     <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setShowArchitecture(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <button onClick={() => setShowArchitecture(false)} aria-label="Close architecture modal" className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                             ✕
                         </button>
                         <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-white flex items-center gap-2">
@@ -195,7 +195,8 @@ function App() {
             {/* FLOATING CHAT BUTTON */}
             <button
                 onClick={() => setShowChat(!showChat)}
-                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center ${showChat ? 'bg-slate-800 text-white rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
+                aria-label={showChat ? "Close AI Agent Chat" : "Open AI Agent Chat"}
+                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 outline-none ${showChat ? 'bg-slate-800 text-white rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
                 title={showChat ? "Close Chat" : "Open AI Agent Chat"}
             >
                 {showChat ? <ArrowRight className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
@@ -260,13 +261,13 @@ function App() {
                     {/* Placeholder for logo if needed later, currently empty based on feedback */}
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         <Workflow className="w-4 h-4" /> Architecture
                     </button>
-                    <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         <History className="w-4 h-4" /> History
                     </button>
-                    <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+                    <button onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"} className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                         {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                 </div>
@@ -299,7 +300,7 @@ function App() {
                                 <button
                                     key={db.id}
                                     onClick={() => setSelectedBackend(db.id)}
-                                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
                                 >
                                     {db.label}
                                 </button>
@@ -317,12 +318,13 @@ function App() {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder='Describe your dream home, for example: "3-bedroom apartment in Zurich"...'
-                                    className="w-full px-4 py-4 bg-transparent border-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-base"
+                                    className="w-full px-4 py-4 bg-transparent border-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-base outline-none"
                                 />
                                 <button
                                     type="submit"
+                                    aria-label="Search properties"
                                     disabled={loading || !query.trim()}
-                                    className="m-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
+                                    className="m-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 outline-none"
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="hidden sm:inline">Search</span>}
                                     {!loading && <ArrowRight className="w-4 h-4" />}
