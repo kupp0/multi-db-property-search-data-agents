@@ -5,21 +5,20 @@ os.environ["SPANNER_ENABLE_METRICS"] = "false"
 
 import json
 import requests
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import google.auth
 from google.cloud import storage
-import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import text
 import logging
 import sys
 import re
-from typing import List, Optional, Any
-from sqlalchemy import text, bindparam, table, column, select, cast, String, or_, and_
+from typing import List, Any
+from sqlalchemy import table, column, select, cast, String, or_, and_
 from google.cloud import spanner
 # ==============================================================================
 # LOGGING CONFIGURATION
@@ -96,10 +95,10 @@ SPANNER_DATABASE_ID = os.getenv("SPANNER_DATABASE_ID", "search-db")
 
 # Global DB Engines/Clients
 engines = {}
-spanner_client = None
+spanner_database = None
 
 async def get_db_connection(backend: str):
-    global engines, spanner_client
+    global engines, spanner_database
     
     if backend == "alloydb":
         if "alloydb" not in engines:
@@ -115,11 +114,14 @@ async def get_db_connection(backend: str):
         
 
     elif backend == "spanner":
-        if not spanner_client:
-            spanner_client = spanner.Client(project=PROJECT_ID)
-        instance = spanner_client.instance(SPANNER_INSTANCE_ID)
-        database = instance.database(SPANNER_DATABASE_ID)
-        return database, "spanner"
+        # Bolt Performance Optimization: globally cache the Spanner `database` object
+        # (created via `instance.database()`) rather than redundantly instantiating it on every request.
+        # This prevents spinning up new session pools per request which degrades performance.
+        if not spanner_database:
+            client = spanner.Client(project=PROJECT_ID)
+            instance = client.instance(SPANNER_INSTANCE_ID)
+            spanner_database = instance.database(SPANNER_DATABASE_ID)
+        return spanner_database, "spanner"
         
     else:
         raise ValueError(f"Unknown backend: {backend}")
