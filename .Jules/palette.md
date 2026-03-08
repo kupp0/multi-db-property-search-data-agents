@@ -1,0 +1,3 @@
+## 2026-03-08 - Missing ARIA Labels on Icon-Only Buttons
+**Learning:** Across the frontend React components (like App.jsx, ArchitectureModal.jsx, and UserHistoryWidget.jsx), there is a prevalent pattern of missing `aria-label` attributes on interactive elements that rely exclusively on visual icons (such as 'X' for close, chevrons for navigation, or toggles). This significantly impairs screen reader navigation. In addition, inputs lacking visible labels should always have an `aria-label` fallback.
+**Action:** When adding or reviewing new icon-only interactive elements or stand-alone inputs, always implement `aria-label` to ensure context is accessible to assistive technologies.

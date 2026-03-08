@@ -93,6 +93,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                         User Prompt History
                     </h3>
                     <button
+                        aria-label="Close History"
                         onClick={(e) => {
                             e.stopPropagation();
                             onClose();
@@ -142,6 +143,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
 
                                 <input
                                     type="text"
+                                    aria-label="Filter Value"
                                     value={filter.value}
                                     onChange={(e) => updateFilter(index, 'value', e.target.value)}
                                     placeholder="Value..."
@@ -150,6 +152,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                                 />
 
                                 <button
+                                    aria-label="Remove Filter"
                                     onClick={() => removeFilter(index)}
                                     className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 rounded transition-colors"
                                     title="Remove filter"

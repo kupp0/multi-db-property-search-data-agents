@@ -39,6 +39,7 @@ const ArchitectureModal = ({ isOpen, onClose }) => {
                         System Architecture
                     </h3>
                     <button
+                        aria-label="Close Modal"
                         onClick={onClose}
                         className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400"
                     >
@@ -63,12 +64,14 @@ const ArchitectureModal = ({ isOpen, onClose }) => {
 
                     {/* Navigation Buttons */}
                     <button
+                        aria-label="Previous Slide"
                         onClick={prevSlide}
                         className="absolute left-0 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:bg-white dark:hover:bg-slate-800 rounded-r-xl shadow-lg border-y border-r border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 transition-all hover:pl-4"
                     >
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                     <button
+                        aria-label="Next Slide"
                         onClick={nextSlide}
                         className="absolute right-0 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:bg-white dark:hover:bg-slate-800 rounded-l-xl shadow-lg border-y border-l border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 transition-all hover:pr-4"
                     >
@@ -81,6 +84,7 @@ const ArchitectureModal = ({ isOpen, onClose }) => {
                     {slides.map((_, index) => (
                         <button
                             key={index}
+                            aria-label={`Go to slide ${index + 1}`}
                             onClick={() => setCurrentSlide(index)}
                             className={`w-2.5 h-2.5 rounded-full transition-all ${currentSlide === index
                                     ? 'bg-indigo-500 w-6'
