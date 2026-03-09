@@ -123,8 +123,7 @@ async def get_db_connection(backend: str):
                 client_options = {"api_endpoint": "spanner.googleapis.com"}
                 spanner_client = spanner.Client(
                     project=PROJECT_ID, 
-                    client_options=client_options,
-                    metrics_config=spanner.metrics.MetricsConfig(enable_metrics=False)
+                    client_options=client_options
                 )
             instance = spanner_client.instance(SPANNER_INSTANCE_ID)
             spanner_db = instance.database(SPANNER_DATABASE_ID)
@@ -471,7 +470,7 @@ async def get_history(request: HistoryRequest):
     try:
         conn_obj, conn_type = await get_db_connection(request.backend)
         
-        ALLOWED_COLUMNS = {"user_prompt", "query_template_used", "query_template_id", "query_explanation"}
+        ALLOWED_COLUMNS = {"user_prompt", "query_template_used", "query_template_id", "query_explanation", "timestamp"}
         ALLOWED_OPERATORS = {"=", "!=", "LIKE", "ILIKE", ">", "<", ">=", "<="}
         
         rows = []
@@ -481,13 +480,16 @@ async def get_history(request: HistoryRequest):
                 column("user_prompt"),
                 column("query_template_used"),
                 column("query_template_id"),
-                column("query_explanation")
+                column("query_explanation"),
+                column("id"),
+                column("timestamp")
             )
             stmt = select(
                 t.c.user_prompt,
                 t.c.query_template_used,
                 t.c.query_template_id,
-                t.c.query_explanation
+                t.c.query_explanation,
+                t.c.timestamp
             )
 
             combined_expr = None
@@ -538,7 +540,7 @@ async def get_history(request: HistoryRequest):
 
             if combined_expr is not None:
                 stmt = stmt.where(combined_expr)
-            stmt = stmt.limit(1000)
+            stmt = stmt.order_by(t.c.id.desc()).limit(1000)
 
             async with conn_obj.connect() as conn:
                 result = await conn.execute(stmt)
@@ -546,7 +548,7 @@ async def get_history(request: HistoryRequest):
 
         elif conn_type == "spanner":
             base_query = """
-                SELECT user_prompt, query_template_used, query_template_id, query_explanation
+                SELECT user_prompt, query_template_used, query_template_id, query_explanation, timestamp
                 FROM user_prompt_history
             """
             params = {}
@@ -596,7 +598,7 @@ async def get_history(request: HistoryRequest):
                         logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
                         query_str += f" {logic_op} {clause}"
 
-            query_str += " LIMIT 1000"
+            query_str += " ORDER BY id DESC LIMIT 1000"
 
             with conn_obj.snapshot() as snapshot:
                 results = snapshot.execute_sql(
@@ -610,7 +612,8 @@ async def get_history(request: HistoryRequest):
                         "user_prompt": row[0],
                         "query_template_used": row[1],
                         "query_template_id": row[2],
-                        "query_explanation": row[3]
+                        "query_explanation": row[3],
+                        "timestamp": row[4] if len(row) > 4 else None
                     })
             
         return {"rows": rows}

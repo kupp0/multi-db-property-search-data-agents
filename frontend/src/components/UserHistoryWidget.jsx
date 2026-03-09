@@ -23,7 +23,8 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         { value: 'user_prompt', label: 'User Prompt' },
         { value: 'query_template_used', label: 'Template Used' },
         { value: 'query_template_id', label: 'Template ID' },
-        { value: 'query_explanation', label: 'Explanation' }
+        { value: 'query_explanation', label: 'Explanation' },
+        { value: 'timestamp', label: 'Timestamp' }
     ];
 
     const operators = [
@@ -191,6 +192,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                         <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0 z-10 shadow-sm">
                             <tr>
                                 <th className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 whitespace-nowrap w-1/4">User Prompt</th>
+                                <th className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 whitespace-nowrap w-40">Timestamp</th>
                                 <th className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 whitespace-nowrap w-1/6">Template Used</th>
                                 <th className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 whitespace-nowrap w-24">ID</th>
                                 <th className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 whitespace-nowrap">Explanation</th>
@@ -207,6 +209,9 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                                     >
                                         <td className={`px-4 py-3 text-slate-700 dark:text-slate-300 align-top ${isExpanded ? 'whitespace-pre-wrap break-words' : 'max-w-xs truncate'}`} title={!isExpanded ? row.user_prompt : ''}>
                                             {row.user_prompt}
+                                        </td>
+                                        <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400 align-top whitespace-nowrap">
+                                            {row.timestamp ? new Date(row.timestamp).toLocaleString() : '-'}
                                         </td>
                                         <td className={`px-4 py-3 text-slate-600 dark:text-slate-400 align-top ${isExpanded ? 'whitespace-pre-wrap break-words' : 'max-w-xs truncate'}`} title={!isExpanded ? String(row.query_template_used) : ''}>
                                             {row.query_template_used === true ? 'true' : row.query_template_used === false ? 'false' : '-'}
