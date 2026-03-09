@@ -97,9 +97,10 @@ SPANNER_DATABASE_ID = os.getenv("SPANNER_DATABASE_ID", "search-db")
 # Global DB Engines/Clients
 engines = {}
 spanner_client = None
+spanner_db = None
 
 async def get_db_connection(backend: str):
-    global engines, spanner_client
+    global engines, spanner_client, spanner_db
     
     if backend == "alloydb":
         if "alloydb" not in engines:
@@ -115,11 +116,12 @@ async def get_db_connection(backend: str):
         
 
     elif backend == "spanner":
-        if not spanner_client:
-            spanner_client = spanner.Client(project=PROJECT_ID)
-        instance = spanner_client.instance(SPANNER_INSTANCE_ID)
-        database = instance.database(SPANNER_DATABASE_ID)
-        return database, "spanner"
+        if not spanner_db:
+            if not spanner_client:
+                spanner_client = spanner.Client(project=PROJECT_ID)
+            instance = spanner_client.instance(SPANNER_INSTANCE_ID)
+            spanner_db = instance.database(SPANNER_DATABASE_ID)
+        return spanner_db, "spanner"
         
     else:
         raise ValueError(f"Unknown backend: {backend}")
