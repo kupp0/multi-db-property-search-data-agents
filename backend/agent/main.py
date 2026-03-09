@@ -63,7 +63,14 @@ async def get_db_connection(backend: str):
 
     elif backend == "spanner":
         if not spanner_client:
-            spanner_client = spanner.Client(project=PROJECT_ID)
+            # Explicitly disable metrics to prevent Cloud Run errors
+            # and configure keepalive to prevent _InactiveRpcError
+            client_options = {"api_endpoint": "spanner.googleapis.com"}
+            spanner_client = spanner.Client(
+                project=PROJECT_ID, 
+                client_options=client_options,
+                metrics_config=spanner.metrics.MetricsConfig(enable_metrics=False)
+            )
         instance = spanner_client.instance(SPANNER_INSTANCE_ID)
         database = instance.database(SPANNER_DATABASE_ID)
         return database, "spanner"

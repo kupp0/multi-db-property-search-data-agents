@@ -118,7 +118,14 @@ async def get_db_connection(backend: str):
     elif backend == "spanner":
         if not spanner_db:
             if not spanner_client:
-                spanner_client = spanner.Client(project=PROJECT_ID)
+                # Explicitly disable metrics to prevent Cloud Run errors
+                # and configure keepalive to prevent _InactiveRpcError
+                client_options = {"api_endpoint": "spanner.googleapis.com"}
+                spanner_client = spanner.Client(
+                    project=PROJECT_ID, 
+                    client_options=client_options,
+                    metrics_config=spanner.metrics.MetricsConfig(enable_metrics=False)
+                )
             instance = spanner_client.instance(SPANNER_INSTANCE_ID)
             spanner_db = instance.database(SPANNER_DATABASE_ID)
         return spanner_db, "spanner"
@@ -497,22 +504,28 @@ async def get_history(request: HistoryRequest):
                         col = cast(col, String)
 
                     op = f.operator.upper()
+                    param_value = f.value
+                    
+                    if op in ("LIKE", "ILIKE"):
+                        if not str(param_value).startswith("%") and not str(param_value).endswith("%"):
+                            param_value = f"%{param_value}%"
+
                     if op == "=":
-                        expr = col == f.value
+                        expr = col == param_value
                     elif op == "!=":
-                        expr = col != f.value
+                        expr = col != param_value
                     elif op == ">":
-                        expr = col > f.value
+                        expr = col > param_value
                     elif op == "<":
-                        expr = col < f.value
+                        expr = col < param_value
                     elif op == ">=":
-                        expr = col >= f.value
+                        expr = col >= param_value
                     elif op == "<=":
-                        expr = col <= f.value
+                        expr = col <= param_value
                     elif op == "LIKE":
-                        expr = col.like(f.value)
+                        expr = col.like(param_value)
                     elif op == "ILIKE":
-                        expr = col.ilike(f.value)
+                        expr = col.ilike(param_value)
 
                     if combined_expr is None:
                         combined_expr = expr
@@ -554,13 +567,24 @@ async def get_history(request: HistoryRequest):
                     safe_column = next(col for col in ALLOWED_COLUMNS if col == f.column)
                     safe_operator = next(op for op in ALLOWED_OPERATORS if op == f.operator)
 
-                    clause = f"{safe_column} {safe_operator} @{param_name}"
-                    params[param_name] = f.value
+                    param_value = f.value
+                    if safe_operator in ("LIKE", "ILIKE"):
+                        if not str(param_value).startswith("%") and not str(param_value).endswith("%"):
+                            param_value = f"%{param_value}%"
+
+                    if safe_operator == "ILIKE":
+                        clause = f"LOWER({safe_column}) LIKE LOWER(@{param_name})"
+                    elif safe_operator == "LIKE":
+                        clause = f"{safe_column} LIKE @{param_name}"
+                    else:
+                        clause = f"{safe_column} {safe_operator} @{param_name}"
+                        
+                    params[param_name] = param_value
 
                     # Basic type mapping for Spanner
-                    if isinstance(f.value, bool):
+                    if isinstance(param_value, bool):
                         spanner_param_types[param_name] = spanner.param_types.BOOL
-                    elif isinstance(f.value, int):
+                    elif isinstance(param_value, int):
                         spanner_param_types[param_name] = spanner.param_types.INT64
                     else:
                         spanner_param_types[param_name] = spanner.param_types.STRING
