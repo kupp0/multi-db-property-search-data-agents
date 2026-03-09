@@ -91,10 +91,12 @@ fi
 if [ "$deploy_schemas" = true ]; then
     echo "🛠️ Deploying Schemas..."
     echo "➡️ Deploying AlloyDB Schema..."
-    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5432 -U $DB_USER -d postgres -P pager=off -f database_artefacts/alloydb_setup.sql
+    sed -e "s/{PROJECT_ID}/$PROJECT_ID/g" database_artefacts/alloydb_setup.sql > /tmp/alloydb_setup_clean.sql
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5432 -U $DB_USER -d postgres -P pager=off -f /tmp/alloydb_setup_clean.sql
 
     echo "➡️ Deploying Cloud SQL PG Schema..."
-    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d postgres -P pager=off -f database_artefacts/cloudsql_pg_setup.sql
+    sed -e "s/{PROJECT_ID}/$PROJECT_ID/g" database_artefacts/cloudsql_pg_setup.sql > /tmp/cloudsql_pg_setup_clean.sql
+    PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d postgres -P pager=off -f /tmp/cloudsql_pg_setup_clean.sql
 
     echo "➡️ Deploying Spanner Schema..."
     # Remove comments from SQL file before passing to gcloud to avoid parsing errors

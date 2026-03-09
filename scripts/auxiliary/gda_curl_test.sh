@@ -21,7 +21,7 @@ API_ENDPOINT="https://geminidataanalytics.googleapis.com/v1beta/projects/${PROJE
 BACKEND=${1:-alloydb}
 #PROMPT=${2:-Show me cheap apartments in basel}
 
-PROMPT="Show me all tables in your schema and how many rows are in each table"
+PROMPT="Show me family apartments in Zurich with a nice view up to 16k"
 
 echo "Testing backend: $BACKEND"
 

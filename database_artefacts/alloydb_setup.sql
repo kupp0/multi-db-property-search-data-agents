@@ -67,7 +67,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM PUBLIC;
 
 -- Grant access to the service account user
-GRANT USAGE ON SCHEMA public TO "search-backend-sa";
-GRANT SELECT ON TABLE property_listings TO "search-backend-sa";
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_prompt_history TO "search-backend-sa";
-GRANT USAGE, SELECT ON SEQUENCE user_prompt_history_id_seq TO "search-backend-sa";
+GRANT USAGE ON SCHEMA public TO "search-backend-sa@{PROJECT_ID}.iam";
+GRANT SELECT ON TABLE property_listings TO "search-backend-sa@{PROJECT_ID}.iam";
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_prompt_history TO "search-backend-sa@{PROJECT_ID}.iam";
+GRANT USAGE, SELECT ON SEQUENCE user_prompt_history_id_seq TO "search-backend-sa@{PROJECT_ID}.iam";
