@@ -422,8 +422,8 @@ async def search_properties(request: SearchRequest):
                     transaction.execute_update(
                         """
                         INSERT INTO user_prompt_history 
-                        (user_prompt, query_template_used, query_template_id, query_explanation)
-                        VALUES (@prompt, @used, @id, @explanation)
+                        (user_prompt, query_template_used, query_template_id, query_explanation, timestamp)
+                        VALUES (@prompt, @used, @id, @explanation, PENDING_COMMIT_TIMESTAMP())
                         """,
                         params={
                             "prompt": request.query, 
@@ -543,7 +543,7 @@ async def get_history(request: HistoryRequest):
 
             if combined_expr is not None:
                 stmt = stmt.where(combined_expr)
-            stmt = stmt.order_by(t.c.id.desc()).limit(1000)
+            stmt = stmt.order_by(t.c.timestamp.desc()).limit(1000)
 
             async with conn_obj.connect() as conn:
                 result = await conn.execute(stmt)
@@ -601,7 +601,7 @@ async def get_history(request: HistoryRequest):
                         logic_op = f.logic.upper() if f.logic.upper() in ("AND", "OR") else "AND"
                         query_str += f" {logic_op} {clause}"
 
-            query_str += " ORDER BY id DESC LIMIT 1000"
+            query_str += " ORDER BY timestamp DESC LIMIT 1000"
 
             with conn_obj.snapshot() as snapshot:
                 results = snapshot.execute_sql(
