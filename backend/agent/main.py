@@ -29,7 +29,7 @@ app.add_middleware(
 # Database Configuration
 DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_USER = os.environ.get("DB_USER", "postgres")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "Welcome01")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME", "search")
 
 CLOUDSQL_PG_HOST = os.getenv("CLOUDSQL_PG_HOST", "127.0.0.1")
