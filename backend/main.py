@@ -2,6 +2,9 @@ import os
 
 # Disable Spanner metrics export to prevent Cloud Run errors
 os.environ["SPANNER_ENABLE_METRICS"] = "false"
+os.environ["SPANNER_DISABLE_BUILTIN_METRICS"] = "true"
+os.environ["GOOGLE_CLOUD_SPANNER_ENABLE_METRICS"] = "false"
+os.environ["OTEL_SDK_DISABLED"] = "true"
 
 import json
 import requests
