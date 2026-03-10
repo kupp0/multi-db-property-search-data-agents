@@ -58,8 +58,48 @@ GRANT SELECT ON TABLE property_listings TO "search-backend-sa@{PROJECT_ID}.iam";
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_prompt_history TO "search-backend-sa@{PROJECT_ID}.iam";
 GRANT USAGE, SELECT ON SEQUENCE user_prompt_history_id_seq TO "search-backend-sa@{PROJECT_ID}.iam";
 
--- 3. Test Text Embeddings in Database Vertex AI integration
+-- 3. Register Multimodal Embedding Model, because it is not available as built-in model
+CREATE OR REPLACE FUNCTION multimodal_input_transform(model_id VARCHAR(100), input_text TEXT)
+RETURNS JSON AS $$
+BEGIN
+    RETURN json_build_object(
+        'instances', json_build_array(
+            json_build_object('text', input_text)
+        )
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION multimodal_output_transform(model_id VARCHAR(100), response_json JSON)
+RETURNS real[] AS $$
+BEGIN
+    RETURN (
+        SELECT array_agg(value::real)
+        FROM json_array_elements_text(
+            response_json->'predictions'->0->'textEmbedding'
+        )
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+CALL google_ml.create_model(
+    model_id => 'multimodalembedding@001',
+    model_provider => 'google',
+    model_type => 'text_embedding',
+    model_qualified_name => 'multimodalembedding@001',
+    model_auth_type => 'cloudsql_service_agent_iam',
+    model_in_transform_fn => 'multimodal_input_transform',
+    model_out_transform_fn => 'multimodal_output_transform'
+);
+
+-- 4. Test Text Embeddings in Database Vertex AI integration
 SELECT google_ml.embedding(
     model_id => 'gemini-embedding-001',
+    content => 'This is the text to embed.'
+);
+
+-- 5. Test Multimodal Embeddings in Database Vertex AI integration
+SELECT google_ml.embedding(
+    model_id => 'multimodalembedding@001',
     content => 'This is the text to embed.'
 );

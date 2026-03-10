@@ -1,6 +1,6 @@
 # Unified Data Cloud Property Search Demo
 
-The **Unified Data Cloud Property Search Demo** showcases a **Natural Language to SQL (NL2SQL)** pipeline powered by the **Gemini Data Agent**. It enables users to search for property listings using everyday language (e.g., *"Show me 2-bedroom apartments in Zurich under 3000 CHF"*). The application translates these natural language queries into SQL and executes them across three different database backends—**AlloyDB**, **Cloud Spanner**, and **Cloud SQL for PostgreSQL**—allowing users to seamlessly compare performance, vector search capabilities, and SQL dialects across Google Cloud's premier database offerings.
+The **Unified Data Cloud Property Search Demo** showcases a **Natural Language to SQL (NL2SQL)** application powered by the **Gemini Data Agent**. It enables users to search for property listings using everyday language (e.g., *"Show me 2-bedroom apartments in Zurich under 3000 CHF"*). The application translates these natural language queries into SQL and executes them across three different database backends—**AlloyDB**, **Cloud Spanner**, and **Cloud SQL for PostgreSQL**—allowing users to seamlessly compare performance, vector search capabilities, and SQL dialects across Google Cloud's premier database offerings.
 
 The application features two primary modalities:
 1.  **Main UI (Search Bar)**: Directly interacts with the QueryData API (Gemini Data Analytics API) for fast, direct natural language to SQL translation.

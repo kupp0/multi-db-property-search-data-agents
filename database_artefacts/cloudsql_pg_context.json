@@ -54,22 +54,22 @@
     },
     {
       "nlQuery": "Show me lovely wooden cabin",
-      "sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings ORDER BY (1 - ((description_embedding::halfvec(3072)) <=> (google_ml.embedding(model_id => 'gemini-embedding-001', content => 'Lovely wooden cabin')::vector)::halfvec(3072))) DESC LIMIT 25;",
-      "intent": "Search for properties based solely on semantic similarity to a text description",
+      "sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings ORDER BY ((0.6 * (1 - (description_embedding <=> google_ml.embedding(model_id => 'gemini-embedding-001', content => 'Lovely wooden cabin')::vector))) + (0.4 * (1 - (image_embedding <=> google_ml.embedding(model_id => 'multimodalembedding@001', content => 'Lovely wooden cabin')::vector)))) DESC LIMIT 25;",
+      "intent": "Search for properties based solely on semantic and visual similarity to a text description",
       "manifest": "Find property listings ordered by semantic similarity to a search phrase",
       "parameterized": {
         "parameterized_intent": "Show me $1",
-        "parameterized_sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings ORDER BY (1 - ((description_embedding::halfvec(3072)) <=> (google_ml.embedding(model_id => 'gemini-embedding-001', content => $1)::vector)::halfvec(3072))) DESC LIMIT 25;"
+        "parameterized_sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings ORDER BY ((0.6 * (1 - (description_embedding <=> google_ml.embedding(model_id => 'gemini-embedding-001', content => $1)::vector))) + (0.4 * (1 - (image_embedding <=> google_ml.embedding(model_id => 'multimodalembedding@001', content => $1)::vector)))) DESC LIMIT 25;"
       }
     },
     {
       "nlQuery": "Show me modern apartments in Zurich with industrial look up to 6k with min 2 rooms",
-      "sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings WHERE LOWER(city) = LOWER('Zurich') AND price <= 6000 AND bedrooms >= 2 ORDER BY (1 - ((description_embedding::halfvec(3072)) <=> (google_ml.embedding(model_id => 'gemini-embedding-001', content => 'modern apartments with industrial look')::vector)::halfvec(3072))) DESC LIMIT 25;",
-      "intent": "Find apartments in a specific city with price and room constraints, ordered by semantic similarity to a description",
+      "sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings WHERE LOWER(city) = LOWER('Zurich') AND price <= 6000 AND bedrooms >= 2 ORDER BY ((0.6 * (1 - (description_embedding <=> google_ml.embedding(model_id => 'gemini-embedding-001', content => 'modern apartments with industrial look')::vector))) + (0.4 * (1 - (image_embedding <=> google_ml.embedding(model_id => 'multimodalembedding@001', content => 'modern apartments with industrial look')::vector)))) DESC LIMIT 25;",
+      "intent": "Find apartments in a specific city with price and room constraints, ordered by visual and semantic similarity to a description",
       "manifest": "Find property listings in a given city with price and room limits, ordered by semantic similarity to a search phrase",
       "parameterized": {
         "parameterized_intent": "Show me $1 in $2 up to $3 with min $4 rooms",
-        "parameterized_sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings WHERE LOWER(city) = LOWER($2) AND price <= $3 AND bedrooms >= $4 ORDER BY (1 - ((description_embedding::halfvec(3072)) <=> (google_ml.embedding(model_id => 'gemini-embedding-001', content => $1)::vector)::halfvec(3072))) DESC LIMIT 25;"
+        "parameterized_sql": "SELECT image_gcs_uri, id, title, description, bedrooms, price, city, country, canton FROM property_listings WHERE LOWER(city) = LOWER($2) AND price <= $3 AND bedrooms >= $4 ORDER BY ((0.6 * (1 - (description_embedding <=> google_ml.embedding(model_id => 'gemini-embedding-001', content => $1)::vector))) + (0.4 * (1 - (image_embedding <=> google_ml.embedding(model_id => 'multimodalembedding@001', content => $1)::vector)))) DESC LIMIT 25;"
       }
     }
   ]

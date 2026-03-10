@@ -46,6 +46,13 @@ CREATE OR REPLACE MODEL property_text_embedding_model
     endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/gemini-embedding-001'
   );
 
+CREATE OR REPLACE MODEL property_multimodal_text_model
+  INPUT (text STRING(MAX))
+  OUTPUT (textEmbedding ARRAY<FLOAT64>)
+  REMOTE OPTIONS (
+    endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/multimodalembedding@001'
+  );
+
 -- 4. IAM GRANTS
 CREATE ROLE search_backend_role;
 GRANT SELECT ON TABLE property_listings TO ROLE search_backend_role;
