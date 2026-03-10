@@ -1,7 +1,10 @@
 # Unified Data Cloud Property Search Demo
 
-This application demonstrates a **Natural Language to SQL (NL2SQL)** pipeline powered by the **Gemini Data Agent**. It allows users to search for property listings using natural language queries, which are translated into SQL and executed against three parallel database backends: **AlloyDB**, **Cloud Spanner**, and **Cloud SQL for PostgreSQL**.
+The **Unified Data Cloud Property Search Demo** showcases a **Natural Language to SQL (NL2SQL)** pipeline powered by the **Gemini Data Agent**. It enables users to search for property listings using everyday language (e.g., *"Show me 2-bedroom apartments in Zurich under 3000 CHF"*). The application translates these natural language queries into SQL and executes them across three different database backends—**AlloyDB**, **Cloud Spanner**, and **Cloud SQL for PostgreSQL**—allowing users to seamlessly compare performance, vector search capabilities, and SQL dialects across Google Cloud's premier database offerings.
 
+The application features two primary modalities:
+1.  **Main UI (Search Bar)**: Directly interacts with the QueryData API (Gemini Data Analytics API) for fast, direct natural language to SQL translation.
+2.  **CHAT Interface**: Interacts with a conversational Agent connected to the QueryData API endpoint via the ADK / MCP Toolkit, allowing for follow-up questions and refined searches.
 ## Architecture
 
 ![Architecture Diagram](frontend/src/assets/data_agent_diagram.png)
@@ -16,6 +19,7 @@ This application demonstrates a **Natural Language to SQL (NL2SQL)** pipeline po
 
 ## Features
 
+*   **Dual Modalities**: The main UI features a search bar that directly interacts with the QueryData API (Gemini Data Analytics API). Alternatively, users can use the CHAT interface, which interacts with an Agent connected to the QueryData API endpoint via the ADK / MCP Toolkit.
 *   **Multi-Database Support**: Seamlessly switch between AlloyDB, Spanner, and Cloud SQL PG to compare performance and SQL dialects.
 *   **Natural Language Search**: Ask questions like "Show me 2-bedroom apartments in Zurich under 3000 CHF".
 *   **Generative AI Answers**: Get natural language summaries alongside data results.
