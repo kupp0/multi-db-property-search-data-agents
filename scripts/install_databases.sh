@@ -40,6 +40,8 @@ SPANNER_INSTANCE_ID=${SPANNER_INSTANCE_ID:-search-instance}
 SPANNER_DATABASE_ID=${SPANNER_DATABASE_ID:-search-db}
 CLOUDSQL_PG_INSTANCE_ID=${CLOUDSQL_PG_INSTANCE_ID:-search-pg}
 CLOUDSQL_PG_DB_NAME=${CLOUDSQL_PG_DB_NAME:-search}
+CLOUDSQL_MYSQL_INSTANCE_ID=${CLOUDSQL_MYSQL_INSTANCE_ID:-search-mysql}
+CLOUDSQL_MYSQL_DB_NAME=${CLOUDSQL_MYSQL_DB_NAME:-search}
 
 DB_USER=${DB_USER:-postgres}
 DB_PASSWORD=${DB_PASSWORD:-${DB_PASS}}
@@ -55,7 +57,7 @@ trap cleanup EXIT
 echo "🔒 Establishing SSH Tunnel to Bastion Host..."
 
 # Check if ports are in use
-for port in 5432 5433; do
+for port in 5432 5433 3306; do
     if lsof -i :$port -t >/dev/null; then
         echo "⚠️  Port $port is in use. Killing existing process..."
         kill -9 $(lsof -i :$port -t)
@@ -67,7 +69,7 @@ gcloud compute ssh db-bastion \
     --tunnel-through-iap \
     --project=$PROJECT_ID \
     --zone=${REGION}-b \
-    -- -L 5432:127.0.0.1:5432 -L 5433:127.0.0.1:5433 -N -f
+    -- -L 5432:127.0.0.1:5432 -L 5433:127.0.0.1:5433 -L 3306:127.0.0.1:3306 -N -f
 
 echo "⏳ Waiting for SSH Tunnel and Proxies to initialize (10s)..."
 sleep 10
@@ -97,6 +99,10 @@ if [ "$deploy_schemas" = true ]; then
     echo "➡️ Deploying Cloud SQL PG Schema..."
     sed -e "s/{PROJECT_ID}/$PROJECT_ID/g" database_artefacts/cloudsql_pg_setup.sql > /tmp/cloudsql_pg_setup_clean.sql
     PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d postgres -P pager=off -f /tmp/cloudsql_pg_setup_clean.sql
+
+    echo "➡️ Deploying Cloud SQL MySQL Schema..."
+    sed -e "s/{PROJECT_ID}/$PROJECT_ID/g" database_artefacts/cloudsql_mysql_setup.sql > /tmp/cloudsql_mysql_setup_clean.sql
+    mysql -h 127.0.0.1 -P 3306 -u mysql -p$DB_PASSWORD < /tmp/cloudsql_mysql_setup_clean.sql
 
     echo "➡️ Deploying Spanner Schema..."
     # Remove comments from SQL file before passing to gcloud to avoid parsing errors
@@ -189,6 +195,9 @@ if [ "$deploy_schemas" = true ] || [ "$run_image_bootstrap" = true ] || [[ "$rel
 
     echo "➡️ Creating Cloud SQL PG Indexes..."
     PGPASSWORD=$DB_PASSWORD psql -h 127.0.0.1 -p 5433 -U $DB_USER -d search -P pager=off -f database_artefacts/cloudsql_pg_indexes.sql
+
+    echo "➡️ Creating Cloud SQL MySQL Indexes..."
+    mysql -h 127.0.0.1 -P 3306 -u mysql -p$DB_PASSWORD search < database_artefacts/cloudsql_mysql_indexes.sql
 
     echo "➡️ Creating Spanner Indexes..."
     gcloud spanner databases ddl update $SPANNER_DATABASE_ID \

@@ -21,12 +21,12 @@ API_ENDPOINT="https://geminidataanalytics.googleapis.com/v1beta/projects/${PROJE
 BACKEND=${1:-alloydb}
 #PROMPT=${2:-Show me cheap apartments in basel}
 
-PROMPT="Show me family apartments in Zurich with a nice view up to 16k"
+PROMPT="Show me Lovely Mountain Cabins under 15k"
 
 echo "Testing backend: $BACKEND"
 
 if [ "$BACKEND" == "alloydb" ]; then
-  read -r -d '' DATASOURCE_REF << EOF
+  read -r -d '' DATASOURCE_REF << INNER_EOF
       "alloydb": {
         "databaseReference": {
           "project_id": "${PROJECT_ID}",
@@ -39,9 +39,9 @@ if [ "$BACKEND" == "alloydb" ]; then
           "context_set_id": "${AGENT_CONTEXT_SET_ID_ALLOYDB}"
         }
       }
-EOF
+INNER_EOF
 elif [ "$BACKEND" == "cloudsql_pg" ]; then
-  read -r -d '' DATASOURCE_REF << EOF
+  read -r -d '' DATASOURCE_REF << INNER_EOF
       "cloudSqlReference": {
         "databaseReference": {
           "engine": "POSTGRESQL",
@@ -54,9 +54,24 @@ elif [ "$BACKEND" == "cloudsql_pg" ]; then
           "context_set_id": "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}"
         }
       }
-EOF
+INNER_EOF
+elif [ "$BACKEND" == "cloudsql_mysql" ]; then
+  read -r -d '' DATASOURCE_REF << INNER_EOF
+      "cloudSqlReference": {
+        "databaseReference": {
+          "engine": "MYSQL",
+          "project_id": "${PROJECT_ID}",
+          "region": "${GDA_LOCATION}",
+          "instance_id": "${CLOUDSQL_MYSQL_INSTANCE_ID:-search-mysql}",
+          "database_id": "${CLOUDSQL_MYSQL_DB_NAME:-search}"
+        },
+        "agentContextReference": {
+          "context_set_id": "${AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL}"
+        }
+      }
+INNER_EOF
 elif [ "$BACKEND" == "spanner" ]; then
-  read -r -d '' DATASOURCE_REF << EOF
+  read -r -d '' DATASOURCE_REF << INNER_EOF
       "spannerReference": {
         "databaseReference": {
           "engine": "GOOGLE_SQL",
@@ -68,7 +83,7 @@ elif [ "$BACKEND" == "spanner" ]; then
           "context_set_id": "${AGENT_CONTEXT_SET_ID_SPANNER}"
         }
       }
-EOF
+INNER_EOF
 else
   echo "Unknown backend: $BACKEND"
   exit 1
@@ -84,7 +99,7 @@ if [ -z "$TOKEN" ]; then
 fi
 
 # JSON Payload
-read -r -d '' JSON_PAYLOAD << EOF
+read -r -d '' JSON_PAYLOAD << INNER_EOF
 {
   "parent": "projects/${PROJECT_ID}/locations/${GDA_LOCATION}",
   "prompt": "${PROMPT}",
@@ -100,7 +115,7 @@ ${DATASOURCE_REF}
     "generate_disambiguation_question": true
   }
 }
-EOF
+INNER_EOF
 
 echo "Sending request to: ${API_ENDPOINT}"
 echo "Payload:"

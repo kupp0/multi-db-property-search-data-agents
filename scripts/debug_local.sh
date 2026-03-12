@@ -34,11 +34,13 @@ SPANNER_INSTANCE_ID=${SPANNER_INSTANCE_ID:-search-instance}
 SPANNER_DATABASE_ID=${SPANNER_DATABASE_ID:-search-db}
 CLOUDSQL_PG_INSTANCE_ID=${CLOUDSQL_PG_INSTANCE_ID:-search-pg}
 CLOUDSQL_PG_DB_NAME=${CLOUDSQL_PG_DB_NAME:-search}
+CLOUDSQL_MYSQL_INSTANCE_ID=${CLOUDSQL_MYSQL_INSTANCE_ID:-search-mysql}
+CLOUDSQL_MYSQL_DB_NAME=${CLOUDSQL_MYSQL_DB_NAME:-search}
 
 # Validation
-if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ]; then
+if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL:-}" ]; then
     echo "⚠️  AGENT_CONTEXT_SET_ID variables are not fully set!"
-    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, and AGENT_CONTEXT_SET_ID_SPANNER in backend/.env or export them before running this script."
+    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, AGENT_CONTEXT_SET_ID_SPANNER, and AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL in backend/.env or export them before running this script."
     exit 1
 fi
 
@@ -68,7 +70,7 @@ docker build -t local-search-backend backend/
 docker build -t local-search-frontend -f frontend/Dockerfile .
 
 # Check if ports are in use
-for port in 5432 5433; do
+for port in 5432 5433 3306; do
     if lsof -i :$port -t >/dev/null; then
         echo "⚠️  Port $port is in use. Killing existing process..."
         kill -9 $(lsof -i :$port -t)
@@ -81,7 +83,7 @@ gcloud compute ssh db-bastion \
     --tunnel-through-iap \
     --project=$PROJECT_ID \
     --zone=${REGION}-b \
-    -- -L 5432:127.0.0.1:5432 -L 5433:127.0.0.1:5433 -N -f
+    -- -L 5432:127.0.0.1:5432 -L 5433:127.0.0.1:5433 -L 3306:127.0.0.1:3306 -N -f
 
 echo "⏳ Waiting for SSH Tunnel and Proxies to initialize (10s)..."
 sleep 10
@@ -98,6 +100,7 @@ docker run -d --rm \
     -e AGENT_CONTEXT_SET_ID_ALLOYDB=$AGENT_CONTEXT_SET_ID_ALLOYDB \
     -e AGENT_CONTEXT_SET_ID_SPANNER=$AGENT_CONTEXT_SET_ID_SPANNER \
     -e AGENT_CONTEXT_SET_ID_CLOUDSQL_PG=$AGENT_CONTEXT_SET_ID_CLOUDSQL_PG \
+    -e AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL=$AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL \
     -e DB_HOST=127.0.0.1 \
     -e DB_NAME=${DB_NAME:-search} \
     -e DB_USER=${DB_USER:-postgres} \
@@ -109,6 +112,11 @@ docker run -d --rm \
     -e CLOUDSQL_PG_USER=${DB_USER:-postgres} \
     -e CLOUDSQL_PG_PASSWORD=${DB_PASSWORD:-${DB_PASS}} \
     -e CLOUDSQL_PG_DB_NAME=$CLOUDSQL_PG_DB_NAME \
+    -e CLOUDSQL_MYSQL_HOST=127.0.0.1 \
+    -e CLOUDSQL_MYSQL_PORT=3306 \
+    -e CLOUDSQL_MYSQL_USER=mysql \
+    -e CLOUDSQL_MYSQL_PASSWORD=${DB_PASSWORD:-${DB_PASS}} \
+    -e CLOUDSQL_MYSQL_DB_NAME=$CLOUDSQL_MYSQL_DB_NAME \
     -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys.json \
     -v $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys.json:ro \
     local-search-backend
