@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import ChatInterface from './components/ChatInterface';
 import UserHistoryWidget from './components/UserHistoryWidget';
 
-import dataAgentDiagram from './assets/data_agent_diagram.jpg';
+import dataAgentDiagram from './assets/data_agent_diagram.png';
 import dataAgentContextDiagram from './assets/data_agent_context_infographic.png';
 import alloydbContext from '../../database_artefacts/alloydb_context.json';
 import cloudsqlPgContext from '../../database_artefacts/cloudsql_pg_context.json';
