@@ -50,3 +50,12 @@ output "spanner_database_id" {
 output "cloudsql_pg_instance_id" {
   value = var.cloudsql_pg_instance_id
 }
+
+output "cloudsql_mysql_instance_id" {
+  value = var.cloudsql_mysql_instance_id
+}
+
+output "cloudsql_mysql_connection_name" {
+  description = "The connection name of the Cloud SQL MySQL instance"
+  value       = google_sql_database_instance.mysql.connection_name
+}

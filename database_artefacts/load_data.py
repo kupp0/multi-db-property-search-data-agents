@@ -2,6 +2,7 @@ import os
 import json
 import psycopg2
 import psycopg2.extras
+import mysql.connector
 from google.cloud import spanner
 from dotenv import load_dotenv
 import decimal
@@ -56,6 +57,61 @@ def load_postgres(host, port, dbname, user, password, name):
         
         # Use execute_values for fast batched insert
         psycopg2.extras.execute_values(cursor, insert_query, values, page_size=100)
+            
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print(f"✅ Successfully loaded {len(properties)} records into {name}.")
+    except Exception as e:
+        print(f"❌ Failed to load into {name}: {e}")
+
+# --- CLOUD SQL MYSQL ---
+def load_mysql(host, port, dbname, user, password, name):
+    print(f"\nLoading data into {name} ({host}:{port})...")
+    try:
+        conn = mysql.connector.connect(
+            host=host,
+            port=port,
+            database=dbname,
+            user=user,
+            password=password
+        )
+        cursor = conn.cursor()
+        
+        # Drop existing indexes if they exist
+        try:
+            cursor.execute("ALTER TABLE property_listings DROP INDEX description_embedding_idx;")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE property_listings DROP INDEX image_embedding_idx;")
+        except Exception:
+            pass
+        
+        # Clear existing data
+        cursor.execute("TRUNCATE TABLE property_listings;")
+        
+        # Prepare data for batched insert
+        # MySQL vector type accepts string representation of arrays e.g. '[1.0, 2.0]'
+        values = [
+            (
+                p['id'], p['title'], p.get('description', ''), p['price'], p['bedrooms'], 
+                p.get('city', ''), p.get('country', 'Switzerland'), p.get('canton', ''), 
+                p.get('image_gcs_uri'),
+                str(p['description_embedding']) if p.get('description_embedding') else None, 
+                str(p['image_embedding']) if p.get('image_embedding') else None
+            )
+            for p in properties
+        ]
+        
+        insert_query = """
+            INSERT INTO property_listings 
+            (id, title, description, price, bedrooms, city, country, canton, image_gcs_uri, description_embedding, image_embedding)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, string_to_vector(%s), string_to_vector(%s))
+        """
+        
+        # Use executemany for fast batched insert
+        cursor.executemany(insert_query, values)
             
         conn.commit()
         cursor.close()
@@ -126,6 +182,14 @@ def main():
         user=os.getenv("DB_USER", "postgres"), 
         password=os.getenv("DB_PASSWORD"), 
         name="Cloud SQL PG"
+    )
+    
+    load_mysql(
+        host="127.0.0.1", port=3306, 
+        dbname=os.getenv("CLOUDSQL_MYSQL_DB_NAME", "search"), 
+        user="mysql", 
+        password=os.getenv("DB_PASSWORD"), 
+        name="Cloud SQL MySQL"
     )
     
     load_spanner(

@@ -48,17 +48,17 @@ resource "google_alloydb_instance" "primary" {
 }
 
 resource "google_alloydb_user" "iam_sa_user" {
-  cluster       = google_alloydb_cluster.default.name
-  user_id       = trimsuffix(google_service_account.search_backend_sa.email, ".gserviceaccount.com")
-  user_type     = "ALLOYDB_IAM_USER"
+  cluster        = google_alloydb_cluster.default.name
+  user_id        = trimsuffix(google_service_account.search_backend_sa.email, ".gserviceaccount.com")
+  user_type      = "ALLOYDB_IAM_USER"
   database_roles = ["alloydbiamuser"]
-  depends_on    = [google_alloydb_instance.primary]
+  depends_on     = [google_alloydb_instance.primary]
 }
 
 resource "google_alloydb_user" "iam_dev_user" {
-  cluster       = google_alloydb_cluster.default.name
-  user_id       = var.developer_email
-  user_type     = "ALLOYDB_IAM_USER"
+  cluster        = google_alloydb_cluster.default.name
+  user_id        = var.developer_email
+  user_type      = "ALLOYDB_IAM_USER"
   database_roles = ["alloydbiamuser", "alloydbsuperuser"]
-  depends_on    = [google_alloydb_instance.primary]
+  depends_on     = [google_alloydb_instance.primary]
 }

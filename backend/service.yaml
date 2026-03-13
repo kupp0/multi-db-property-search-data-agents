@@ -35,6 +35,8 @@ spec:
           value: "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}"
         - name: AGENT_CONTEXT_SET_ID_SPANNER
           value: "${AGENT_CONTEXT_SET_ID_SPANNER}"
+        - name: AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL
+          value: "${AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL}"
         - name: DB_HOST
           value: "${DB_HOST}"
         - name: DB_NAME
@@ -53,6 +55,16 @@ spec:
           value: "${DB_PASSWORD}"
         - name: CLOUDSQL_PG_DB_NAME
           value: "${DB_NAME}"
+        - name: CLOUDSQL_MYSQL_HOST
+          value: "127.0.0.1"
+        - name: CLOUDSQL_MYSQL_PORT
+          value: "3306"
+        - name: CLOUDSQL_MYSQL_USER
+          value: "mysql"
+        - name: CLOUDSQL_MYSQL_PASSWORD
+          value: "${DB_PASSWORD}"
+        - name: CLOUDSQL_MYSQL_DB_NAME
+          value: "${DB_NAME}"
       - name: alloydb-auth-proxy
         image: gcr.io/alloydb-connectors/alloydb-auth-proxy:latest
         args:
@@ -65,5 +77,11 @@ spec:
         - "--port=5433"
         - "--private-ip"
         - "${PROJECT_ID}:${REGION}:${CLOUDSQL_PG_INSTANCE_ID}"
+      - name: cloud-sql-proxy-mysql
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.0
+        args:
+        - "--port=3306"
+        - "--private-ip"
+        - "${PROJECT_ID}:${REGION}:${CLOUDSQL_MYSQL_INSTANCE_ID}"
       
 

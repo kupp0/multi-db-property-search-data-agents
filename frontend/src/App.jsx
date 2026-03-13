@@ -8,11 +8,13 @@ import dataAgentDiagram from './assets/data_agent_diagram.png';
 import dataAgentContextDiagram from './assets/data_agent_context_infographic.png';
 import alloydbContext from '../../database_artefacts/alloydb_context.json';
 import cloudsqlPgContext from '../../database_artefacts/cloudsql_pg_context.json';
+import cloudsqlMysqlContext from '../../database_artefacts/cloudsql_mysql_context.json';
 import spannerContext from '../../database_artefacts/spanner_context.json';
 
 const contexts = {
     alloydb: alloydbContext,
     cloudsql_pg: cloudsqlPgContext,
+    cloudsql_mysql: cloudsqlMysqlContext,
     spanner: spannerContext
 };
 
@@ -283,8 +285,7 @@ function App() {
                             Swiss Property Search 🇨🇭
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
-                            Powered by Conversational Data Agents API connected to AlloyDB, Spanner, and Cloud SQL.
-                        </p>
+                            Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.                        </p>
                     </div>
 
                     {/* SEARCH BAR */}
@@ -294,7 +295,8 @@ function App() {
                             {[
                                 { id: 'alloydb', label: 'AlloyDB' },
                                 { id: 'spanner', label: 'Spanner' },
-                                { id: 'cloudsql_pg', label: 'Cloud SQL' }
+                                { id: 'cloudsql_pg', label: 'Cloud SQL for PostgreSQL' },
+                                { id: 'cloudsql_mysql', label: 'Cloud SQL for MySQL' }
                             ].map(db => (
                                 <button
                                     key={db.id}

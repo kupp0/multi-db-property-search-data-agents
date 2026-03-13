@@ -31,24 +31,29 @@ CREATE TABLE property_listings (
   image_gcs_uri STRING(MAX),
   country STRING(100) DEFAULT ('Switzerland'),
   canton STRING(100),
-  description_embedding ARRAY<FLOAT64>(vector_length=>3072),
-  image_embedding ARRAY<FLOAT64>(vector_length=>1408)
+  description_embedding ARRAY<FLOAT32>(vector_length=>3072),
+  image_embedding ARRAY<FLOAT32>(vector_length=>1408)
 ) PRIMARY KEY (id);
 
 -- 3. MODEL ALIASING
 CREATE OR REPLACE MODEL property_text_embedding_model
   INPUT (content STRING(MAX))
-  -- Based on the error, the model returns a direct 'embeddings' object
   OUTPUT (
-    embeddings STRUCT<values ARRAY<FLOAT64>>
+    embeddings STRUCT<values ARRAY<FLOAT32>>
   )
   REMOTE OPTIONS (
     endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/gemini-embedding-001'
   );
 
 CREATE OR REPLACE MODEL property_multimodal_text_model
-  INPUT (text STRING(MAX))
-  OUTPUT (textEmbedding ARRAY<FLOAT64>)
+  INPUT(
+    text STRING(MAX) OPTIONS (required = false),
+    image STRUCT<gcsUri STRING(MAX)> OPTIONS (required = false)
+  )
+  OUTPUT(
+    imageEmbedding ARRAY<FLOAT32> OPTIONS (required = false),
+    textEmbedding ARRAY<FLOAT32> OPTIONS (required = false)
+  )
   REMOTE OPTIONS (
     endpoint = '//aiplatform.googleapis.com/projects/{PROJECT_ID}/locations/{REGION}/publishers/google/models/multimodalembedding@001'
   );

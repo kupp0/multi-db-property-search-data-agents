@@ -90,6 +90,20 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   source_ranges = ["35.235.240.0/20"]
 }
 
+# Allow MySQL Access within VPC
+resource "google_compute_firewall" "allow_mysql_access" {
+  name    = "allow-mysql-access"
+  network = google_compute_network.vpc_network.id
+  project = google_project.project.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3306"]
+  }
+
+  source_ranges = [var.subnet_cidr]
+}
+
 # Private Service Access for AlloyDB
 resource "google_compute_global_address" "private_ip_address" {
   name          = "alloydb-private-ip"

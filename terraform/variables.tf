@@ -62,6 +62,12 @@ variable "cloudsql_pg_instance_id" {
   default     = "search-pg"
 }
 
+variable "cloudsql_mysql_instance_id" {
+  description = "The ID of the Cloud SQL MySQL instance"
+  type        = string
+  default     = "search-mysql"
+}
+
 
 variable "developer_email" {
   description = "The email address of the developer for IAM database authentication"

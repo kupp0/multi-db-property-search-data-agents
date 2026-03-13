@@ -64,6 +64,7 @@ PROJECT_ID = os.getenv("GCP_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT
 AGENT_CONTEXT_SET_ID_ALLOYDB = os.getenv("AGENT_CONTEXT_SET_ID_ALLOYDB")
 AGENT_CONTEXT_SET_ID_CLOUDSQL_PG = os.getenv("AGENT_CONTEXT_SET_ID_CLOUDSQL_PG")
 AGENT_CONTEXT_SET_ID_SPANNER = os.getenv("AGENT_CONTEXT_SET_ID_SPANNER")
+AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL = os.getenv("AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL")
 
 try:
     # Initialize credentials with Cloud Platform scope
@@ -92,6 +93,13 @@ CLOUDSQL_PG_USER = os.getenv("CLOUDSQL_PG_USER", "postgres")
 CLOUDSQL_PG_PASSWORD = os.getenv("CLOUDSQL_PG_PASSWORD")
 CLOUDSQL_PG_DB_NAME = os.getenv("CLOUDSQL_PG_DB_NAME", "search")
 
+# Cloud SQL MySQL Configuration
+CLOUDSQL_MYSQL_HOST = os.getenv("CLOUDSQL_MYSQL_HOST", "127.0.0.1")
+CLOUDSQL_MYSQL_PORT = os.getenv("CLOUDSQL_MYSQL_PORT", "3306")
+CLOUDSQL_MYSQL_USER = os.getenv("CLOUDSQL_MYSQL_USER", "mysql")
+CLOUDSQL_MYSQL_PASSWORD = os.getenv("CLOUDSQL_MYSQL_PASSWORD")
+CLOUDSQL_MYSQL_DB_NAME = os.getenv("CLOUDSQL_MYSQL_DB_NAME", "search")
+
 
 # Spanner Configuration
 SPANNER_INSTANCE_ID = os.getenv("SPANNER_INSTANCE_ID", "search-instance")
@@ -116,6 +124,15 @@ async def get_db_connection(backend: str):
             db_url = f"postgresql+asyncpg://{CLOUDSQL_PG_USER}:{CLOUDSQL_PG_PASSWORD}@{CLOUDSQL_PG_HOST}:{CLOUDSQL_PG_PORT}/{CLOUDSQL_PG_DB_NAME}"
             engines["cloudsql_pg"] = create_async_engine(db_url)
         return engines["cloudsql_pg"], "sqlalchemy"
+        
+    elif backend == "cloudsql_mysql":
+        if "cloudsql_mysql" not in engines:
+            # 65536 is the value for pymysql.constants.CLIENT.MULTI_STATEMENTS
+            # This is required because the GDA context queries for MySQL use multiple statements
+            # (e.g., SELECT ... INTO @var; SELECT ...)
+            db_url = f"mysql+aiomysql://{CLOUDSQL_MYSQL_USER}:{CLOUDSQL_MYSQL_PASSWORD}@{CLOUDSQL_MYSQL_HOST}:{CLOUDSQL_MYSQL_PORT}/{CLOUDSQL_MYSQL_DB_NAME}?client_flag=65536"
+            engines["cloudsql_mysql"] = create_async_engine(db_url)
+        return engines["cloudsql_mysql"], "sqlalchemy"
         
 
     elif backend == "spanner":
@@ -237,6 +254,19 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
                 "database_id": CLOUDSQL_PG_DB_NAME
             },
             "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID_CLOUDSQL_PG}
+        }
+    elif backend == "cloudsql_mysql":
+        if not AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL:
+            raise HTTPException(500, "AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL is not configured.")
+        datasource_references["cloudSqlReference"] = {
+            "databaseReference": {
+                "engine": "MYSQL",
+                "project_id": PROJECT_ID,
+                "region": os.getenv("GCP_LOCATION", gda_location),
+                "instance_id": os.getenv("CLOUDSQL_MYSQL_INSTANCE_ID", "search-mysql"),
+                "database_id": CLOUDSQL_MYSQL_DB_NAME
+            },
+            "agentContextReference": {"context_set_id": AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL}
         }
     else:
         raise ValueError(f"Unknown backend: {backend}")

@@ -72,9 +72,9 @@ echo "   Region: ${REGION}"
 echo "   Tag: ${TAG}"
 
 # Validation
-if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ]; then
+if [ -z "${AGENT_CONTEXT_SET_ID_ALLOYDB:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_PG:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_SPANNER:-}" ] || [ -z "${AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL:-}" ]; then
     echo "⚠️  AGENT_CONTEXT_SET_ID variables are not fully set!"
-    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, and AGENT_CONTEXT_SET_ID_SPANNER in backend/.env or export them before running this script."
+    echo "   Please set AGENT_CONTEXT_SET_ID_ALLOYDB, AGENT_CONTEXT_SET_ID_CLOUDSQL_PG, AGENT_CONTEXT_SET_ID_SPANNER, and AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL in backend/.env or export them before running this script."
     exit 1
 fi
 

@@ -80,3 +80,25 @@ tools:
       generateNaturalLanguageAnswer: true
       generateExplanation: true
       generateDisambiguationQuestion: true
+
+  cloud_gda_query_tool_cloudsql_mysql:
+    kind: cloud-gemini-data-analytics-query
+    source: gda-api-source
+    description: Use this tool to send natural language queries to the Gemini Data Analytics API and receive SQL, natural language answers, and explanations for Cloud SQL MySQL.
+    location: "${GCP_LOCATION}"
+    context:
+      datasourceReferences:
+        cloudSqlReference:
+          databaseReference:
+            engine: MYSQL
+            projectId: "${PROJECT_ID}"
+            region: "${GCP_LOCATION}"
+            instanceId: "${CLOUDSQL_MYSQL_INSTANCE_ID}"
+            databaseId: "${CLOUDSQL_MYSQL_DB_NAME}"
+          agentContextReference:
+            contextSetId: "${AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL}"
+    generationOptions:
+      generateQueryResult: true
+      generateNaturalLanguageAnswer: true
+      generateExplanation: true
+      generateDisambiguationQuestion: true

@@ -12,6 +12,7 @@ resource "google_service_account" "search_backend_sa" {
   project      = google_project.project.project_id
 }
 
+
 # Grant required roles to the Service Account
 resource "google_project_iam_member" "sa_roles" {
   for_each = toset([
@@ -19,7 +20,6 @@ resource "google_project_iam_member" "sa_roles" {
     "roles/logging.logWriter",
     "roles/artifactregistry.repoAdmin",
     "roles/serviceusage.serviceUsageConsumer",
-    "roles/aiplatform.user",
     "roles/aiplatform.user",
     "roles/storage.objectAdmin",
     "roles/secretmanager.secretAccessor",
@@ -40,6 +40,7 @@ resource "google_project_iam_member" "sa_roles" {
 
   depends_on = [google_project_service.services]
 }
+
 
 # We must explicitly wait for the Cloud Build service identity to be created.
 resource "google_project_service_identity" "cloudbuild_sa" {

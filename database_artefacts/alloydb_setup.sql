@@ -44,9 +44,7 @@ CREATE TABLE property_listings (
     image_embedding VECTOR(1408) 
 );
 
--- 3. INDEX CREATION (ScaNN)
--- Note: Run this AFTER data is loaded for best performance, but defined here for completeness.
--- CREATE INDEX property_listings_desc_idx ON property_listings USING scann (description_embedding) WITH (num_leaves=10);
+-- 3. INDEX CREATION (ScaNN). Follow index sql files after data is loaded. 
 
 -- 4. MODEL ALIASING (Vertex AI Integration)
 CREATE EXTENSION IF NOT EXISTS google_ml_integration CASCADE;
@@ -57,7 +55,10 @@ SELECT google_ml.embedding(
     model_id => 'gemini-embedding-001',
     content => 'This is the text to embed.'
 );
-
+SELECT google_ml.embedding(
+    model_id => 'multimodalembedding@001',
+    content => 'This is the text to embed.'
+);
 
 -- 5. IAM GRANTS
 -- Revoke default public access
