@@ -7,7 +7,7 @@ The application features two primary modalities:
 2.  **CHAT Interface**: Interacts with a conversational Agent connected to the QueryData API endpoint via the ADK / MCP Toolkit, allowing for follow-up questions and refined searches.
 ## Architecture
 
-![Architecture Diagram](frontend/src/assets/data_agent_diagram.png)
+![Architecture Diagram](frontend/src/assets/data_agent_diagram.jpg)
 
 *   **Frontend**: React application (Vite) with a modern UI and a 3-way toggle to switch between database backends.
 *   **Backend**: FastAPI (Python) service that proxies requests to the Gemini Data Agent API, logs prompt history to the active database, and serves images securely from Google Cloud Storage.

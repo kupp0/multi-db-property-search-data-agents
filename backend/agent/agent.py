@@ -65,6 +65,8 @@ def get_agent(backend: str = "alloydb") -> Agent:
               "title": "Property Title",
               "price": 0,
               "city": "City Name",
+              "canton": "Canton Name",
+              "country": "Country Name",
               "bedrooms": 0,
               "description": "Short description",
               "image_gcs_uri": "gs://..."
