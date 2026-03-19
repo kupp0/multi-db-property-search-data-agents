@@ -8,22 +8,22 @@ os.environ["OTEL_SDK_DISABLED"] = "true"
 
 import json
 import requests
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import google.auth
 from google.cloud import storage
-import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import text
 import logging
 import sys
 import re
-from typing import List, Optional, Any
-from sqlalchemy import text, bindparam, table, column, select, cast, String, or_, and_
+from typing import List, Any
+from sqlalchemy import table, column, select, cast, String, or_, and_
 from google.cloud import spanner
+from starlette.concurrency import run_in_threadpool
 # ==============================================================================
 # LOGGING CONFIGURATION
 # ==============================================================================
@@ -369,8 +369,10 @@ async def search_properties(request: SearchRequest):
     logger.info(f"Processing search query: '{request.query}'")
     
     try:
-        # Query the Gemini Data Agent
-        gda_resp = query_gda(request.query, request.backend)
+        # ⚡ Bolt: Offload synchronous GDA API call to a thread pool
+        # This prevents blocking the FastAPI async event loop while waiting for the slow LLM response,
+        # dramatically improving concurrency and overall application throughput.
+        gda_resp = await run_in_threadpool(query_gda, request.query, request.backend)
         
         # Extract components from the response
         nl_answer = gda_resp.get("naturalLanguageAnswer", "")
