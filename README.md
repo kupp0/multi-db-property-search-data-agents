@@ -1,6 +1,6 @@
 # Unified Data Cloud Property Search Demo
 
-The **Unified Data Cloud Property Search Demo** showcases a **Natural Language to SQL (NL2SQL)** application powered by the **Gemini Data Agent**. It enables users to search for property listings using everyday language (e.g., *"Show me 2-bedroom apartments in Zurich under 3000 CHF"*). The application translates these natural language queries into SQL and executes them across three different database backends—**AlloyDB**, **Cloud Spanner**, and **Cloud SQL for PostgreSQL**—allowing users to seamlessly compare performance, vector search capabilities, and SQL dialects across Google Cloud's premier database offerings.
+The **Unified Data Cloud Property Search Demo** showcases a **Natural Language to SQL (NL2SQL)** application powered by the **Gemini Data Agent**. It enables users to search for property listings using everyday language (e.g., *"Show me 2-bedroom apartments in Zurich under 3000 CHF"*). The application translates these natural language queries into SQL and executes them across four different database backends—**AlloyDB**, **Cloud Spanner**, **Cloud SQL for PostgreSQL**, and **Cloud SQL for MySQL**—allowing users to seamlessly compare performance, vector search capabilities, and SQL dialects across Google Cloud's premier database offerings.
 
 The application features two primary modalities:
 1.  **Main UI (Search Bar)**: Directly interacts with the QueryData API (Gemini Data Analytics API) for fast, direct natural language to SQL translation.
@@ -9,18 +9,19 @@ The application features two primary modalities:
 
 ![Architecture Diagram](frontend/src/assets/data_agent_diagram.png)
 
-*   **Frontend**: React application (Vite) with a modern UI and a 3-way toggle to switch between database backends.
+*   **Frontend**: React application (Vite) with a modern UI and a 4-way toggle to switch between database backends.
 *   **Backend**: FastAPI (Python) service that proxies requests to the Gemini Data Agent API, logs prompt history to the active database, and serves images securely from Google Cloud Storage.
 *   **ADK Chat Agent**: A dynamic "Single Agent" architecture that instantiates on-the-fly with the specific MCP tool for the selected database.
 *   **Databases**: 
     *   **AlloyDB**: PostgreSQL-compatible database using `pgvector` and ScaNN indexes.
     *   **Cloud Spanner**: Globally distributed database using Google Standard SQL and exact vector search.
     *   **Cloud SQL for PostgreSQL**: Fully managed PostgreSQL using `pgvector` and HNSW/IVFFlat indexes.
+    *   **Cloud SQL for MySQL**: Fully managed MySQL database.
 
 ## Features
 
 *   **Dual Modalities**: The main UI features a search bar that directly interacts with the QueryData API (Gemini Data Analytics API). Alternatively, users can use the CHAT interface, which interacts with an Agent connected to the QueryData API endpoint via the ADK / MCP Toolkit.
-*   **Multi-Database Support**: Seamlessly switch between AlloyDB, Spanner, and Cloud SQL PG to compare performance and SQL dialects.
+*   **Multi-Database Support**: Seamlessly switch between AlloyDB, Spanner, Cloud SQL PG, and Cloud SQL MySQL to compare performance and SQL dialects.
 *   **Natural Language Search**: Ask questions like "Show me 2-bedroom apartments in Zurich under 3000 CHF".
 *   **Generative AI Answers**: Get natural language summaries alongside data results.
 *   **Conversational Agent**: Interact with the ADK Chat Agent for follow-up questions and refined searches.
@@ -29,8 +30,8 @@ The application features two primary modalities:
 ## Prerequisites
 
 *   Google Cloud Project with billing enabled.
-*   AlloyDB Cluster, Cloud Spanner Instance, and Cloud SQL PG Instance.
-*   Gemini Data Agent configured with all three databases as data sources.
+*   AlloyDB Cluster, Cloud Spanner Instance, Cloud SQL PG Instance, and Cloud SQL MySQL Instance.
+*   Gemini Data Agent configured with all four databases as data sources.
 *   Google Cloud Storage bucket for images.
 
 ## Local Development & Setup
@@ -45,7 +46,7 @@ Run the setup script to configure your environment variables (Project ID, Databa
 
 ### 2. Database Initialization & Data Loading
 
-The project includes an automated script to deploy the schemas and load the sample data (with embeddings) into all three databases via an IAP SSH tunnel to a Bastion Host.
+The project includes an automated script to deploy the schemas and load the sample data (with embeddings) into all four databases via an IAP SSH tunnel to a Bastion Host.
 
 ```bash
 ./scripts/install_databases.sh
