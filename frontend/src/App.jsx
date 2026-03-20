@@ -20,7 +20,7 @@ const contexts = {
 
 // --- COMPONENTS ---
 
-const SearchExamples = ({ onSelectQuery }) => {
+const SearchExamples = React.memo(({ onSelectQuery }) => {
     const examples = [
         "Show me 2-bedroom apartments in Zurich under 3000 CHF",
         "Show me family apartments in Zurich with a nice view up to 16k",
@@ -44,9 +44,9 @@ const SearchExamples = ({ onSelectQuery }) => {
             </div>
         </div>
     );
-};
+});
 
-const PropertyCard = ({ listing }) => {
+const PropertyCard = React.memo(({ listing }) => {
     return (
         <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-slate-100 dark:border-slate-700 group">
             <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-900">
@@ -82,7 +82,7 @@ const PropertyCard = ({ listing }) => {
             </div>
         </div>
     );
-};
+});
 
 // --- MAIN APP COMPONENT ---
 

@@ -9,7 +9,7 @@ const formatCurrency = (number) => {
     }).format(number);
 };
 
-const ListingCard = ({ listing }) => {
+const ListingCard = React.memo(({ listing }) => {
     const [imageUrl, setImageUrl] = useState(listing.image_gcs_uri || null);
 
     React.useEffect(() => {
@@ -40,6 +40,6 @@ const ListingCard = ({ listing }) => {
             </div>
         </div>
     );
-};
+});
 
 export default ListingCard;
