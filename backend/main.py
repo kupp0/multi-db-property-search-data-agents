@@ -66,6 +66,18 @@ AGENT_CONTEXT_SET_ID_CLOUDSQL_PG = os.getenv("AGENT_CONTEXT_SET_ID_CLOUDSQL_PG")
 AGENT_CONTEXT_SET_ID_SPANNER = os.getenv("AGENT_CONTEXT_SET_ID_SPANNER")
 AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL = os.getenv("AGENT_CONTEXT_SET_ID_CLOUDSQL_MYSQL")
 
+# Security: SSRF Protection
+# Explicitly whitelist the allowed GCS bucket for image serving.
+# If not set, default to the convention used by bootstrap_images.py if PROJECT_ID is available.
+ALLOWED_GCS_BUCKET = os.getenv("ALLOWED_GCS_BUCKET")
+if not ALLOWED_GCS_BUCKET and PROJECT_ID:
+    ALLOWED_GCS_BUCKET = f"property-images-{PROJECT_ID}"
+    logger.info(f"ALLOWED_GCS_BUCKET not set. Defaulting to: {ALLOWED_GCS_BUCKET}")
+elif ALLOWED_GCS_BUCKET:
+    logger.info(f"ALLOWED_GCS_BUCKET set to: {ALLOWED_GCS_BUCKET}")
+else:
+    logger.warning("ALLOWED_GCS_BUCKET not set and PROJECT_ID unavailable. Image serving security check may fail open or block all requests depending on implementation.")
+
 try:
     # Initialize credentials with Cloud Platform scope
     credentials, _ = google.auth.default(
@@ -326,6 +338,18 @@ async def get_image(gcs_uri: str):
              raise HTTPException(400, "Invalid GCS URI: Missing object path.")
 
         bucket_name, blob_name = path.split("/", 1)
+
+        # Security Check: SSRF Protection
+        # Verify that the requested bucket is the allowed one.
+        if ALLOWED_GCS_BUCKET:
+            if bucket_name != ALLOWED_GCS_BUCKET:
+                logger.warning(f"Blocked SSRF attempt. Requested bucket: '{bucket_name}', Allowed: '{ALLOWED_GCS_BUCKET}'")
+                raise HTTPException(403, "Access to this bucket is restricted.")
+        else:
+             # Fail secure if no allowed bucket is configured
+             logger.error("ALLOWED_GCS_BUCKET is not configured. Rejecting request to prevent SSRF.")
+             raise HTTPException(500, "Server configuration error: Image source not trusted.")
+
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
         
@@ -351,6 +375,8 @@ async def get_image(gcs_uri: str):
                 headers={"Cache-Control": "public, max-age=86400"}
             )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error serving image: {e}")
         raise HTTPException(404, "Image not found or inaccessible.")
