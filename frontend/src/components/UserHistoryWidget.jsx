@@ -76,9 +76,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         }
     };
 
-    const handleRunQuery = () => {
-        fetchHistory();
-    };
+
 
     useEffect(() => {
         if (isOpen) {

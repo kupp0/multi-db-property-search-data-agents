@@ -285,12 +285,8 @@ function App() {
                         <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
                             Swiss Property Search 🇨🇭
                         </h1>
-<<<<<<< HEAD
-    <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
-        Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.                        </p>
-=======
-                        <p className="text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed text-sm">
-                            Powered by Gemini Data Agent connected to AlloyDB.
+                        <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
+                            Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.
                         </p>
 
                         {/* CONTROLS */}
@@ -305,7 +301,6 @@ function App() {
                                 {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
                             </button>
                         </div>
->>>>>>> origin/palette-ux-improvements-17997682408231380857
                     </div >
 
         {/* SEARCH BAR */ }
