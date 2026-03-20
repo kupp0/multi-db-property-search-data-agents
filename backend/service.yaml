@@ -25,6 +25,8 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: ALLOWED_ORIGINS
+          value: "${ALLOWED_ORIGINS}"
         - name: GCP_PROJECT_ID
           value: "${PROJECT_ID}"
         - name: GCP_LOCATION
