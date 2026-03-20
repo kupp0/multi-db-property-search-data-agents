@@ -289,18 +289,6 @@ function App() {
                             Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.
                         </p>
 
-                        {/* CONTROLS */}
-                        <div className="mt-6 flex items-center gap-3">
-                            <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <Workflow className="w-3 h-3" /> Architecture
-                            </button>
-                            <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
-                                <History className="w-3 h-3" /> History
-                            </button>
-                            <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all" aria-label="Toggle dark mode">
-                                {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-                            </button>
-                        </div>
                     </div >
 
         {/* SEARCH BAR */ }
