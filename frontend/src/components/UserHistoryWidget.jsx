@@ -52,6 +52,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         fetchHistory();
     };
 
+    // Update fetchHistory to accept an optional clause argument
     const fetchHistory = async () => {
         setLoading(true);
         setError(null);
@@ -73,6 +74,10 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRunQuery = () => {
+        fetchHistory();
     };
 
     useEffect(() => {
@@ -99,6 +104,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                             onClose();
                         }}
                         className="relative z-50 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400"
+                        aria-label="Close history"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -154,6 +160,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
                                     onClick={() => removeFilter(index)}
                                     className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 rounded transition-colors"
                                     title="Remove filter"
+                                    aria-label="Remove filter"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -182,11 +189,7 @@ const UserHistoryWidget = ({ isOpen, onClose, selectedBackend }) => {
 
                 {/* Table Content */}
                 <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 relative">
-                    {error && (
-                        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm text-center border-b border-red-200 dark:border-red-800">
-                            {error}
-                        </div>
-                    )}
+                    {error && <div className="p-4 mb-4 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg m-4">{error}</div>}
 
                     <table className="w-full text-left text-sm border-collapse">
                         <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0 z-10 shadow-sm">

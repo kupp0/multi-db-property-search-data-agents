@@ -158,7 +158,7 @@ function App() {
             {showArchitecture && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowArchitecture(false)}>
                     <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setShowArchitecture(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <button onClick={() => setShowArchitecture(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" aria-label="Close architecture modal">
                             ✕
                         </button>
                         <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-white flex items-center gap-2">
@@ -199,6 +199,7 @@ function App() {
                 onClick={() => setShowChat(!showChat)}
                 className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center ${showChat ? 'bg-slate-800 text-white rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
                 title={showChat ? "Close Chat" : "Open AI Agent Chat"}
+                aria-label={showChat ? "Close chat" : "Open chat"}
             >
                 {showChat ? <ArrowRight className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
             </button>
@@ -284,29 +285,50 @@ function App() {
                         <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
                             Swiss Property Search 🇨🇭
                         </h1>
-                        <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
-                            Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.                        </p>
-                    </div>
+<<<<<<< HEAD
+    <p className="text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed text-base">
+        Powered by Data Agents, Query Data Tool, ADK and MCP Toolbox for Databases.                        </p>
+=======
+                        <p className="text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed text-sm">
+                            Powered by Gemini Data Agent connected to AlloyDB.
+                        </p>
 
-                    {/* SEARCH BAR */}
-                    <div className="max-w-3xl mx-auto relative z-10">
-                        {/* DATABASE TOGGLE */}
-                        <div className="flex flex-wrap items-center justify-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50 mb-6 backdrop-blur-sm mx-auto w-fit">
-                            {[
-                                { id: 'alloydb', label: 'AlloyDB' },
-                                { id: 'spanner', label: 'Spanner' },
-                                { id: 'cloudsql_pg', label: 'Cloud SQL for PostgreSQL' },
-                                { id: 'cloudsql_mysql', label: 'Cloud SQL for MySQL' }
-                            ].map(db => (
-                                <button
-                                    key={db.id}
-                                    onClick={() => setSelectedBackend(db.id)}
-                                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
-                                >
-                                    {db.label}
-                                </button>
-                            ))}
+                        {/* CONTROLS */}
+                        <div className="mt-6 flex items-center gap-3">
+                            <button onClick={() => setShowArchitecture(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                <Workflow className="w-3 h-3" /> Architecture
+                            </button>
+                            <button onClick={() => setShowHistory(true)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-xs font-medium flex items-center gap-2">
+                                <History className="w-3 h-3" /> History
+                            </button>
+                            <button onClick={() => setDarkMode(!darkMode)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all" aria-label="Toggle dark mode">
+                                {darkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+                            </button>
                         </div>
+>>>>>>> origin/palette-ux-improvements-17997682408231380857
+                    </div >
+
+        {/* SEARCH BAR */ }
+        < div className = "max-w-3xl mx-auto relative z-10" >
+            {/* DATABASE TOGGLE */ }
+            < div className = "flex flex-wrap items-center justify-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50 mb-6 backdrop-blur-sm mx-auto w-fit" >
+            {
+                [
+                { id: 'alloydb', label: 'AlloyDB' },
+                { id: 'spanner', label: 'Spanner' },
+                { id: 'cloudsql_pg', label: 'Cloud SQL for PostgreSQL' },
+                { id: 'cloudsql_mysql', label: 'Cloud SQL for MySQL' }
+                ].map(db => (
+                    <button
+                        key={db.id}
+                        onClick={() => setSelectedBackend(db.id)}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${selectedBackend === db.id ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                    >
+                        {db.label}
+                    </button>
+                ))
+            }
+                        </div >
 
                         <form onSubmit={handleSearch} className="relative group/search mb-8">
                             <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur-lg opacity-50 group-hover/search:opacity-100 transition duration-500"></div>
@@ -324,7 +346,8 @@ function App() {
                                 <button
                                     type="submit"
                                     disabled={loading || !query.trim()}
-                                    className="m-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
+                                    className="m-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    aria-label="Search"
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="hidden sm:inline">Search</span>}
                                     {!loading && <ArrowRight className="w-4 h-4" />}
@@ -332,194 +355,199 @@ function App() {
                             </div>
                         </form>
                         <SearchExamples onSelectQuery={setQuery} />
-                    </div>
-                </div>
+                    </div >
+                </div >
 
-                {/* ERROR MESSAGE */}
-                {error && (
-                    <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm text-center animate-in fade-in slide-in-from-top-2">
-                        {error}
-                    </div>
-                )}
+        {/* ERROR MESSAGE */ }
+    {
+        error && (
+            <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm text-center animate-in fade-in slide-in-from-top-2">
+                {error}
+            </div>
+        )
+    }
 
-                {/* RESULTS SECTION */}
-                {(results.length > 0 || generatedSql) && (
-                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+    {/* RESULTS SECTION */ }
+    {
+        (results.length > 0 || generatedSql) && (
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
 
-                        {/* SYSTEM OUTPUT (SQL + Answer) */}
-                        {generatedSql && (
-                            <div className="w-full mb-12">
-                                <div
-                                    className={`bg-slate-900 rounded-xl shadow-2xl border border-slate-800 transition-all duration-300 cursor-pointer group ${isOutputExpanded ? 'max-h-[800px] overflow-y-auto' : 'max-h-[160px] overflow-hidden'}`}
-                                    onClick={() => setIsOutputExpanded(!isOutputExpanded)}
-                                >
-                                    <div className="bg-slate-950/50 px-4 py-3 text-xs font-mono font-bold text-slate-400 flex justify-between items-center border-b border-slate-800 sticky top-0 z-10 backdrop-blur-md">
-                                        <div className="flex items-center gap-2">
-                                            <Database className="w-3 h-3 text-indigo-400" />
-                                            <span>SYSTEM OUTPUT</span>
-                                        </div>
-                                        <span className="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-500 group-hover:text-slate-300 transition-colors">
-                                            {isOutputExpanded ? 'CLICK TO COLLAPSE' : 'CLICK TO EXPAND'}
-                                        </span>
-                                    </div>
-                                    <div className="p-6 space-y-6">
-                                        {/* INTENT EXPLANATION */}
-                                        {systemDetails?.intent_explanation && (
-                                            <div>
-                                                <h4 className="text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wider">Intent Explanation</h4>
-                                                <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
-                                                    {systemDetails.intent_explanation}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {/* APPLIED TEMPLATES & FACETS */}
-                                        {(() => {
-                                            const explanation = systemDetails?.intent_explanation || nlAnswer || '';
-                                            if (!explanation) return null;
-
-                                            // Extract template and facet numbers (1-based in text, 0-based for array access)
-                                            const templateMatches = [...explanation.matchAll(/Template\s+(\d+)/gi)];
-                                            const facetMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
-
-                                            // Templates seem to be 1-based in the LLM output
-                                            const dataAgentContext = contexts[selectedBackend];
-                                            const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
-                                            const facetsList = dataAgentContext.facets || [];
-                                            // Facets seem to be 1-based in the LLM output
-                                            const matchedFacets = [...new Set(facetMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
-
-                                            if (matchedTemplates.length === 0 && matchedFacets.length === 0) return null;
-
-                                            return (
-                                                <div>
-                                                    <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Facets</h4>
-                                                    <div className="space-y-3">
-                                                        {matchedTemplates.map(idx => {
-                                                            const dataAgentContext = contexts[selectedBackend];
-                                                            const template = dataAgentContext.templates[idx];
-                                                            return (
-                                                                <div key={`template-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-amber-900/30">
-                                                                    <div className="text-xs font-bold text-amber-300 mb-1">Template {idx + 1}: {template.intent}</div>
-                                                                    <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
-                                                                        {template.parameterized?.parameterized_sql || template.sql}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                        {matchedFacets.map(idx => {
-                                                            const dataAgentContext = contexts[selectedBackend];
-                                                            const facetsList = dataAgentContext.facets || [];
-                                                            const facet = facetsList[idx];
-                                                            if (!facet) return null;
-                                                            const snippet = facet.parameterized?.parameterized_sql_snippet || facet.parameterized?.parameterized_facet || facet.sql_snippet || facet.facet;
-                                                            return (
-                                                                <div key={`facet-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
-                                                                    <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {facet.intent}</div>
-                                                                    <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
-                                                                        {snippet}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })()}
-
-                                        {/* GENERATED SQL */}
-                                        <div>
-                                            <h4 className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-wider">Generated SQL</h4>
-                                            <div className="font-mono text-sm overflow-x-auto bg-slate-950/50 p-3 rounded-lg border border-slate-800 max-h-64 overflow-y-auto custom-scrollbar">
-                                                <ReactMarkdown
-                                                    components={{
-                                                        code({ className, children, ...props }) {
-                                                            return (
-                                                                <code className={`${className} text-emerald-300 bg-transparent`} {...props}>
-                                                                    {children}
-                                                                </code>
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    {`\`\`\`sql\n${(() => {
-                                                        const sql = systemDetails?.generated_query || generatedSql;
-                                                        // Simple SQL formatting
-                                                        return sql
-                                                            .replace(/\s+/g, ' ') // Normalize whitespace
-                                                            .replace(/\s+(SELECT|FROM|WHERE|AND|ORDER BY|LIMIT|GROUP BY|HAVING|LEFT JOIN|RIGHT JOIN|INNER JOIN|OUTER JOIN)\s+/gi, '\n$1 ')
-                                                            .replace(/;\s*$/, ';\n') // Newline after semicolon
-                                                            .trim();
-                                                    })()}\n\`\`\``}
-                                                </ReactMarkdown>
-                                            </div>
-                                        </div>
-
-                                        {/* QUERY RESULT PREVIEW */}
-                                        {systemDetails?.query_result_preview && (
-                                            <div>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">Query Result Preview</h4>
-                                                    <span className="text-[10px] text-slate-500">Total Rows: {systemDetails.total_row_count}</span>
-                                                </div>
-                                                <div className="overflow-x-auto bg-slate-950/50 rounded-lg border border-slate-800">
-                                                    <table className="w-full text-left text-xs font-mono text-slate-400">
-                                                        <thead className="bg-slate-900 text-slate-300">
-                                                            <tr>
-                                                                {systemDetails.query_result_preview.columns.map((col, i) => (
-                                                                    <th key={i} className="px-3 py-2 border-b border-slate-800 whitespace-nowrap">{col.name}</th>
-                                                                ))}
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {systemDetails.query_result_preview.rows.map((row, i) => (
-                                                                <tr key={i} className="border-b border-slate-800 last:border-0 hover:bg-slate-900/50">
-                                                                    {row.values.map((val, j) => (
-                                                                        <td key={j} className="px-3 py-2 whitespace-nowrap max-w-[200px] truncate" title={val.value}>
-                                                                            {val.value}
-                                                                        </td>
-                                                                    ))}
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* RAW ANSWER */}
-                                        {nlAnswer && (
-                                            <div>
-                                                <h4 className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider">Natural Language Answer</h4>
-                                                <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
-                                                    {nlAnswer}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
+                {/* SYSTEM OUTPUT (SQL + Answer) */}
+                {generatedSql && (
+                    <div className="w-full mb-12">
+                        <div
+                            className={`bg-slate-900 rounded-xl shadow-2xl border border-slate-800 transition-all duration-300 cursor-pointer group ${isOutputExpanded ? 'max-h-[800px] overflow-y-auto' : 'max-h-[160px] overflow-hidden'}`}
+                            onClick={() => setIsOutputExpanded(!isOutputExpanded)}
+                        >
+                            <div className="bg-slate-950/50 px-4 py-3 text-xs font-mono font-bold text-slate-400 flex justify-between items-center border-b border-slate-800 sticky top-0 z-10 backdrop-blur-md">
+                                <div className="flex items-center gap-2">
+                                    <Database className="w-3 h-3 text-indigo-400" />
+                                    <span>SYSTEM OUTPUT</span>
                                 </div>
+                                <span className="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-500 group-hover:text-slate-300 transition-colors">
+                                    {isOutputExpanded ? 'CLICK TO COLLAPSE' : 'CLICK TO EXPAND'}
+                                </span>
                             </div>
-                        )}
+                            <div className="p-6 space-y-6">
+                                {/* INTENT EXPLANATION */}
+                                {systemDetails?.intent_explanation && (
+                                    <div>
+                                        <h4 className="text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wider">Intent Explanation</h4>
+                                        <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                                            {systemDetails.intent_explanation}
+                                        </p>
+                                    </div>
+                                )}
 
-                        {/* LISTINGS GRID */}
-                        {results.length > 0 && (
-                            <>
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                        Found {results.length} Properties
-                                    </h2>
+                                {/* APPLIED TEMPLATES & FACETS */}
+                                {(() => {
+                                    const explanation = systemDetails?.intent_explanation || nlAnswer || '';
+                                    if (!explanation) return null;
+
+                                    // Extract template and facet numbers (1-based in text, 0-based for array access)
+                                    const templateMatches = [...explanation.matchAll(/Template\s+(\d+)/gi)];
+                                    const facetMatches = [...explanation.matchAll(/(?:Fragment|Facet)\s+(\d+)/gi)];
+
+                                    // Templates seem to be 1-based in the LLM output
+                                    const dataAgentContext = contexts[selectedBackend];
+                                    const matchedTemplates = [...new Set(templateMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < dataAgentContext.templates.length);
+                                    const facetsList = dataAgentContext.facets || [];
+                                    // Facets seem to be 1-based in the LLM output
+                                    const matchedFacets = [...new Set(facetMatches.map(m => parseInt(m[1], 10) - 1))].filter(idx => idx >= 0 && idx < facetsList.length);
+
+                                    if (matchedTemplates.length === 0 && matchedFacets.length === 0) return null;
+
+                                    return (
+                                        <div>
+                                            <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Facets</h4>
+                                            <div className="space-y-3">
+                                                {matchedTemplates.map(idx => {
+                                                    const dataAgentContext = contexts[selectedBackend];
+                                                    const template = dataAgentContext.templates[idx];
+                                                    return (
+                                                        <div key={`template-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-amber-900/30">
+                                                            <div className="text-xs font-bold text-amber-300 mb-1">Template {idx + 1}: {template.intent}</div>
+                                                            <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                                {template.parameterized?.parameterized_sql || template.sql}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                                {matchedFacets.map(idx => {
+                                                    const dataAgentContext = contexts[selectedBackend];
+                                                    const facetsList = dataAgentContext.facets || [];
+                                                    const facet = facetsList[idx];
+                                                    if (!facet) return null;
+                                                    const snippet = facet.parameterized?.parameterized_sql_snippet || facet.parameterized?.parameterized_facet || facet.sql_snippet || facet.facet;
+                                                    return (
+                                                        <div key={`facet-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
+                                                            <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {facet.intent}</div>
+                                                            <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                                {snippet}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* GENERATED SQL */}
+                                <div>
+                                    <h4 className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-wider">Generated SQL</h4>
+                                    <div className="font-mono text-sm overflow-x-auto bg-slate-950/50 p-3 rounded-lg border border-slate-800 max-h-64 overflow-y-auto custom-scrollbar">
+                                        <ReactMarkdown
+                                            components={{
+                                                // eslint-disable-next-line no-unused-vars
+                                                code({ node, inline, className, children, ...props }) {
+                                                    return (
+                                                        <code className={`${className} text-emerald-300 bg-transparent`} {...props}>
+                                                            {children}
+                                                        </code>
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            {`\`\`\`sql\n${(() => {
+                                                const sql = systemDetails?.generated_query || generatedSql;
+                                                // Simple SQL formatting
+                                                return sql
+                                                    .replace(/\s+/g, ' ') // Normalize whitespace
+                                                    .replace(/\s+(SELECT|FROM|WHERE|AND|ORDER BY|LIMIT|GROUP BY|HAVING|LEFT JOIN|RIGHT JOIN|INNER JOIN|OUTER JOIN)\s+/gi, '\n$1 ')
+                                                    .replace(/;\s*$/, ';\n') // Newline after semicolon
+                                                    .trim();
+                                            })()}\n\`\`\``}
+                                        </ReactMarkdown>
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {results.map((listing, index) => (
-                                        <PropertyCard key={index} listing={listing} />
-                                    ))}
-                                </div>
-                            </>
-                        )}
+
+                                {/* QUERY RESULT PREVIEW */}
+                                {systemDetails?.query_result_preview && (
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">Query Result Preview</h4>
+                                            <span className="text-[10px] text-slate-500">Total Rows: {systemDetails.total_row_count}</span>
+                                        </div>
+                                        <div className="overflow-x-auto bg-slate-950/50 rounded-lg border border-slate-800">
+                                            <table className="w-full text-left text-xs font-mono text-slate-400">
+                                                <thead className="bg-slate-900 text-slate-300">
+                                                    <tr>
+                                                        {systemDetails.query_result_preview.columns.map((col, i) => (
+                                                            <th key={i} className="px-3 py-2 border-b border-slate-800 whitespace-nowrap">{col.name}</th>
+                                                        ))}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {systemDetails.query_result_preview.rows.map((row, i) => (
+                                                        <tr key={i} className="border-b border-slate-800 last:border-0 hover:bg-slate-900/50">
+                                                            {row.values.map((val, j) => (
+                                                                <td key={j} className="px-3 py-2 whitespace-nowrap max-w-[200px] truncate" title={val.value}>
+                                                                    {val.value}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* RAW ANSWER */}
+                                {nlAnswer && (
+                                    <div>
+                                        <h4 className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider">Natural Language Answer</h4>
+                                        <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                                            {nlAnswer}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 )}
-            </main>
-        </div>
+
+                {/* LISTINGS GRID */}
+                {results.length > 0 && (
+                    <>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                Found {results.length} Properties
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {results.map((listing, index) => (
+                                <PropertyCard key={index} listing={listing} />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        )
+    }
+            </main >
+        </div >
     );
 }
 

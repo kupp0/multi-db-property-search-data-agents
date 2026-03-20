@@ -13,13 +13,13 @@ def mock_storage_client():
 
 def test_serve_image_invalid_uri(mock_storage_client):
     response = client.get("/api/image?gcs_uri=invalid_uri")
-    assert response.status_code == 404
-    assert "Image not found or inaccessible" in response.json()["detail"]
+    assert response.status_code == 400
+    assert "Invalid GCS URI" in response.json()["detail"]
 
 def test_serve_image_missing_path(mock_storage_client):
-    response = client.get("/api/image?gcs_uri=gs://bucket_only")
-    assert response.status_code == 404
-    assert "Image not found or inaccessible" in response.json()["detail"]
+    response = client.get("/api/image?gcs_uri=gs://property-images-ai-powered-search-alloydb-1542")
+    assert response.status_code == 400
+    assert "Invalid GCS URI" in response.json()["detail"]
 
 def test_serve_image_signed_url_success(mock_storage_client):
     mock_bucket = MagicMock()
@@ -31,7 +31,7 @@ def test_serve_image_signed_url_success(mock_storage_client):
     mock_blob.generate_signed_url.return_value = expected_url
 
     # By default, TestClient follows redirects. We want to check the redirect itself.
-    response = client.get("/api/image?gcs_uri=gs://bucket/image.jpg", follow_redirects=False)
+    response = client.get("/api/image?gcs_uri=gs://property-images-ai-powered-search-alloydb-1542/image.jpg", follow_redirects=False)
 
     assert response.status_code == 307
     assert response.headers["location"] == expected_url
@@ -62,7 +62,7 @@ def test_serve_image_fallback_to_streaming(mock_storage_client):
 
     mock_blob.open.return_value = MockFile()
 
-    response = client.get("/api/image?gcs_uri=gs://bucket/image.jpg")
+    response = client.get("/api/image?gcs_uri=gs://property-images-ai-powered-search-alloydb-1542/image.jpg")
 
     assert response.status_code == 200
     assert response.content == b"image_data"
@@ -71,13 +71,13 @@ def test_serve_image_fallback_to_streaming(mock_storage_client):
 def test_serve_image_not_found(mock_storage_client):
     mock_storage_client.bucket.side_effect = Exception("Bucket not found")
 
-    response = client.get("/api/image?gcs_uri=gs://bucket/image.jpg")
+    response = client.get("/api/image?gcs_uri=gs://property-images-ai-powered-search-alloydb-1542/image.jpg")
 
     assert response.status_code == 404
     assert "Image not found or inaccessible" in response.json()["detail"]
 
 def test_serve_image_no_storage_client():
     with patch("main.storage_client", None):
-        response = client.get("/api/image?gcs_uri=gs://bucket/image.jpg")
+        response = client.get("/api/image?gcs_uri=gs://property-images-ai-powered-search-alloydb-1542/image.jpg")
         assert response.status_code == 500
         assert "Storage client is not initialized." in response.json()["detail"]
