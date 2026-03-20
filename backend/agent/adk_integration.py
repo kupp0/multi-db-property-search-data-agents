@@ -1,5 +1,3 @@
-import os
-import json
 from typing import Dict, Any
 
 # In a real ADK setup, you would import the ADK Agent and Tool classes here.
@@ -46,7 +44,7 @@ def get_dynamic_adk_agent(selected_backend: str) -> MockADKAgent:
         In a real implementation, this would import and call `query_gda(prompt, selected_backend)`
         from main.py.
         """
-        print(f"--- Executing Tool: query_active_database ---")
+        print("--- Executing Tool: query_active_database ---")
         print(f"--- Routing to Backend: {selected_backend.upper()} ---")
         
         # Mocking the GDA response for demonstration

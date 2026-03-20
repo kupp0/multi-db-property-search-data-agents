@@ -3,7 +3,8 @@ import os
 # Disable Spanner metrics export to prevent Cloud Run errors
 os.environ["SPANNER_ENABLE_METRICS"] = "false"
 
-from fastapi import FastAPI, HTTPException
+from typing import Any, Optional
+from fastapi import FastAPI
 from pydantic import BaseModel
 from agent import get_agent
 
@@ -11,16 +12,20 @@ from google.adk import Runner
 from google.adk.sessions import InMemorySessionService
 
 from fastapi.middleware.cors import CORSMiddleware
-import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import text
 from google.cloud import spanner
 
 app = FastAPI()
 
+# Configure CORS
+# In production, this should be restricted to specific domains.
+ALLOWED_ORIGINS_STR = os.getenv("ALLOWED_ORIGINS", "*")
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS_STR.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development; restrict in production
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -92,7 +97,6 @@ class ChatRequest(BaseModel):
     session_id: str = "default_session"
     backend: str = "alloydb"
 
-from typing import Any, Optional
 
 class ChatResponse(BaseModel):
     response: str
@@ -140,7 +144,7 @@ async def chat(request: ChatRequest):
             
             # Capture Tool Call (the prompt sent to the tool)
             if hasattr(event, 'tool_call') and event.tool_call:
-                print(f"DEBUG: Found tool_call in event")
+                print("DEBUG: Found tool_call in event")
                 # Assuming single tool call for now
                 # event.tool_call might be a ToolCall object with 'function_calls'
                 if hasattr(event.tool_call, 'function_calls'):
@@ -151,7 +155,7 @@ async def chat(request: ChatRequest):
 
             # Capture Tool Response (the output from the tool)
             if hasattr(event, 'tool_response') and event.tool_response:
-                 print(f"DEBUG: Found tool_response in event")
+                 print("DEBUG: Found tool_response in event")
                  if hasattr(event.tool_response, 'function_responses'):
                     for fr in event.tool_response.function_responses:
                         # The tool returns a JSON string in 'response' field (usually)
