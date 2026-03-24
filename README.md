@@ -16,7 +16,7 @@ The application features two primary modalities:
     *   **AlloyDB**: PostgreSQL-compatible database using `pgvector` and ScaNN indexes.
     *   **Cloud Spanner**: Globally distributed database using Google Standard SQL and exact vector search.
     *   **Cloud SQL for PostgreSQL**: Fully managed PostgreSQL using `pgvector` and HNSW/IVFFlat indexes.
-    *   **Cloud SQL for MySQL**: Fully managed MySQL database.
+    *   **Cloud SQL for MySQL**: Fully managed MySQL database using inline `ml_embedding` models with exact KNN vector search.
 
 ## Features
 
