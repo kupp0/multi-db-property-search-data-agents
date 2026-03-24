@@ -403,30 +403,6 @@ async def search_properties(request: SearchRequest):
         rows = query_result.get("rows", [])
         cols = query_result.get("columns", [])
         
-        generated_sql = gda_resp.get("generatedQuery") or query_result.get("query", "SQL not returned by GDA")
-        query_error = query_result.get("queryExecutionError", "")
-        
-        # Workaround for MySQL semantic search
-        if request.backend == "cloudsql_mysql" and generated_sql and "ml_embedding" in generated_sql and "read-only SQL statement" in query_error:
-            logger.info("Applying MySQL workaround for semantic search query.")
-            try:
-                conn_obj, conn_type = await get_db_connection(request.backend)
-                if conn_type == "sqlalchemy":
-                    async with conn_obj.connect() as conn:
-                        statements = [s.strip() for s in generated_sql.split(';') if s.strip()]
-                        for i, stmt in enumerate(statements):
-                            result = await conn.execute(text(stmt))
-                            if i == len(statements) - 1: # The last statement is the SELECT
-                                db_rows = result.mappings().all()
-                                if db_rows:
-                                    cols = [{"name": key} for key in db_rows[0].keys()]
-                                    rows = [{"values": [{"value": val} for val in row.values()]} for row in db_rows]
-                                else:
-                                    cols = []
-                                    rows = []
-            except Exception as e:
-                logger.error(f"MySQL workaround execution failed: {e}")
-        
         # Process rows into a list of dictionaries
         results = []
         if rows and cols:
@@ -453,6 +429,7 @@ async def search_properties(request: SearchRequest):
                 results.append(item)
         
         # Construct the System Output for the UI
+        generated_sql = gda_resp.get("generatedQuery") or gda_resp.get("queryResult", {}).get("query", "SQL not returned by GDA")
         explanation = gda_resp.get('intentExplanation', '')
         total_row_count = gda_resp.get("queryResult", {}).get("totalRowCount", "0")
         
