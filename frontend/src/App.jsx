@@ -359,15 +359,15 @@ function App() {
                 {generatedSql && (
                     <div className="w-full mb-12">
                         <div
-                            className={`bg-slate-900 rounded-xl shadow-2xl border border-slate-800 transition-all duration-300 cursor-pointer group ${isOutputExpanded ? 'max-h-[800px] overflow-y-auto' : 'max-h-[160px] overflow-hidden'}`}
+                                        className={`bg-slate-50 dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 transition-all duration-300 cursor-pointer group ${isOutputExpanded ? 'max-h-[800px] overflow-y-auto' : 'max-h-[160px] overflow-hidden'}`}
                             onClick={() => setIsOutputExpanded(!isOutputExpanded)}
                         >
-                            <div className="bg-slate-950/50 px-4 py-3 text-xs font-mono font-bold text-slate-400 flex justify-between items-center border-b border-slate-800 sticky top-0 z-10 backdrop-blur-md">
+                                        <div className="bg-slate-100/50 dark:bg-slate-950/50 px-4 py-3 text-xs font-mono font-bold text-slate-600 dark:text-slate-400 flex justify-between items-center border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 backdrop-blur-md">
                                 <div className="flex items-center gap-2">
-                                    <Database className="w-3 h-3 text-indigo-400" />
+                                                <Database className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
                                     <span>SYSTEM OUTPUT</span>
                                 </div>
-                                <span className="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-500 group-hover:text-slate-300 transition-colors">
+                                            <span className="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
                                     {isOutputExpanded ? 'CLICK TO COLLAPSE' : 'CLICK TO EXPAND'}
                                 </span>
                             </div>
@@ -375,8 +375,8 @@ function App() {
                                 {/* INTENT EXPLANATION */}
                                 {systemDetails?.intent_explanation && (
                                     <div>
-                                        <h4 className="text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wider">Intent Explanation</h4>
-                                        <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                                                    <h4 className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-2 uppercase tracking-wider">Intent Explanation</h4>
+                                                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-mono bg-slate-100/50 dark:bg-slate-950/50 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
                                             {systemDetails.intent_explanation}
                                         </p>
                                     </div>
@@ -402,15 +402,15 @@ function App() {
 
                                     return (
                                         <div>
-                                            <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Facets</h4>
+                                            <h4 className="text-xs font-bold text-amber-600 dark:text-amber-400 mb-2 uppercase tracking-wider">Applied Templates & Facets</h4>
                                             <div className="space-y-3">
                                                 {matchedTemplates.map(idx => {
                                                     const dataAgentContext = contexts[selectedBackend];
                                                     const template = dataAgentContext.templates[idx];
                                                     return (
-                                                        <div key={`template-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-amber-900/30">
-                                                            <div className="text-xs font-bold text-amber-300 mb-1">Template {idx + 1}: {template.intent}</div>
-                                                            <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                        <div key={`template-${idx}`} className="bg-slate-100/50 dark:bg-slate-950/50 p-3 rounded-lg border border-amber-200 dark:border-amber-900/30">
+                                                            <div className="text-xs font-bold text-amber-600 dark:text-amber-300 mb-1">Template {idx + 1}: {template.intent}</div>
+                                                            <div className="text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-800 overflow-x-auto whitespace-pre-wrap">
                                                                 {template.parameterized?.parameterized_sql || template.sql}
                                                             </div>
                                                         </div>
@@ -423,9 +423,9 @@ function App() {
                                                     if (!facet) return null;
                                                     const snippet = facet.parameterized?.parameterized_sql_snippet || facet.parameterized?.parameterized_facet || facet.sql_snippet || facet.facet;
                                                     return (
-                                                        <div key={`facet-${idx}`} className="bg-slate-950/50 p-3 rounded-lg border border-orange-900/30">
-                                                            <div className="text-xs font-bold text-orange-300 mb-1">Facet {idx + 1}: {facet.intent}</div>
-                                                            <div className="text-xs font-mono text-slate-400 bg-slate-900 p-2 rounded border border-slate-800 overflow-x-auto whitespace-pre-wrap">
+                                                        <div key={`facet-${idx}`} className="bg-slate-100/50 dark:bg-slate-950/50 p-3 rounded-lg border border-orange-200 dark:border-orange-900/30">
+                                                            <div className="text-xs font-bold text-orange-600 dark:text-orange-300 mb-1">Facet {idx + 1}: {facet.intent}</div>
+                                                            <div className="text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-800 overflow-x-auto whitespace-pre-wrap">
                                                                 {snippet}
                                                             </div>
                                                         </div>
@@ -438,14 +438,14 @@ function App() {
 
                                 {/* GENERATED SQL */}
                                 <div>
-                                    <h4 className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-wider">Generated SQL</h4>
-                                    <div className="font-mono text-sm overflow-x-auto bg-slate-950/50 p-3 rounded-lg border border-slate-800 max-h-64 overflow-y-auto custom-scrollbar">
+                                                <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2 uppercase tracking-wider">Generated SQL</h4>
+                                                <div className="font-mono text-sm overflow-x-auto bg-slate-100/50 dark:bg-slate-950/50 p-3 rounded-lg border border-slate-200 dark:border-slate-800 max-h-64 overflow-y-auto custom-scrollbar">
                                         <ReactMarkdown
                                             components={{
                                                 // eslint-disable-next-line no-unused-vars
                                                 code({ node, inline, className, children, ...props }) {
                                                     return (
-                                                        <code className={`${className} text-emerald-300 bg-transparent`} {...props}>
+                                                        <code className={`${className} text-emerald-600 dark:text-emerald-300 bg-transparent`} {...props}>
                                                             {children}
                                                         </code>
                                                     );
@@ -469,21 +469,21 @@ function App() {
                                 {systemDetails?.query_result_preview && (
                                     <div>
                                         <div className="flex items-center justify-between mb-2">
-                                            <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">Query Result Preview</h4>
+                                                        <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Query Result Preview</h4>
                                             <span className="text-[10px] text-slate-500">Total Rows: {systemDetails.total_row_count}</span>
                                         </div>
-                                        <div className="overflow-x-auto bg-slate-950/50 rounded-lg border border-slate-800">
-                                            <table className="w-full text-left text-xs font-mono text-slate-400">
-                                                <thead className="bg-slate-900 text-slate-300">
+                                                    <div className="overflow-x-auto bg-slate-100/50 dark:bg-slate-950/50 rounded-lg border border-slate-200 dark:border-slate-800">
+                                                        <table className="w-full text-left text-xs font-mono text-slate-600 dark:text-slate-400">
+                                                            <thead className="bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
                                                     <tr>
                                                         {systemDetails.query_result_preview.columns.map((col, i) => (
-                                                            <th key={i} className="px-3 py-2 border-b border-slate-800 whitespace-nowrap">{col.name}</th>
+                                                            <th key={i} className="px-3 py-2 border-b border-slate-200 dark:border-slate-800 whitespace-nowrap">{col.name}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {systemDetails.query_result_preview.rows.map((row, i) => (
-                                                        <tr key={i} className="border-b border-slate-800 last:border-0 hover:bg-slate-900/50">
+                                                        <tr key={i} className="border-b border-slate-200 dark:border-slate-800 last:border-0 hover:bg-slate-100/50 dark:hover:bg-slate-900/50">
                                                             {row.values.map((val, j) => (
                                                                 <td key={j} className="px-3 py-2 whitespace-nowrap max-w-[200px] truncate" title={val.value}>
                                                                     {val.value}
@@ -500,8 +500,8 @@ function App() {
                                 {/* RAW ANSWER */}
                                 {nlAnswer && (
                                     <div>
-                                        <h4 className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider">Natural Language Answer</h4>
-                                        <p className="text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                                                    <h4 className="text-xs font-bold text-purple-600 dark:text-purple-400 mb-2 uppercase tracking-wider">Natural Language Answer</h4>
+                                                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-mono bg-slate-100/50 dark:bg-slate-950/50 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
                                             {nlAnswer}
                                         </p>
                                     </div>
