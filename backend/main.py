@@ -23,6 +23,7 @@ import re
 from typing import List, Any
 from sqlalchemy import table, column, select, cast, String, or_, and_
 from google.cloud import spanner
+from starlette.concurrency import run_in_threadpool
 # ==============================================================================
 # LOGGING CONFIGURATION
 # ==============================================================================
@@ -394,8 +395,10 @@ async def search_properties(request: SearchRequest):
     logger.info(f"Processing search query: '{request.query}'")
     
     try:
-        # Query the Gemini Data Agent
-        gda_resp = query_gda(request.query, request.backend)
+        # ⚡ Bolt: Offload synchronous GDA API call to a thread pool
+        # This prevents blocking the FastAPI async event loop while waiting for the slow LLM response,
+        # dramatically improving concurrency and overall application throughput.
+        gda_resp = await run_in_threadpool(query_gda, request.query, request.backend)
         
         # Extract components from the response
         nl_answer = gda_resp.get("naturalLanguageAnswer", "")
