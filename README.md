@@ -5,6 +5,9 @@ The **Unified Data Cloud Property Search Demo** showcases a **Natural Language t
 The application features two primary modalities:
 1.  **Main UI (Search Bar)**: Directly interacts with the QueryData API (Gemini Data Analytics API) for fast, direct natural language to SQL translation.
 2.  **CHAT Interface**: Interacts with a conversational Agent connected to the QueryData API endpoint via the ADK / MCP Toolkit, allowing for follow-up questions and refined searches.
+
+⚠️ Note: This is my personal work and is not an official Google Cloud product. It is a demonstration of GCP features and is not meant for production use. Use at your own risk.
+
 ## Architecture
 
 ![Architecture Diagram](frontend/src/assets/data_agent_diagram.png)
