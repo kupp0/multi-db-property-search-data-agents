@@ -305,7 +305,7 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
         logger.error(f"GDA API Request Failed: {e}")
         if hasattr(e, 'response') and e.response:
              logger.error(f"GDA Error Response: {e.response.text}")
-        raise HTTPException(500, f"Failed to query Gemini Data Agent: {e}")
+        raise HTTPException(500, "Failed to query Gemini Data Agent")
 
 # ==============================================================================
 # API ENDPOINTS
@@ -678,4 +678,4 @@ async def get_history(request: HistoryRequest):
         
     except Exception as e:
         logger.error(f"History fetch failed: {e}")
-        raise HTTPException(500, f"Failed to fetch history: {e}")
+        raise HTTPException(500, "Failed to fetch history")
