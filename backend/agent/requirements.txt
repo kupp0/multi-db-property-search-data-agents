@@ -8,3 +8,5 @@ toolbox-core
 sqlalchemy
 asyncpg
 greenlet
+google-cloud-spanner>=3.40.0
+

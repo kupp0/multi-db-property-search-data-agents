@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 # Disable Spanner metrics export to prevent Cloud Run errors
 os.environ["SPANNER_ENABLE_METRICS"] = "false"
@@ -176,6 +177,7 @@ async def shutdown_event():
 class SearchRequest(BaseModel):
     query: str
     backend: str = "alloydb"
+    demo_mode: bool = False
 
 class FilterCondition(BaseModel):
     column: str
@@ -209,6 +211,56 @@ def get_gda_credentials():
         _gda_credentials.refresh(google.auth.transport.requests.Request())
 
     return _gda_credentials
+
+SAMPLE_QUERIES = [
+    "Show me 2-bedroom apartments in Zurich under 3000 CHF",
+    "Show me family apartments in Zurich with a nice view up to 16k",
+    "Show me cheap studios in Geneva",
+    "Show me Lovely Mountain Cabins under 15k"
+]
+
+def get_normalized_query_slug(query: str) -> str:
+    # Normalize query: lowercase, alphanumeric characters and single underscores only
+    normalized = re.sub(r'[^a-z0-9]', '_', query.lower())
+    normalized = re.sub(r'_+', '_', normalized).strip('_')
+    return normalized
+
+def is_sample_query(query: str) -> bool:
+    q = query.strip().lower()
+    return any(ex.strip().lower() == q for ex in SAMPLE_QUERIES)
+
+def save_to_gcs(bucket_name: str, blob_name: str, data: dict):
+    """Saves data as JSON to Google Cloud Storage."""
+    if not storage_client:
+        logger.warning("Storage client not initialized. Cannot save to GCS.")
+        return
+    try:
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        blob.upload_from_string(
+            json.dumps(data, indent=2),
+            content_type='application/json'
+        )
+        logger.info(f"Successfully saved data to gs://{bucket_name}/{blob_name}")
+    except Exception as e:
+        logger.error(f"Failed to save data to GCS: {e}")
+
+def load_from_gcs(bucket_name: str, blob_name: str) -> dict:
+    """Loads JSON data from Google Cloud Storage."""
+    if not storage_client:
+        logger.warning("Storage client not initialized. Cannot load from GCS.")
+        return None
+    try:
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        if not blob.exists():
+            logger.info(f"GCS Blob gs://{bucket_name}/{blob_name} does not exist.")
+            return None
+        content = blob.download_as_text()
+        return json.loads(content)
+    except Exception as e:
+        logger.error(f"Failed to load data from GCS: {e}")
+        return None
 
 def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     """
@@ -393,11 +445,36 @@ async def search_properties(request: SearchRequest):
     3. A natural language answer.
     4. An explanation of the reasoning (if available).
     """
-    logger.info(f"Processing search query: '{request.query}'")
+    logger.info(f"Processing search query: '{request.query}' (backend: {request.backend}, demo_mode: {request.demo_mode})")
     
+    gda_resp = None
+    # If demo mode is ON and it's a sample query, load raw GDA response from GCS
+    if request.demo_mode and is_sample_query(request.query):
+        slug = get_normalized_query_slug(request.query)
+        blob_name = f"demo/{request.backend}/{slug}.json"
+        bucket_name = ALLOWED_GCS_BUCKET or f"property-images-data-agent-{PROJECT_ID}"
+        
+        logger.info(f"Demo mode active. Loading raw GDA response from gs://{bucket_name}/{blob_name}")
+        gda_resp = load_from_gcs(bucket_name, blob_name)
+        if gda_resp:
+            # Add a 3-second delay to mimic a real live GDA API call latency
+            logger.info("Simulating GDA API call latency (3 seconds)...")
+            await asyncio.sleep(3)
+        else:
+            logger.warning("Cached GDA response not found on GCS. Falling back to live GDA query.")
+            
     try:
-        # Query the Gemini Data Agent
-        gda_resp = query_gda(request.query, request.backend)
+        if not gda_resp:
+            # Query the Gemini Data Agent live
+            gda_resp = query_gda(request.query, request.backend)
+            
+            # If it's a sample query, save the raw GDA response to GCS for future demo use!
+            if is_sample_query(request.query):
+                slug = get_normalized_query_slug(request.query)
+                blob_name = f"demo/{request.backend}/{slug}.json"
+                bucket_name = ALLOWED_GCS_BUCKET or f"property-images-data-agent-{PROJECT_ID}"
+                logger.info(f"Persisting raw GDA response to gs://{bucket_name}/{blob_name}")
+                save_to_gcs(bucket_name, blob_name, gda_resp)
         
         # Extract components from the response
         nl_answer = gda_resp.get("naturalLanguageAnswer", "")
@@ -496,11 +573,11 @@ async def search_properties(request: SearchRequest):
                         }
                     )
                 conn_obj.run_in_transaction(insert_history)
-
+ 
             logger.info(f"User prompt history saved to {request.backend}.")
         except Exception as db_err:
             logger.error(f"Failed to save user prompt history to {request.backend}: {db_err}")
-
+ 
         return {
             "listings": results, 
             "sql": display_sql, 

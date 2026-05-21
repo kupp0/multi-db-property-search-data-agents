@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Sparkles, Database, ArrowRight, Loader2, Sun, Moon, Workflow, MessageSquare, History } from 'lucide-react';
+import { Search, Sparkles, Database, ArrowRight, Loader2, Sun, Moon, Workflow, MessageSquare, History, Play, Tv } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import ChatInterface from './components/ChatInterface';
 import UserHistoryWidget from './components/UserHistoryWidget';
@@ -18,21 +18,21 @@ const contexts = {
     spanner: spannerContext
 };
 
+const EXAMPLES = [
+    "Show me 2-bedroom apartments in Zurich under 3000 CHF",
+    "Show me family apartments in Zurich with a nice view up to 16k",
+    "Show me cheap studios in Geneva",
+    "Show me Lovely Mountain Cabins under 15k"
+];
+
 // --- COMPONENTS ---
 
 const SearchExamples = React.memo(({ onSelectQuery }) => {
-    const examples = [
-        "Show me 2-bedroom apartments in Zurich under 3000 CHF",
-        "Show me family apartments in Zurich with a nice view up to 16k",
-        "Show me cheap studios in Geneva",
-        "Show me Lovely Mountain Cabins under 15k"
-    ];
-
     return (
         <div className="mt-8">
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 font-medium">Try these examples:</p>
             <div className="flex flex-wrap gap-2">
-                {examples.map((ex, i) => (
+                {EXAMPLES.map((ex, i) => (
                     <button
                         key={i}
                         onClick={() => onSelectQuery(ex)}
@@ -95,11 +95,17 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [darkMode, setDarkMode] = useState(true);
+    const [demoMode, setDemoMode] = useState(false);
     const [showArchitecture, setShowArchitecture] = useState(false);
     const [showChat, setShowChat] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     const [isOutputExpanded, setIsOutputExpanded] = useState(false);
     const [selectedBackend, setSelectedBackend] = useState('alloydb');
+
+    const isSampleQuery = (q) => {
+        const normalizedInput = q.trim().toLowerCase();
+        return EXAMPLES.some(ex => ex.trim().toLowerCase() === normalizedInput);
+    };
 
     // Toggle Dark Mode
     useEffect(() => {
@@ -114,6 +120,11 @@ function App() {
         e?.preventDefault();
         if (!query.trim()) return;
 
+        if (demoMode && !isSampleQuery(query)) {
+            setError("Only sample queries are supported in Demo mode.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setResults([]);
@@ -127,7 +138,7 @@ function App() {
             const response = await fetch('/api/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query, backend: selectedBackend }),
+                body: JSON.stringify({ query, backend: selectedBackend, demo_mode: demoMode }),
             });
 
             if (!response.ok) {
@@ -198,7 +209,7 @@ function App() {
             <button
                 onClick={() => setShowChat(!showChat)}
                 className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center ${showChat ? 'bg-slate-800 text-white rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
-                title={showChat ? "Close Chat" : "Open AI Agent Chat"}
+                title={demoMode ? "Only sample queries supported in Demo mode" : showChat ? "Close Chat" : "Open AI Agent Chat"}
                 aria-label={showChat ? "Close chat" : "Open chat"}
             >
                 {showChat ? <ArrowRight className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
@@ -206,7 +217,7 @@ function App() {
 
             {/* CHAT INTERFACE SIDE PANEL */}
             <div className={`fixed bottom-24 right-6 z-40 w-[90vw] sm:w-[400px] h-[600px] max-h-[calc(100vh-120px)] transition-all duration-300 transform origin-bottom-right ${showChat ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-10 pointer-events-none'}`}>
-                <div className="w-full h-full bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col">
+                <div className="w-full h-full bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col relative">
                     <ChatInterface
                         selectedBackend={selectedBackend}
                         onClose={() => setShowChat(false)}
@@ -254,6 +265,20 @@ function App() {
                             // For now, keeping it open allows for follow-up questions.
                         }}
                     />
+                    {demoMode && (
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center p-6 text-center" title="Only sample queries supported in Demo mode">
+                            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 max-w-[260px] transform transition-all animate-in zoom-in-95 duration-300">
+                                <MessageSquare className="w-12 h-12 text-indigo-500 dark:text-indigo-400 mx-auto mb-4 animate-pulse" />
+                                <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2">Chat is Greyed Out</h3>
+                                <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed mb-1">
+                                    Only sample queries are supported in Demo mode.
+                                </p>
+                                <p className="text-slate-400 dark:text-slate-500 text-[10px] italic">
+                                    Only sample queries supported in Demo mode
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -268,6 +293,19 @@ function App() {
                     </button>
                     <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
                         <History className="w-4 h-4" /> History
+                    </button>
+                    <button
+                        onClick={() => setDemoMode(!demoMode)}
+                        className={`px-3 py-2 rounded-lg border transition-all text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm ${
+                            demoMode
+                            ? 'bg-indigo-600 border-indigo-700 text-white hover:bg-indigo-750'
+                            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        }`}
+                        title="Only sample queries supported in Demo mode"
+                        aria-label="Toggle Demo Mode"
+                    >
+                        <Tv className="w-4 h-4" />
+                        <span>Demo Mode</span>
                     </button>
                     <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
                         {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

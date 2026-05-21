@@ -55,7 +55,17 @@ The project includes an automated script to deploy the schemas and load the samp
 ./scripts/install_databases.sh
 ```
 
-### 3. Start Services Locally
+### 3. Pre-populating Demo Mode Cache (Optional)
+
+The application features a **Demo Mode** to mimic GDA API responses with zero API latency during presentations. To pre-populate the Google Cloud Storage cache bucket with the raw Gemini Data Agent responses for all four database backends and sample queries, run:
+
+```bash
+./scripts/auxiliary/generate_all_demo_files.sh
+```
+
+*Note: This requires active Google Cloud credentials and live GDA API access. Once the files are generated on GCS, you can run the application with "Demo Mode" enabled, which avoids calling the live GDA API.*
+
+### 4. Start Services Locally
 
 Run the local debug script to build and start the Backend, Frontend, Toolbox (MCP Server), and Agent containers:
 

@@ -19,8 +19,8 @@ GDA_LOCATION=${GCP_LOCATION:-"europe-west1"}
 API_ENDPOINT="https://geminidataanalytics.googleapis.com/v1beta/projects/${PROJECT_ID}/locations/${GDA_LOCATION}:queryData"
 
 BACKEND=${1:-alloydb}
-#PROMPT=${2:-Show me cheap apartments in basel}
-PROMPT="Show me family apartments in Zurich with a nice view up to 16k"
+PROMPT=${2:-"Show me family apartments in Zurich with a nice view up to 16k"}
+UPLOAD_TO_GCS=${3:-false}
 
 echo "Testing backend: $BACKEND"
 
@@ -121,11 +121,32 @@ echo "Payload:"
 echo "${JSON_PAYLOAD}"
 echo "---"
 
+# Slugify helper
+slugify() {
+  echo "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/_/g' | sed -E 's/^_+|_+$//g'
+}
+
+SLUG=$(slugify "$PROMPT")
+OUTPUT_FILE="/tmp/${BACKEND}_${SLUG}.json"
+
 # Make the API call using curl
-curl -X POST \
+curl -s -X POST \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json; charset=utf-8" \
   -d "${JSON_PAYLOAD}" \
-  "${API_ENDPOINT}"
+  "${API_ENDPOINT}" > "${OUTPUT_FILE}"
 
+# Output to stdout
+cat "${OUTPUT_FILE}"
 echo
+
+if [ "$UPLOAD_TO_GCS" == "true" ]; then
+  BUCKET_NAME="property-images-data-agent-${PROJECT_ID}"
+  if [ -n "${ALLOWED_GCS_BUCKET:-}" ]; then
+    BUCKET_NAME="${ALLOWED_GCS_BUCKET}"
+  fi
+  
+  GCS_DEST="gs://${BUCKET_NAME}/demo/${BACKEND}/${SLUG}.json"
+  echo "📤 Uploading raw GDA response to GCS: ${GCS_DEST}"
+  gcloud storage cp "${OUTPUT_FILE}" "${GCS_DEST}"
+fi
