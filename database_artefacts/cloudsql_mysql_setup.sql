@@ -21,6 +21,22 @@ CREATE TABLE IF NOT EXISTS property_listings (
     image_gcs_uri VARCHAR(255)
 );
 
+-- COLUMN METADATA COMMENTS (Gemini Context Enrichment)
+ALTER TABLE property_listings MODIFY COLUMN bedrooms INT COMMENT '<gemini>Examples: [\'4\', \'6\', \'3\'] | Distinct Values: 7 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN canton VARCHAR(100) COMMENT '<gemini>Examples: [\'Solothurn\', \'Ticino\', \'Zug\'] | Distinct Values: 27 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN city VARCHAR(100) COMMENT '<gemini>Examples: [\'Stans\', \'Altdorf\', \'Kilchberg\'] | Distinct Values: 89 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN country VARCHAR(100) COMMENT '<gemini>Examples: [\'Switzerland\'] | Distinct Values: 1 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN description TEXT COMMENT '<gemini>Examples: [\'The central rail crossroad of Switzerland. Reach anywhere fast. Modern functional apartment.\', \'Cozy retreat for weekend getaways or permanent living.\'] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN id VARCHAR(50) COMMENT '<gemini>Examples: [\'75\', \'247\', \'13\'] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN image_gcs_uri VARCHAR(255) COMMENT '<gemini>Examples: [\'https://storage.googleapis.com/property-images-data-agent-ai-powered-search-alloydb-1542/listings/10.jpg\'] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN price DECIMAL(10, 2) COMMENT '<gemini>Examples: [\'11878.00\', \'4869.00\', \'2792.00\'] | Distinct Values: 189 | Null Count: 0 |</gemini>';
+ALTER TABLE property_listings MODIFY COLUMN title VARCHAR(255) COMMENT '<gemini>Examples: [\'Rustic Studio in Landquart\', \'Renovated Villa in Herisau\', \'Quiet Home in Appenzell\'] | Distinct Values: 248 | Null Count: 0 |</gemini>';
+
+-- Create FULLTEXT indexes on city and canton to support fuzzy MATCH AGAINST Value Searches
+ALTER TABLE property_listings ADD FULLTEXT INDEX property_listings_city_ft_idx (city);
+ALTER TABLE property_listings ADD FULLTEXT INDEX property_listings_canton_ft_idx (canton);
+
+
 -- Create the property_description_embeddings table
 CREATE TABLE IF NOT EXISTS property_description_embeddings (
     property_id VARCHAR(50) PRIMARY KEY,

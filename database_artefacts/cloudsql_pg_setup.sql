@@ -42,6 +42,18 @@ CREATE TABLE property_listings (
     image_embedding vector(1408) 
 );
 
+-- 2.1 COLUMN METADATA COMMENTS (Gemini Context Enrichment)
+COMMENT ON COLUMN property_listings.bedrooms IS '<gemini>Examples: [''4'', ''6'', ''3''] | Distinct Values: 7 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.canton IS '<gemini>Examples: [''Solothurn'', ''Ticino'', ''Zug''] | Distinct Values: 27 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.city IS '<gemini>Examples: [''Stans'', ''Altdorf'', ''Kilchberg''] | Distinct Values: 89 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.country IS '<gemini>Examples: [''Switzerland''] | Distinct Values: 1 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.description IS '<gemini>Examples: [''The central rail crossroad of Switzerland. Reach anywhere fast. Modern functional apartment.'', ''Cozy retreat for weekend getaways or permanent living.''] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.id IS '<gemini>Examples: [''75'', ''247'', ''13''] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.image_gcs_uri IS '<gemini>Examples: [''https://storage.googleapis.com/property-images-data-agent-ai-powered-search-alloydb-1542/listings/10.jpg''] | Distinct Values: 250 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.price IS '<gemini>Examples: [''11878.00'', ''4869.00'', ''2792.00''] | Distinct Values: 189 | Null Count: 0 |</gemini>';
+COMMENT ON COLUMN property_listings.title IS '<gemini>Examples: [''Rustic Studio in Landquart'', ''Renovated Villa in Herisau'', ''Quiet Home in Appenzell''] | Distinct Values: 248 | Null Count: 0 |</gemini>';
+
+
 -- 3. INDEX CREATION 
 -- follow seperate index.sql file or automatically as part of the install_databases.sh script
 

@@ -1,76 +1,84 @@
 {
-  "facets": [
-    {
-      "comment": "",
-      "intent": "cheap",
-      "manifest": "Filter for budget price range",
-      "parameterized": {
-        "parameterized_intent": "cheap",
-        "parameterized_sql_snippet": "price <= 2500"
-      },
-      "sql_snippet": "price <= 2500"
-    },
-    {
-      "comment": "",
-      "intent": "family appartment",
-      "manifest": "Filter for larger family-sized properties",
-      "parameterized": {
-        "parameterized_intent": "family appartment",
-        "parameterized_sql_snippet": "bedrooms >= 3"
-      },
-      "sql_snippet": "bedrooms >= 3"
-    },
-    {
-      "comment": "",
-      "intent": "luxury",
-      "manifest": "Filter for luxury price range",
-      "parameterized": {
-        "parameterized_intent": "luxury",
-        "parameterized_sql_snippet": "price >= 8000"
-      },
-      "sql_snippet": "price >= 8000"
-    },
-    {
-      "comment": "",
-      "intent": "studio",
-      "manifest": "Filter for studio apartments",
-      "parameterized": {
-        "parameterized_intent": "studio",
-        "parameterized_sql_snippet": "bedrooms = 0"
-      },
-      "sql_snippet": "bedrooms = 0"
-    }
-  ],
   "templates": [
     {
-      "nlQuery": "Show me apartments in Zurich up to 6k with min 2 rooms",
+      "nl_query": "Show me apartments in Zurich up to 6k with min 2 rooms",
       "sql": "SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton FROM property_listings pl WHERE LOWER(pl.city) = LOWER('Zurich') AND pl.price <= 6000 AND pl.bedrooms >= 2 LIMIT 25;",
       "intent": "Find apartments filtered strictly by city, price, and room count without semantic search",
       "manifest": "Find property listings filtered by city, price, and bedroom count",
       "parameterized": {
-        "parameterized_intent": "Show me apartments in $1 up to $2 with min $3 rooms",
-        "parameterized_sql": "SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton FROM property_listings pl WHERE LOWER(pl.city) = LOWER($1) AND pl.price <= $2 AND pl.bedrooms >= $3 LIMIT 25;"
+        "parameterized_sql": "SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton FROM property_listings pl WHERE LOWER(pl.city) = LOWER($1) AND pl.price <= $2 AND pl.bedrooms >= $3 LIMIT 25;",
+        "parameterized_intent": "Show me apartments in $1 up to $2 with min $3 rooms"
       }
     },
     {
-      "nlQuery": "Show me lovely wooden cabin",
+      "nl_query": "Show me lovely wooden cabin",
       "sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', 'Lovely wooden cabin') AS text_emb, mysql.ml_embedding('multimodalembedding@001', 'Lovely wooden cabin') AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q ORDER BY similarity DESC LIMIT 25;",
       "intent": "Search for properties based solely on semantic and visual similarity to a text description",
       "manifest": "Find property listings ordered by semantic similarity to a search phrase",
       "parameterized": {
-        "parameterized_intent": "Show me $1",
-        "parameterized_sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', $1) AS text_emb, mysql.ml_embedding('multimodalembedding@001', $1) AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q ORDER BY similarity DESC LIMIT 25;"
+        "parameterized_sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', $1) AS text_emb, mysql.ml_embedding('multimodalembedding@001', $1) AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q ORDER BY similarity DESC LIMIT 25;",
+        "parameterized_intent": "Show me $1"
       }
     },
     {
-      "nlQuery": "Show me modern apartments in Zurich with industrial look up to 6k with min 2 rooms",
+      "nl_query": "Show me modern apartments in Zurich with industrial look up to 6k with min 2 rooms",
       "sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', 'modern apartments with industrial look') AS text_emb, mysql.ml_embedding('multimodalembedding@001', 'modern apartments with industrial look') AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q WHERE LOWER(pl.city) = LOWER('Zurich') AND pl.price <= 6000 AND pl.bedrooms >= 2 ORDER BY similarity DESC LIMIT 25;",
       "intent": "Find apartments in a specific city with price and room constraints, ordered by visual and semantic similarity to a description",
       "manifest": "Find property listings in a given city with price and room limits, ordered by semantic similarity to a search phrase",
       "parameterized": {
-        "parameterized_intent": "Show me $1 in $2 up to $3 with min $4 rooms",
-        "parameterized_sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', $1) AS text_emb, mysql.ml_embedding('multimodalembedding@001', $1) AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q WHERE LOWER(pl.city) = LOWER($2) AND pl.price <= $3 AND pl.bedrooms >= $4 ORDER BY similarity DESC LIMIT 25;"
+        "parameterized_sql": "WITH QueryEmbeddings AS (SELECT mysql.ml_embedding('gemini-embedding-001', $1) AS text_emb, mysql.ml_embedding('multimodalembedding@001', $1) AS image_emb) SELECT pl.image_gcs_uri, pl.id, pl.title, pl.description, pl.bedrooms, pl.price, pl.city, pl.country, pl.canton, (0.6 * (1 - vector_distance(pde.description_embedding, q.text_emb, 'distance_measure=cosine')) + 0.4 * (1 - vector_distance(pie.image_embedding, q.image_emb, 'distance_measure=cosine'))) AS similarity FROM property_listings pl LEFT JOIN property_description_embeddings pde ON pl.id = pde.property_id LEFT JOIN property_image_embeddings pie ON pl.id = pie.property_id CROSS JOIN QueryEmbeddings q WHERE LOWER(pl.city) = LOWER($2) AND pl.price <= $3 AND pl.bedrooms >= $4 ORDER BY similarity DESC LIMIT 25;",
+        "parameterized_intent": "Show me $1 in $2 up to $3 with min $4 rooms"
       }
+    }
+  ],
+  "facets": [
+    {
+      "sql_snippet": "price <= 2500",
+      "intent": "cheap",
+      "manifest": "Filter for budget price range",
+      "parameterized": {
+        "parameterized_sql_snippet": "price <= 2500",
+        "parameterized_intent": "cheap"
+      }
+    },
+    {
+      "sql_snippet": "bedrooms >= 3",
+      "intent": "family appartment",
+      "manifest": "Filter for larger family-sized properties",
+      "parameterized": {
+        "parameterized_sql_snippet": "bedrooms >= 3",
+        "parameterized_intent": "family appartment"
+      }
+    },
+    {
+      "sql_snippet": "price >= 8000",
+      "intent": "luxury",
+      "manifest": "Filter for luxury price range",
+      "parameterized": {
+        "parameterized_sql_snippet": "price >= 8000",
+        "parameterized_intent": "luxury"
+      }
+    },
+    {
+      "sql_snippet": "bedrooms = 0",
+      "intent": "studio",
+      "manifest": "Filter for studio apartments",
+      "parameterized": {
+        "parameterized_sql_snippet": "bedrooms = 0",
+        "parameterized_intent": "studio"
+      }
+    }
+  ],
+  "value_searches": [
+    {
+      "query": "SELECT * FROM (  WITH TrigramMetrics AS (    SELECT T.`city` AS original_value,     MATCH(T.`city`) AGAINST($value IN NATURAL LANGUAGE MODE) AS raw_score     FROM `property_listings` AS T     WHERE MATCH(T.`city`) AGAINST($value IN NATURAL LANGUAGE MODE) > 0     ORDER BY raw_score DESC LIMIT 10  ),   NormalizationParams AS (    SELECT MAX(raw_score) AS max_score     FROM TrigramMetrics  )   SELECT original_value AS value, 'city' AS `columns`,   'City' AS concept_type,   (CASE WHEN n.max_score > 0 THEN (1 - (m.raw_score / n.max_score)) ELSE 0 END) AS distance,   JSON_OBJECT() AS context   FROM TrigramMetrics m, NormalizationParams n) AS wrapped_query ",
+      "concept_type": "City",
+      "description": "Fuzzy match for Swiss cities"
+    },
+    {
+      "query": "SELECT * FROM (  WITH TrigramMetrics AS (    SELECT T.`canton` AS original_value,     MATCH(T.`canton`) AGAINST($value IN NATURAL LANGUAGE MODE) AS raw_score     FROM `property_listings` AS T     WHERE MATCH(T.`canton`) AGAINST($value IN NATURAL LANGUAGE MODE) > 0     ORDER BY raw_score DESC LIMIT 10  ),   NormalizationParams AS (    SELECT MAX(raw_score) AS max_score     FROM TrigramMetrics  )   SELECT original_value AS value, 'canton' AS `columns`,   'Canton' AS concept_type,   (CASE WHEN n.max_score > 0 THEN (1 - (m.raw_score / n.max_score)) ELSE 0 END) AS distance,   JSON_OBJECT() AS context   FROM TrigramMetrics m, NormalizationParams n) AS wrapped_query ",
+      "concept_type": "Canton",
+      "description": "Fuzzy match for Swiss cantons"
     }
   ]
 }

@@ -3,6 +3,7 @@ import { Search, Sparkles, Database, ArrowRight, Loader2, Sun, Moon, Workflow, M
 import ReactMarkdown from 'react-markdown';
 import ChatInterface from './components/ChatInterface';
 import UserHistoryWidget from './components/UserHistoryWidget';
+import ContextInfoModal from './components/ContextInfoModal';
 
 import dataAgentDiagram from './assets/data_agent_diagram.png';
 import dataAgentContextDiagram from './assets/data_agent_context_infographic.png';
@@ -101,6 +102,7 @@ function App() {
     const [showHistory, setShowHistory] = useState(false);
     const [isOutputExpanded, setIsOutputExpanded] = useState(false);
     const [selectedBackend, setSelectedBackend] = useState('alloydb');
+    const [showContextInfo, setShowContextInfo] = useState(false);
 
     const isSampleQuery = (q) => {
         const normalizedInput = q.trim().toLowerCase();
@@ -205,6 +207,13 @@ function App() {
 
             <UserHistoryWidget isOpen={showHistory} onClose={() => setShowHistory(false)} selectedBackend={selectedBackend} />
 
+            <ContextInfoModal
+                isOpen={showContextInfo}
+                onClose={() => setShowContextInfo(false)}
+                activeBackend={selectedBackend}
+                contextData={contexts[selectedBackend]}
+            />
+
             {/* FLOATING CHAT BUTTON */}
             <button
                 onClick={() => setShowChat(!showChat)}
@@ -290,6 +299,9 @@ function App() {
                 <div className="flex items-center gap-3">
                     <button onClick={() => setShowArchitecture(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
                         <Workflow className="w-4 h-4" /> Architecture
+                    </button>
+                    <button onClick={() => setShowContextInfo(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
+                        <Database className="w-4 h-4 text-indigo-500" /> Context Info
                     </button>
                     <button onClick={() => setShowHistory(true)} className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium flex items-center gap-2 shadow-sm">
                         <History className="w-4 h-4" /> History

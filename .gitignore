@@ -46,3 +46,5 @@ iam_policy.json
 backend/agent/service_resolved.yaml
 database_artefacts/_archive/
 terraform-existing/
+backend/mcp_server/tools_resolved.yaml
+
