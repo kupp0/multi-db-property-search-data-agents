@@ -298,7 +298,9 @@ def query_gda(prompt: str, backend: str = "alloydb") -> dict:
     
     try:
         logger.info(f"Sending request to GDA API: {url}")
-        resp = requests.post(url, headers=headers, data=json.dumps(payload))
+       # resp = requests.post(url, headers=headers, data=json.dumps(payload))
+       # Added timeout=120 to prevent HTTP 499 errors for long-running GDA queries
+        resp = requests.post(url, headers=headers, data=json.dumps(payload), timeout=120)
         resp.raise_for_status()
         return resp.json()
     except Exception as e:
