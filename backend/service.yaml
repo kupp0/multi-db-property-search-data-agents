@@ -15,6 +15,7 @@ spec:
         run.googleapis.com/network-interfaces: '[{"network":"search-demo-vpc","subnetwork":"search-demo-vpc"}]'
         run.googleapis.com/vpc-access-egress: private-ranges-only
     spec:
+      timeoutSeconds: 180
       # The Service Account identity that this container will run as.
       # It must have permissions to access Vertex AI, AlloyDB, and GCS.
       serviceAccountName: ${SERVICE_ACCOUNT}

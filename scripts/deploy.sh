@@ -226,6 +226,7 @@ gcloud run deploy "${FRONTEND_SERVICE}" \
     --region "${REGION}" \
     --platform managed \
     --allow-unauthenticated \
+    --timeout=180 \
     --set-env-vars BACKEND_URL="${BACKEND_URL}",AGENT_URL="${AGENT_URL}" \
     --quiet > /dev/null
 

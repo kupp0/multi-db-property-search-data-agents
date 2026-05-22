@@ -24,6 +24,11 @@ server {
         # Required for Cloud Run backends (SNI)
         proxy_ssl_server_name on;
         proxy_ssl_protocols TLSv1.2 TLSv1.3;
+
+        # Custom timeouts to prevent 504 Gateway Timeout on long GDA queries
+        proxy_connect_timeout 180s;
+        proxy_send_timeout    180s;
+        proxy_read_timeout    180s;
     }
 
     # Proxy Agent requests
@@ -40,5 +45,10 @@ server {
         # Required for Cloud Run backends (SNI)
         proxy_ssl_server_name on;
         proxy_ssl_protocols TLSv1.2 TLSv1.3;
+
+        # Custom timeouts to prevent 504 Gateway Timeout
+        proxy_connect_timeout 180s;
+        proxy_send_timeout    180s;
+        proxy_read_timeout    180s;
     }
 }
